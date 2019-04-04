@@ -1,0 +1,75 @@
+@import '../../assets/styles/color.less';
+@import '../../assets/styles/common.less';
+
+page {
+  background: @bg;
+}
+
+.profile {
+  &__header {
+    padding: 30px;
+    padding-right: 60px;
+    min-height: 150px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    position: relative;
+
+    &:active {
+      background-color: @active;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 50px;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      transform: rotate(45deg) translateY(-50%);
+      border-top: 2PX solid @arrow;
+      border-right: 2PX solid @arrow;
+    }
+  }
+
+  &__avatar {
+    width: 100px;
+    height: 100px;
+    color: white;
+    font-size: 40px;
+    line-height: 100px;
+    text-align: center;
+    border-radius: 50px;
+    background: @avatar;
+    box-shadow: 0 0 10px 0 rgba(120, 164, 250, 0.6);
+    overflow: hidden;
+  }
+
+  &__info {
+    height: 100px;
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &--name {
+      .cm-text();
+      width: 500px;
+      font-size: 18PX;
+      color: @title-text;
+      margin-bottom: 20px;
+    }
+    &--stuid {
+      .cm-text();
+      width: 500px;
+      font-size: 12PX;
+      color: @assist-text;
+    }
+  }
+
+  &__group {
+    margin-bottom: 20px;
+  }
+}

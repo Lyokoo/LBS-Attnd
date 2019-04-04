@@ -1,0 +1,29 @@
+@import '../../assets/styles/color.less';
+
+.tag-default() {
+  box-sizing: border-box;
+  padding: 2px 4px;
+  position: relative;
+  height: 36px;
+  min-width: 80px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  font-size: 10PX;
+}
+
+.tag {
+  &__active {
+    .tag-default();
+    border: 1PX solid @tag;
+    color: @tag;
+  }
+
+  &__disabled {
+    .tag-default();
+    border: 1PX solid @assist-text;
+    color: @assist-text;
+  }
+}

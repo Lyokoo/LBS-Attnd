@@ -1,0 +1,63 @@
+@import '../../../assets/styles/color.less';
+@import '../../../assets/styles/common.less';
+
+.signin-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__user {
+    display: flex;
+    align-items: center;
+  }
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    color: white;
+    font-size: 32px;
+    line-height: 80px;
+    text-align: center;
+    border-radius: 40px;
+    background: @avatar;
+    box-shadow: 0 0 10px 0 rgba(120, 164, 250, 0.6);
+    overflow: hidden;
+  }
+
+  &__info {
+    width: 400px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 30px;
+
+    &--name {
+      .cm-text();
+      font-size: 14PX;
+      color: @title-text;
+      margin-bottom: 12px;
+    }
+
+    &--desc {
+      .cm-text();
+      font-size: 10PX;
+      color: @assist-text;
+    }
+  }
+
+  &__status {
+    width: 130px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--desc {
+      .cm-text();
+      font-size: 24px;
+      margin-left: 10px;
+      margin-top: 6px;
+    }
+  }
+}

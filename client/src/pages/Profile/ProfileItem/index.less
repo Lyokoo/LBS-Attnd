@@ -1,0 +1,36 @@
+@import '../../../assets/styles/color.less';
+@import '../../../assets/styles/common.less';
+
+.profile-item {
+  position: relative;
+
+  &__btn {
+    .cm-btn();
+    background-color: white;
+    min-height: 100px;
+    font-size: 16PX;
+    color: @title-text;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    padding-right: 60px;
+    position: relative;
+
+    &:active {
+      background-color: @active;
+    }
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg) translateY(-50%);
+    border-top: 2PX solid @arrow;
+    border-right: 2PX solid @arrow;
+  }
+}

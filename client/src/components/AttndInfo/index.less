@@ -1,0 +1,47 @@
+@import '../../assets/styles/color.less';
+@import '../../assets/styles/common.less';
+
+.attnd-info {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+
+  &:active {
+    background-color: @active;
+  }
+
+  &__status {
+    position: absolute;
+    right: 30px;
+    top: 42px;
+  }
+
+  &__title {
+    width: 500px;
+    min-height: 60px;
+    overflow: hidden;
+    padding: 30px 36px 12px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    &--text {
+      .cm-text();
+      font-size: 16PX;
+      color: @title-text;
+    }
+  }
+
+  &__desc {
+    display: flex;
+    padding: 0 36px 30px;
+    flex-direction: column;
+    &--text {
+      .cm-text();
+      padding: 4px 0;
+      font-size: 12PX;
+      color: @assist-text;
+    }
+  }
+}
