@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
-
+import '@tarojs/async-await';
 import "taro-ui/dist/style/index.scss";
 import './app.less';
 

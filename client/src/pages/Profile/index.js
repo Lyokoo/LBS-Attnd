@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import ProfileItem from './ProfileItem';
+import { getUserInfo } from '../../services/userInfo';
 import './index.less';
 
 /**
@@ -14,7 +15,27 @@ export default class Profile extends Component {
   }
 
   state = {
+    name: '',
+    stuId: '',
+    pulling: false
+  }
 
+  componentDidShow() {
+    this.getUserInfo();
+  }
+
+  getUserInfo = async () => {
+    const { pulling } = this.state;
+    if (pulling) return;
+    this.setState({ pulling: true });
+    try {
+      const result = await getUserInfo();
+      if (result.code === 2000) {
+        const { name, stuId } = result.data;
+        this.setState({ name, stuId });
+      }
+    } catch (e) {}
+    this.setState({ pulling: false });
   }
 
   onUserInfoClick = () => {
@@ -24,14 +45,15 @@ export default class Profile extends Component {
   }
 
   render () {
+    const { name, stuId } = this.state;
     return (
       <View className="profile">
         <View className="profile__group">
           <View className="profile__header" onClick={this.onUserInfoClick}>
-            <Text className="profile__avatar">W</Text>
+            <Text className="profile__avatar">{name[0]}</Text>
             <View className="profile__info">
-              <Text className="profile__info--name">无情臭猪</Text>
-              <Text className="profile__info--stuid">1506100006</Text>
+              <Text className="profile__info--name">{name || '完善个人信息'}</Text>
+              <Text className="profile__info--stuid">{stuId}</Text>
             </View>
           </View>
         </View>
