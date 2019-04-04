@@ -8,7 +8,7 @@
 	"cloudfunctionRoot": "cloud/functions/",
 	"projectname": "attnd-taro",
 	"description": "LBS Attnd.",
-	"appid": "your appid",
+	"appid": "your AppId",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
