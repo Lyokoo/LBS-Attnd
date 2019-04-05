@@ -18,3 +18,21 @@ export const createAttnd = async ({ attndName, location }) => {
     throw e;
   }
 }
+
+// 根据 hostOpenId 获取考勤列表，即自己发布的考勤
+export const getAttndListByHostOpenId = async ({ offset, offsetId }) => {
+  const payload = { offset, offsetId };
+  adLog.log('getAttndListByHostOpenId-params', payload);
+  try {
+    const { result } = await Taro.cloud.callFunction({
+      name: 'getAttndListByHostOpenId',
+      data: { offset, offsetId }
+    });
+    if (result.code !== 2000) throw result;
+    adLog.log('getAttndListByHostOpenId-result', result);
+    return result;
+  } catch (e) {
+    adLog.warn('getAttndListByHostOpenId-error', e);
+    throw e;
+  }
+}

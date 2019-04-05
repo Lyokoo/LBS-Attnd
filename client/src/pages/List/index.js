@@ -1,7 +1,10 @@
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtTabs, AtTabsPane } from 'taro-ui';
 import AttndList from './AttndList';
+import { getAttndListByHostOpenId } from '../../services/attnd';
+import * as adLog from '../../utils/adLog';
+import { throttle } from '../../utils/func';
 import './index.less';
 
 export default class List extends Component {
@@ -15,14 +18,16 @@ export default class List extends Component {
     listHeight: 0,
     windowHeight: 0,
     tabIndex: 0,
-    attndData: {
-      listData: [1],
-      hasMore: true
-    },
-    siginData: {
-      listData: [1, 2, 3, 4, 5, 6, 7, 8],
-      hasMore: true
-    }
+
+    attndData: [],
+    attndHasMore: true,
+    attndOffsetId: null,
+    attndLoading: false,
+
+    signinData: [],
+    signinHasMore: true,
+    signinOffsetId: null,
+    signinLoading: false
   }
 
   tabList = [
@@ -32,6 +37,10 @@ export default class List extends Component {
 
   componentDidMount() {
     this.computeHeight();
+  }
+
+  componentDidShow() {
+    this.getAttndList();
   }
 
   computeHeight = () => {
@@ -55,8 +64,63 @@ export default class List extends Component {
     })
   }
 
+  getAttndList = async (offset = 0) => {
+    const { attndOffsetId, attndLoading } = this.state;
+    // 请求第 1 页时激活 loadMore 节点
+    if (offset === 0) {
+      this.setState({ attndHasMore: true });
+    }
+    if (attndLoading) return;
+    this.setState({ attndLoading: true });
+
+    try {
+      const {
+        data: { hasMore, offsetId, list }
+      } = await getAttndListByHostOpenId({
+        offset,
+        offsetId: attndOffsetId
+      });
+  
+      // offset === 0 时更新偏移基准 offsetId
+      if (offset === 0 && offsetId) {
+        this.setState({ attndOffsetId: offsetId });
+      }
+
+      this.setState({
+        attndData: offset === 0 ? list : attndData.concat(list),
+        attndHasMore: hasMore
+      });
+      
+    } catch (e) {
+      adLog.log('getAttndList-error', e);
+    }
+    this.setState({ attndLoading: false });
+  }
+
+  getSigninList = async () => {
+
+  }
+
+  onAttndLoadMore = async () => {
+    const offset = this.state.attndData.length;
+    this.getAttndList(offset);
+  }
+
+  onSigninLoadMore = async () => {
+    // const offset = this.state.signinData.length;
+    // this.getSigninList(offset);
+  }
+
   render () {
-    const { listHeight, windowHeight, tabIndex, attndData, siginData } = this.state;
+    const {
+      listHeight,
+      windowHeight,
+      tabIndex,
+      attndData,
+      attndHasMore,
+      siginData,
+      signinHasMore
+    } = this.state;
     return (
       <View className="list">
         <AtTabs
@@ -67,10 +131,20 @@ export default class List extends Component {
           height={`${windowHeight}px`}
         >
           <AtTabsPane current={tabIndex} index={0} >
-            <AttndList height={listHeight} data={attndData}/>
+            <AttndList
+              height={listHeight}
+              data={siginData}
+              hasMore={signinHasMore}
+              onLoadMore={this.onSigninLoadMore}
+            />
           </AtTabsPane>
           <AtTabsPane current={tabIndex} index={1}>
-            <AttndList height={listHeight} data={siginData}/>
+            <AttndList
+              height={listHeight}
+              data={attndData}
+              hasMore={attndHasMore}
+              onLoadMore={this.onAttndLoadMore}
+            />
           </AtTabsPane>
         </AtTabs>
       </View>

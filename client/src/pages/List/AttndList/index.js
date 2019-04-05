@@ -9,16 +9,15 @@ export default class AttndList extends Component {
 
   static propTypes = {
     height: PropTypes.number,
-    data: PropTypes.object,
+    data: PropTypes.array,
+    hasMore: PropTypes.bool,
     onLoadMore: PropTypes.func
   }
 
   static defaultProps = {
     height: 0,
-    data: {
-      listData: [],
-      hasMore: true
-    },
+    data: [],
+    hasMore: true,
     onLoadMore: () => { }
   }
 
@@ -27,7 +26,7 @@ export default class AttndList extends Component {
   }
 
   render() {
-    const { data, height } = this.props;
+    const { data, height, hasMore } = this.props;
     return (
       <View className="attnd-list">
         <ScrollView
@@ -38,13 +37,13 @@ export default class AttndList extends Component {
           onScrollToLower={this.onLoadMore}
         >
           <View className="attnd-list__content">
-            {data.listData.map(item => (
-              <View className="attnd-list__item" key={item}>
+            {data.map(item => (
+              <View className="attnd-list__item" key={item._id}>
                 <AttndInfo item={item}/>
               </View>
             ))}
           </View>
-          <LoadMore hasMore={data.hasMore}/>
+          <LoadMore hasMore={hasMore}/>
         </ScrollView>
       </View>
     )
