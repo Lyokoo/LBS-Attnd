@@ -6,18 +6,6 @@ import { AdToast } from '../../components/AdToast';
 import { isStuIdValid } from '../../utils/func';
 import './index.less';
 
-const checkData = (name, stuId) => {
-  if (!name) {
-    Taro.adToast({ text: '姓名不能为空' });
-    return false;
-  }
-  if (!isStuIdValid(stuId)) {
-    Taro.adToast({ text: '学号/工号只能为字母、数字和横杠' });
-    return false;
-  }
-  return true;
-}
-
 export default class EditUserInfo extends Component {
 
   config = {
@@ -27,6 +15,8 @@ export default class EditUserInfo extends Component {
   state = {
     name: '',
     stuId: '',
+    isNameErr: false,
+    isStuIdErr: false,
     pulling: false,
     submiting: false
   }
@@ -36,11 +26,31 @@ export default class EditUserInfo extends Component {
   }
 
   onNameChange = (value) => {
-    this.setState({ name: value });
+    this.setState({
+      name: value,
+      isNameErr: false
+    });
   }
 
   onStuIdChange = (value) => {
-    this.setState({ stuId: value });
+    this.setState({
+      stuId: value,
+      isStuIdErr: false
+    });
+  }
+
+  checkFormData = (name, stuId) => {
+    if (!name.trim()) {
+      Taro.adToast({ text: '姓名不能为空' });
+      this.setState({ isNameErr: true });
+      return false;
+    }
+    if (!isStuIdValid(stuId)) {
+      Taro.adToast({ text: '学号/工号只能为字母、数字和横杠' });
+      this.setState({ isStuIdErr: true });
+      return false;
+    }
+    return true;
   }
 
   getUserInfo = async () => {
@@ -64,13 +74,16 @@ export default class EditUserInfo extends Component {
 
   onSubmit = async () => {
     const { name, stuId, submiting, pulling } = this.state;
-    if (!checkData(name, stuId)) {
+    if (!this.checkFormData(name, stuId)) {
       return;
     }
     if (submiting || pulling) return;
     this.setState({ submiting: true });
     try {
-      await updateUserInfo({ name, stuId });
+      await updateUserInfo({
+        name: name.trim(),
+        stuId: stuId.trim()
+      });
       Taro.adToast({ text: '保存成功', status: 'success' });
       setTimeout(() => {
         Taro.navigateBack();
@@ -82,7 +95,7 @@ export default class EditUserInfo extends Component {
   }
 
   render() {
-    const { submiting, name, stuId } = this.state;
+    const { submiting, name, stuId, isNameErr, isStuIdErr } = this.state;
     return (
       <View className="edit-userinfo">
         <View className="edit-userinfo__form">
@@ -92,6 +105,7 @@ export default class EditUserInfo extends Component {
               type='text'
               placeholder="填写真实姓名（必填）"
               placeholderStyle="color: #cccccc"
+              error={isNameErr}
               maxLength={150}
               value={name}
               onChange={this.onNameChange}
@@ -101,6 +115,7 @@ export default class EditUserInfo extends Component {
               type='text'
               placeholder="填写学号或工号"
               placeholderStyle="color: #cccccc"
+              error={isStuIdErr}
               maxLength={150}
               border={false}
               value={stuId}
