@@ -21,7 +21,13 @@ exports.main = async (event) => {
     // 不存在该记录，插入之
     if (Array.isArray(data) && data.length === 0) {
       await userCollection.add({
-        data: { openId, name, stuId }
+        data: {
+          openId,
+          name,
+          stuId,
+          createTime: new Date(),
+          updateTime: new Date()
+        }
       });
       return { code: 2000 };
     }
@@ -31,7 +37,11 @@ exports.main = async (event) => {
       let result = await userCollection.where({
         openId: _.eq(openId)
       }).update({
-        data: { name, stuId }
+        data: {
+          name,
+          stuId,
+          updateTime: new Date()
+        }
       });
       console.log(result);
       return { code: 2000 };

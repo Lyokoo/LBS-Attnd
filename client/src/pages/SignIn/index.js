@@ -28,7 +28,7 @@ export default class Index extends Component {
     try {
       const { windowWidth, windowHeight } = wx.getSystemInfoSync();
       const rpx = windowWidth / 750;
-      const headerHeight = 228 * rpx; // PX
+      const headerHeight = 258 * rpx; // PX
       const footerHeight = 100 * rpx; // PX
       const gap = (20 * 4) * rpx; // PX
       const listHeight = windowHeight - headerHeight - footerHeight - gap;
