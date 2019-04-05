@@ -10,10 +10,6 @@ export default class EditAuth extends Component {
     navigationBarTitleText: ''
   }
 
-  state = {
-    value: ''
-  }
-
   render() {
     return (
       <View className="edit-auth">
@@ -22,7 +18,7 @@ export default class EditAuth extends Component {
         </View>
         <View className="edit-auth__desc">需要授权开启位置服务才能参加考勤的哦</View>
         <View className="edit-auth__opt">
-          <AtButton type="primary">开启定位</AtButton>
+          <AtButton type="primary" openType="openSetting">开启定位</AtButton>
         </View>
       </View>
     )

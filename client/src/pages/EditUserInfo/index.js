@@ -4,6 +4,7 @@ import { AtForm, AtInput, AtButton } from 'taro-ui';
 import { updateUserInfo, getUserInfo } from '../../services/userInfo';
 import { AdToast } from '../../components/AdToast';
 import { isStuIdValid } from '../../utils/func';
+import * as adLog from '../../utils/adLog';
 import './index.less';
 
 export default class EditUserInfo extends Component {
@@ -64,7 +65,9 @@ export default class EditUserInfo extends Component {
         const { name, stuId } = result.data;
         this.setState({ name, stuId });
       }
-    } catch (e) {}
+    } catch (e) {
+      adLog.warn('EditUserInfo-error', e);
+    }
     // 此处为了交互体验稍加延时
     setTimeout(() => {
       this.setState({ pulling: false });
@@ -89,6 +92,7 @@ export default class EditUserInfo extends Component {
         Taro.navigateBack();
       }, 1500);
     } catch (e) {
+      adLog.warn('EditUserInfo-error', e);
       Taro.adToast({ text: '保存失败', status: 'error' });
     }
     this.setState({ submiting: false });

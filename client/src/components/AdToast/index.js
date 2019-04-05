@@ -31,7 +31,7 @@ export default class AdToast extends Component {
 
   bindToastListener = () => {
     Taro.eventCenter.on('adToast', (options = {}) => {
-      const { text, status, duration = 1500, hasMark = true } = options;
+      const { text, status = '', duration = 1500, hasMark = true } = options;
       this.setState({ isOpened: true, text, status, duration, hasMark }, () => {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {

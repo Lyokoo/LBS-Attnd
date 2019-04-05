@@ -14,7 +14,8 @@ class App extends Component {
       'pages/FindAttnd/index',
       'pages/EditAuth/index',
       'pages/EditUserInfo/index',
-      'pages/SignIn/index'
+      'pages/SignIn/index',
+      'pages/ShowPassWd/index',
       // 'pages/About/index',
     ],
     window: {

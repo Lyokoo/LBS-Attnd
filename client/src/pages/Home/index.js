@@ -28,13 +28,16 @@ export default class Index extends Component {
 
   onTest = () => {
     Taro.navigateTo({
-      url: '../SignIn/index'
+      url: '../ShowPassWd/index'
     });
   }
 
   render() {
     return (
       <View className="home">
+        <View onClick={this.onTest}>
+          <AtButton size="small">test</AtButton>
+        </View>
         <View className="home__img">
           <Image src={school} mode="aspectFit" style={{width: '100%'}}/>
         </View>
@@ -44,9 +47,6 @@ export default class Index extends Component {
           </View>
           <View onClick={this.onEditAttndClick}>
             <AtButton>发起考勤</AtButton>
-          </View>
-          <View onClick={this.onTest}>
-            <AtButton size="small">test</AtButton>
           </View>
         </View>
       </View>
