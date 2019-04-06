@@ -22,6 +22,8 @@ export default class AttndList extends Component {
   }
 
   onLoadMore = () => {
+    if (!this.props.hasMore) return;
+    this.props.onLoadMore();
     console.log('loadmore');
   }
 

@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
+import { formatDate } from '../utils/func';
 
 // 创建考勤
 export const createAttnd = async ({ attndName, location }) => {
@@ -29,7 +30,12 @@ export const getAttndListByHostOpenId = async ({ offset, offsetId }) => {
       data: { offset, offsetId }
     });
     if (result.code !== 2000) throw result;
+    // format 时间
     adLog.log('getAttndListByHostOpenId-result', result);
+    result.data.list = result.data.list.map(item => {
+      item.createTime = formatDate(item.createTime);
+      return item;
+    });
     return result;
   } catch (e) {
     adLog.warn('getAttndListByHostOpenId-error', e);

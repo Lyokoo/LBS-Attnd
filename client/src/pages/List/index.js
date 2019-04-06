@@ -65,7 +65,7 @@ export default class List extends Component {
   }
 
   getAttndList = async (offset = 0) => {
-    const { attndOffsetId, attndLoading } = this.state;
+    const { attndOffsetId, attndLoading, attndData } = this.state;
     // 请求第 1 页时激活 loadMore 节点
     if (offset === 0) {
       this.setState({ attndHasMore: true });

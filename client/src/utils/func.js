@@ -36,3 +36,17 @@ export const debounce = (func, wait, immediate) => {
     }
   }
 };
+
+export const formatDate = (dateLike) => {
+  const date = new Date(dateLike);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  const format = (n) => {
+    const str = n + '';
+    return str[1] ? n : `0${n}`;
+  }
+  return `${[year, month, day].map(format).join('-')} ${[hour, min].map(format).join(':')}`;
+}

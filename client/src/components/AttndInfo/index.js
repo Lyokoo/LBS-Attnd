@@ -25,9 +25,9 @@ export default class AttndInfo extends Component {
           <Text className="attnd-info__title--text">{attndName}</Text>
         </View>
         <View className="attnd-info__desc">
-          <Text className="attnd-info__desc--text">时间：{createTime}</Text>
-          <Text className="attnd-info__desc--text">发布者：{hostName}</Text>
           <Text className="attnd-info__desc--text">口令：{passWd}</Text>
+          <Text className="attnd-info__desc--text">发布者：{hostName}</Text>
+          <Text className="attnd-info__desc--text">时间：{createTime}</Text>
         </View>
       </View>
     )

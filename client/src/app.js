@@ -28,6 +28,8 @@ class App extends Component {
     tabBar: {
       color: '#6d6d6d',
       selectedColor: '#78a4fa',
+      // borderStyle: 'white',
+      // backgroundColor:'#f7f7f7',
       list: [
         {
           pagePath: 'pages/Home/index',

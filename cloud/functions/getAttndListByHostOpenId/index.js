@@ -47,8 +47,6 @@ exports.main = async (event) => {
       });
     }
 
-    
-
     let hasMore = true;
 
     if (Array.isArray(data)) {
