@@ -28,7 +28,7 @@ export default class Index extends Component {
 
   onTest = () => {
     Taro.navigateTo({
-      url: '../ShowPassWd/index'
+      url: '../SignIn/index?passWd=A8LwWf'
     });
   }
 

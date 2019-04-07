@@ -1,6 +1,7 @@
 import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import Tag from '../Tag';
+import { formatDate } from '../../utils/func';
 import './index.less';
 
 export default class AttndInfo extends Component {
@@ -27,7 +28,7 @@ export default class AttndInfo extends Component {
         <View className="attnd-info__desc">
           <Text className="attnd-info__desc--text">口令：{passWd}</Text>
           <Text className="attnd-info__desc--text">发布者：{hostName}</Text>
-          <Text className="attnd-info__desc--text">时间：{createTime}</Text>
+          <Text className="attnd-info__desc--text">时间：{formatDate(createTime)}</Text>
         </View>
       </View>
     )

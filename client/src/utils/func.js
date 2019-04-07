@@ -38,6 +38,7 @@ export const debounce = (func, wait, immediate) => {
 };
 
 export const formatDate = (dateLike) => {
+  if (!dateLike) return '';
   const date = new Date(dateLike);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;

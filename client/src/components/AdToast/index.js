@@ -32,7 +32,19 @@ export default class AdToast extends Component {
   bindToastListener = () => {
     Taro.eventCenter.on('adToast', (options = {}) => {
       const { text, status = '', duration = 1500, hasMark = true } = options;
+      // success 换成微信的原生 toast
+      if (status === 'success') {
+        this.setState({ isOpened: false });
+        Taro.showToast({
+          title: text,
+          icon: 'success',
+          duration,
+          mask: hasMark
+        });
+        return;
+      }
       this.setState({ isOpened: true, text, status, duration, hasMark }, () => {
+        Taro.hideToast();
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.setState({ isOpened: false });
