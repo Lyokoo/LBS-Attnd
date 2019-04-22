@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtInput, AtButton } from 'taro-ui';
-import { AdToast } from '../../components/AdToast';
+import AdToast from '../../components/AdToast';
 import { getLocation } from '../../services/location';
 import { createAttnd } from '../../services/attnd';
 import * as adLog from '../../utils/adLog';

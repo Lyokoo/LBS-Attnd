@@ -1,9 +1,10 @@
 import * as adLog from '../utils/adLog';
+import Taro from '@tarojs/taro';
 
 export const getLocation = async () => {
   try {
     return await new Promise((resolve, reject) => {
-      wx.getLocation({
+      Taro.getLocation({
         type: 'wgs84',
         success(res) {
           const location = {

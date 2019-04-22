@@ -7,8 +7,7 @@ exports.main = async (event) => {
   const attndCollection = db.collection('attnd');
   const userCollection = db.collection('user');
   const { openId } = event.userInfo;
-  const { offset, offsetId } = event;
-  const pageSize = 10;
+  const { offset, offsetId, pageSize = 10 } = event;
   console.log('event', event);
 
   if (!Number.isInteger(offset) || offset < 0) {
@@ -29,7 +28,7 @@ exports.main = async (event) => {
     }
 
     // res = { data: [], errMsg }
-    let { data } = await query.orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
+    let { data } = await query.orderBy('updateTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
 
     console.log(data);
 

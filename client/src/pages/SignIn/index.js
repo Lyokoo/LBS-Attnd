@@ -4,7 +4,10 @@ import { AtButton } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SininList from './SigninList';
 import { getAttndByPassWd } from '../../services/attnd';
+import { signin } from '../../services/signin';
+import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
+import AdToast from '../../components/AdToast';
 import './index.less';
 
 export default class Index extends Component {
@@ -25,6 +28,7 @@ export default class Index extends Component {
     },
     passWd: '',
     getAtInfoLoading: false,
+    signinLoading: false,
     attndInfo: {}
   }
 
@@ -81,6 +85,42 @@ export default class Index extends Component {
     }
   }
 
+  onSignin = async () => {
+    const { passWd, getAtInfoLoading, signinLoading } = this.state;
+    if (getAtInfoLoading || signinLoading) return;
+    this.setState({ signinLoading: true });
+    Taro.showLoading({ title: '请稍后', mask: true });
+
+    try {
+      // 获取签到这当前位置
+      const location = await getLocation();
+
+      if (!location) {
+        this.setState({ signinLoading: false });
+        Taro.hideLoading();
+        Taro.navigateTo({ url: '../EditAuth/index' });
+        return;
+      }
+
+      const res = await signin({ passWd, location });
+
+      if (res.code === 3002) {
+        this.setState({ signinLoading: false });
+        Taro.hideLoading();
+        Taro.adToast({ text: '已签到', status: 'success' });
+        return;
+      }
+
+      this.setState({ signinLoading: false });
+      Taro.hideLoading();
+      Taro.adToast({ text: '签到成功', status: 'success' });
+    } catch (e) {
+      this.setState({ signinLoading: false });
+      Taro.hideLoading();
+      Taro.adToast({ text: '无法签到', status: 'error' });
+    }
+  }
+
   render() {
     const {
       windowHeight, listHeight, data, attndInfo
@@ -94,10 +134,15 @@ export default class Index extends Component {
           <SininList data={data} height={listHeight}/>
         </View>
         <View className="signin__footer">
-          <AtButton type="primary" loading={false} disabled={false}>
-            签到
+          <AtButton
+            type="primary"
+            loading={false}
+            disabled={false}
+            onClick={this.onSignin}
+          >签到
           </AtButton>
         </View>
+        <AdToast />
       </View>
     )
   }

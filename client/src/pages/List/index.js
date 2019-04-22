@@ -3,6 +3,7 @@ import { View } from '@tarojs/components';
 import { AtTabs, AtTabsPane } from 'taro-ui';
 import AttndList from './AttndList';
 import { getAttndListByHostOpenId } from '../../services/attnd';
+import { getSigninListBySigninerOpenId } from '../../services/signin';
 import * as adLog from '../../utils/adLog';
 import { throttle } from '../../utils/func';
 import './index.less';
@@ -40,6 +41,7 @@ export default class List extends Component {
   }
 
   componentDidShow() {
+    this.getSigninList();
     this.getAttndList();
   }
 
@@ -97,8 +99,37 @@ export default class List extends Component {
     this.setState({ attndLoading: false });
   }
 
-  getSigninList = async () => {
+  getSigninList = async (offset = 0) => {
+    const { signinOffsetId, signinLoading, signinData } = this.state;
+    // 请求第 1 页时激活 loadMore 节点
+    if (offset === 0) {
+      this.setState({ signinHasMore: true });
+    }
+    if (signinLoading) return;
+    this.setState({ signinLoading: true });
 
+    try {
+      const {
+        data: { hasMore, offsetId, list }
+      } = await getSigninListBySigninerOpenId({
+        offset,
+        offsetId: signinOffsetId
+      });
+
+      // offset === 0 时更新偏移基准 offsetId
+      if (offset === 0 && offsetId) {
+        this.setState({ signinOffsetId: offsetId });
+      }
+
+      this.setState({
+        signinData: offset === 0 ? list : signinData.concat(list),
+        signinHasMore: hasMore
+      });
+
+    } catch (e) {
+      adLog.log('getSigninList-error', e);
+    }
+    this.setState({ signinLoading: false });
   }
 
   onAttndLoadMore = async () => {
@@ -107,8 +138,8 @@ export default class List extends Component {
   }
 
   onSigninLoadMore = async () => {
-    // const offset = this.state.signinData.length;
-    // this.getSigninList(offset);
+    const offset = this.state.signinData.length;
+    this.getSigninList(offset);
   }
 
   render () {
@@ -118,7 +149,7 @@ export default class List extends Component {
       tabIndex,
       attndData,
       attndHasMore,
-      siginData,
+      signinData,
       signinHasMore
     } = this.state;
     return (
@@ -133,7 +164,7 @@ export default class List extends Component {
           <AtTabsPane current={tabIndex} index={0} >
             <AttndList
               height={listHeight}
-              data={siginData}
+              data={signinData}
               hasMore={signinHasMore}
               onLoadMore={this.onSigninLoadMore}
             />

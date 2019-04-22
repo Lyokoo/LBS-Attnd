@@ -1,4 +1,4 @@
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtInput, AtButton } from 'taro-ui';
 import './index.less';
@@ -17,6 +17,12 @@ export default class FindAttnd extends Component {
     this.setState({ passWd: value });
   }
 
+  onConfirm = () => {
+    Taro.redirectTo({
+      url: `../SignIn/index?passWd=${this.state.passWd}`
+    });
+  }
+
   render () {
     return (
       <View className="find-attnd">
@@ -33,7 +39,7 @@ export default class FindAttnd extends Component {
           />
         </View>
         <View className="find-attnd__btn">
-          <AtButton type="primary">确定</AtButton>
+          <AtButton type="primary" onClick={this.onConfirm}>确定</AtButton>
         </View>
       </View>
     )
