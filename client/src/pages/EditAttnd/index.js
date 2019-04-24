@@ -10,7 +10,7 @@ import './index.less';
 export default class EditAttnd extends Component {
 
   config = {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '发起考勤'
   }
 
   state = {

@@ -6,7 +6,7 @@ import './index.less';
 export default class FindAttnd extends Component {
 
   config = {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '查找考勤'
   }
 
   state = {

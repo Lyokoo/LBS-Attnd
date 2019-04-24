@@ -14,7 +14,7 @@ import './index.less';
 export default class Index extends Component {
 
   config = {
-    navigationBarTitleText: '考勤详情',
+    navigationBarTitleText: '签到 Attnd',
     enablePullDownRefresh: true,
     backgroundColor: '#f2f2f2',
     backgroundTextStyle: 'dark'

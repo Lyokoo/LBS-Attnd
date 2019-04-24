@@ -11,7 +11,7 @@ import './index.less';
 export default class List extends Component {
 
   config = {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '列表'
   }
 
   // 高度 state 写成数字方便计算

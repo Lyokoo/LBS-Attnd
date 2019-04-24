@@ -1,52 +1,51 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Image } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
-import school from '../../assets/images/school.jpeg';
+import { View } from '@tarojs/components';
 import './index.less';
 
 export default class Index extends Component {
 
   config = {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '签到 Attnd',
+    backgroundColor: '#f2f2f2'
   }
 
   state = {
-    value: ''
+    windowHeight: 0
   }
 
-  onFindAttndClick = () => {
-    Taro.navigateTo({
-      url: '/pages/FindAttnd/index'
-    });
+  componentDidMount() {
+    this.computeHeight();
   }
 
-  onEditAttndClick = () => {
-    Taro.navigateTo({
-      url: '/pages/EditAttnd/index'
-    });
+  computeHeight = () => {
+    try {
+      const { windowHeight } = wx.getSystemInfoSync();
+      this.setState({ windowHeight });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  onTest = () => {
-    Taro.navigateTo({
-      url: '/pages/SignIn/index?passWd=eGnLue'
-    });
-  }
+  onFindAttndClick = () => Taro.navigateTo({ url: '/pages/FindAttnd/index' });
+
+  onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
+
+  onTest = () => Taro.navigateTo({ url: '/pages/SignIn/index?passWd=eGnLue' });
 
   render() {
+    const { windowHeight } = this.state;
     return (
       <View className="home">
-        <View onClick={this.onTest}>
-          <AtButton size="small">test</AtButton>
-        </View>
-        <View className="home__img">
-          <Image src={school} mode="aspectFit" style={{width: '100%'}}/>
-        </View>
-        <View className="home__opt">
-          <View className="home__opt--1" onClick={this.onFindAttndClick}>
-            <AtButton type="primary">签到</AtButton>
+        <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
+          <View className="home__signin home__opt" onClick={this.onFindAttndClick}>
+            <View className="home__circle">签</View>
+            <View className="home__text">我要签到</View>
           </View>
-          <View onClick={this.onEditAttndClick}>
-            <AtButton>发起考勤</AtButton>
+        </View>
+        <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
+          <View className="home__attnd home__opt" onClick={this.onEditAttndClick}>
+            <View className="home__circle">勤</View>
+            <View className="home__text">发起考勤</View>
           </View>
         </View>
       </View>
