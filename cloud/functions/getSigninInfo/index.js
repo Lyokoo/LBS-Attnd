@@ -17,7 +17,7 @@ exports.main = async (event) => {
     // res = { data:[], errMsg }
     const { data } = await signinCollection.where({
       passWd: _.eq(passWd),
-      openId: _.eq(openId)
+      signinerOpenId: _.eq(openId)
     }).get();
     console.log(data);
     if (Array.isArray(data) && data.length > 0) {

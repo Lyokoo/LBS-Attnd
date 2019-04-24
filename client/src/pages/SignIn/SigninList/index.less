@@ -1,4 +1,5 @@
 @import '../../../assets/styles/color.less';
+@import '../../../assets/styles/common.less';
 
 page {
   background: @bg;
@@ -7,6 +8,12 @@ page {
 .signin-list {
   &__content {
     padding: 30px;
+    &--count {
+      .cm-text();
+      font-size: 12PX;
+      color: @assist-text;
+      margin-bottom: 30px;
+    }
     &--item {
       margin-bottom: 30px;
       &:last-child {

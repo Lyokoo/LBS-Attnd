@@ -1,5 +1,11 @@
-export const SigninStatus = {
-  ARRIVED: 0,
-  LATE: 1,
-  OUT_OF_DIST: 2
+export const SigninerStatus = {
+  UN_SIGNIN: -1,
+  ARRIVED: 1,
+  LATE: 2,
+  OUT_OF_DIST: 0
+}
+
+export const AttndStatus = {
+  ON: 1,
+  OFF: 0
 }

@@ -60,12 +60,12 @@ export const getAttndByPassWd = async ({ passWd }) => {
 }
 
 // 改变考勤状态
-export const updateAttndStatus = async ({ passWd, status }) => {
-  adLog.log('updateAttndStatus-params', { passWd, status });
+export const updateAttndStatus = async ({ passWd, attndStatus }) => {
+  adLog.log('updateAttndStatus-params', { passWd, attndStatus });
   try {
     const { result } = await Taro.cloud.callFunction({
       name: 'updateAttndStatus',
-      data: { passWd, status }
+      data: { passWd, attndStatus }
     });
     if (result.code !== 2000) throw result;
     adLog.log('updateAttndStatus-result', result);

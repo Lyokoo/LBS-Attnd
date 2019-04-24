@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { AtToast } from 'taro-ui';
 
 export default class AdToast extends Component {
-  
+
   state = {
     isOpened: false,
     text: '',
@@ -13,24 +13,24 @@ export default class AdToast extends Component {
 
   timer = null;
 
-  componentDidShow () {
+  componentDidShow() {
     this.bindToastListener();
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.bindToastListener();
   }
 
-  componentDidHide () {
+  componentDidHide() {
     Taro.eventCenter.off('adToast');
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     Taro.eventCenter.off('adToast');
   }
 
   bindToastListener = () => {
-    Taro.eventCenter.on('adToast', (options = {}) => {
+    Taro.eventCenter.on('adToast', (options = {}, callback = () => { }) => {
       const { text, status = '', duration = 1500, hasMark = true } = options;
       // success 换成微信的原生 toast
       if (status === 'success') {
@@ -41,6 +41,7 @@ export default class AdToast extends Component {
           duration,
           mask: hasMark
         });
+        setTimeout(callback, duration);
         return;
       }
       this.setState({ isOpened: true, text, status, duration, hasMark }, () => {
@@ -48,6 +49,7 @@ export default class AdToast extends Component {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.setState({ isOpened: false });
+          callback();
         }, duration);
       });
     });

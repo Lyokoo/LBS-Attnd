@@ -3,11 +3,12 @@ import { View } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SininList from './SigninList';
-import { getAttndByPassWd } from '../../services/attnd';
-import { signin } from '../../services/signin';
+import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
+import { getSigninInfo, signin, getSigninerList } from '../../services/signin';
 import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
+import { AttndStatus, SigninerStatus } from '../../utils/consts';
 import './index.less';
 
 export default class Index extends Component {
@@ -23,13 +24,18 @@ export default class Index extends Component {
     windowHeight: 0,
     listHeight: 0,
     data: {
-      listData: [1, 2],
+      listData: [],
       hasMore: true
     },
     passWd: '',
-    getAtInfoLoading: false,
+    attndInfo: {},
+    signinInfo: {},
+    btnStatus: {},
+    attndBelonging: false,
+    getInfoLoading: false,
+    getListLoading: false,
     signinLoading: false,
-    attndInfo: {}
+    finishAtLoading: false
   }
 
   componentWillMount() {
@@ -37,9 +43,16 @@ export default class Index extends Component {
     this.setState({ passWd });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.computeHeight();
-    this.getAttndInfo();
+    await this.getInfo();
+    this.getSigninerList();
+  }
+
+  async onPullDownRefresh() {
+    await this.getInfo();
+    await this.getSigninerList();
+    Taro.stopPullDownRefresh();
   }
 
   computeHeight = () => {
@@ -59,88 +72,159 @@ export default class Index extends Component {
     }
   }
 
-  getAttndInfo = async () => {
-    const { getAtInfoLoading, passWd } = this.state;
-    if (getAtInfoLoading) return;
-    this.setState({ getAtInfoLoading: true });
-    Taro.showLoading({ title: '加载中', mask: true });
+  // 获取考勤信息和签到信息
+  getInfo = async () => {
+    const { getInfoLoading, passWd } = this.state;
+    if (getInfoLoading) return;
+    this.setState({ getInfoLoading: true });
+    Taro.showLoading({ title: '获取信息', mask: true });
     try {
-      const { data } = await getAttndByPassWd({ passWd });
-      this.setState({ attndInfo: data });
+      const [attndResult, signinResult] = await Promise.all([
+        getAttndByPassWd({ passWd }),
+        getSigninInfo({ passWd })
+      ]);
+      Taro.hideLoading();
+      this.setState({
+        attndInfo: attndResult.data || {},
+        signinInfo: signinResult.data || {},
+        attndBelonging: attndResult.data.belonging || false,
+        getInfoLoading: false
+      }, () => this.computeBtnStatus());
     } catch (e) {
-      adLog.warn('getAttndInfo-error', e);
+      Taro.hideLoading();
+      this.setState({ getInfoLoading: false });
+      Taro.adToast({ text: '获取信息出现问题' });
+      adLog.warn('getInfo-error', e);
     }
-    this.setState({ getAtInfoLoading: false });
-    Taro.hideLoading();
   }
 
-  // 略复杂
-  computeBtnStatus = () => {
-    const { isAttndBelong, attndStatus } = this.state.attndInfo;
-    if (isAttndBelong) {
-      // 此考勤属于我
-      
-    } else {
-      // 此考勤不属于我
+  // 获取签到人员列表
+  getSigninerList = async () => {
+    const { passWd, getListLoading } = this.state;
+    if (getListLoading) return;
+    this.setState({ getListLoading: true });
+    Taro.showLoading({ title: '获取列表', mask: true });
+    try {
+      const { data: listData } = await getSigninerList({ passWd });
+      Taro.hideLoading();
+      this.setState({
+        getListLoading: false,
+        data: { listData }
+      });
+    } catch (e) {
+      Taro.hideLoading();
+      this.setState({ getListLoading: false });
+      Taro.adToast({ text: '获取列表出现问题' });
+      adLog.warn('getSigninerList-error', e);
     }
+  }
+
+  // 计算底部功能性按钮的状态
+  // belonging: true/false
+  // attndStatus: 1-->进行中，0-->已结束
+  // signinStatus: 1-->已到，0-->超出距离，2-->迟到，-1-->未签到
+  computeBtnStatus = () => {
+    const btnStatus = {
+      text: '签到',
+      disabled: false,
+      handleFunc: () => { }
+    };
+    const { belonging = false, attndStatus = 0 } = this.state.attndInfo;
+    const { signinerStatus = SigninerStatus.UN_SIGNIN } = this.state.signinInfo;
+    if (belonging) {
+      if (attndStatus === AttndStatus.ON) {
+        btnStatus.text = '结束此考勤';
+        btnStatus.handleFunc = this.onFinishAttnd;
+      } else {
+        btnStatus.text = '结束此考勤';
+        btnStatus.disabled = true;
+      }
+    } else {
+      if (signinerStatus === SigninerStatus.ARRIVED || signinerStatus === SigninerStatus.LATE) {
+        btnStatus.text = '已签到';
+        btnStatus.disabled = true;
+      } else {
+        btnStatus.text = '签到';
+        btnStatus.handleFunc = this.onSignin;
+      }
+    }
+    this.setState({ btnStatus });
   }
 
   onSignin = async () => {
-    const { passWd, getAtInfoLoading, signinLoading } = this.state;
-    if (getAtInfoLoading || signinLoading) return;
+    const { passWd, getInfoLoading, signinLoading } = this.state;
+    if (getInfoLoading || signinLoading) return;
     this.setState({ signinLoading: true });
     Taro.showLoading({ title: '请稍后', mask: true });
-
     try {
       // 获取签到这当前位置
       const location = await getLocation();
-
       if (!location) {
         this.setState({ signinLoading: false });
         Taro.hideLoading();
-        Taro.navigateTo({ url: '../EditAuth/index' });
+        Taro.navigateTo({ url: '/pages/EditAuth/index' });
         return;
       }
-
       const res = await signin({ passWd, location });
-
       if (res.code === 3002) {
         this.setState({ signinLoading: false });
         Taro.hideLoading();
         Taro.adToast({ text: '已签到', status: 'success' });
         return;
       }
-
       this.setState({ signinLoading: false });
       Taro.hideLoading();
-      Taro.adToast({ text: '签到成功', status: 'success' });
+      Taro.adToast({ text: '签到成功', status: 'success' }, () => {
+        Taro.startPullDownRefresh(); // 触发下拉刷新
+      });
     } catch (e) {
       this.setState({ signinLoading: false });
       Taro.hideLoading();
-      Taro.adToast({ text: '无法签到', status: 'error' });
+      Taro.adToast({ text: '抱歉，无法签到' }, () => {
+        Taro.startPullDownRefresh(); // 触发下拉刷新
+      });
+    }
+  }
+
+  // 结束考勤
+  onFinishAttnd = async () => {
+    const { passWd, getInfoLoading, finishAtLoading } = this.state;
+    if (getInfoLoading || finishAtLoading) return;
+    this.setState({ finishAtLoading: true });
+    Taro.showLoading({ title: '请稍后', mask: true });
+    try {
+      await updateAttndStatus({ passWd, attndStatus: AttndStatus.OFF });
+      this.setState({ finishAtLoading: false });
+      Taro.hideLoading();
+      Taro.adToast({ text: '完成考勤', status: 'success' }, () => {
+        Taro.startPullDownRefresh(); // 触发下拉刷新
+      });
+    } catch (e) {
+      this.setState({ finishAtLoading: false });
+      Taro.hideLoading();
+      Taro.adToast({ text: '抱歉，结束考勤时遇到了问题' }, () => {
+        Taro.startPullDownRefresh(); // 触发下拉刷新
+      });
     }
   }
 
   render() {
     const {
-      windowHeight, listHeight, data, attndInfo
+      windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging
     } = this.state;
     return (
-      <View className="signin" style={{height: `${windowHeight}px`}}>
+      <View className="signin" style={{ height: `${windowHeight}px` }}>
         <View className="signin__header">
-          <AttndInfo item={attndInfo}/>
+          <AttndInfo item={attndInfo} />
         </View>
-        <View className="signin__content" style={{height: `${listHeight}px`}}>
-          <SininList data={data} height={listHeight}/>
+        <View className="signin__content" style={{ height: `${listHeight}px` }}>
+          <SininList data={data} height={listHeight} />
         </View>
         <View className="signin__footer">
-          <AtButton
-            type="primary"
-            loading={false}
-            disabled={false}
-            onClick={this.onSignin}
-          >签到
-          </AtButton>
+          {attndBelonging
+            ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
+            : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
+          }
         </View>
         <AdToast />
       </View>

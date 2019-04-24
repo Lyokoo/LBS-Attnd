@@ -7,21 +7,24 @@ import './index.less';
 export default class AttndInfo extends Component {
 
   static defaultProps = {
-    item: {}
+    item: {},
+    onClick: () => { }
   }
+
+  componentDidMount() { }
 
   render() {
     const {
       attndName, createTime, hostName, passWd, attndStatus
     } = this.props.item;
     return (
-      <View className="attnd-info">
-          <View className="attnd-info__status">
-            <Tag
-              title={attndStatus === 1 ? '进行中' : '已结束'}
-              active={attndStatus === 1}
-            />
-          </View>
+      <View className="attnd-info" onClick={this.props.onClick}>
+        <View className="attnd-info__status">
+          <Tag
+            title={attndStatus === 1 ? '进行中' : '已结束'}
+            active={attndStatus === 1}
+          />
+        </View>
         <View className="attnd-info__title">
           <Text className="attnd-info__title--text">{attndName || 'loading...'}</Text>
         </View>

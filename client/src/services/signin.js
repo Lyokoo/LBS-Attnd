@@ -59,3 +59,22 @@ export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
     throw e;
   }
 }
+
+// 获取签到人员列表
+export const getSigninerList = async ({ passWd }) => {
+  adLog.log('getSigninerList-params', { passWd });
+  try {
+    const { result } = await Taro.cloud.callFunction({
+      name: 'getSigninerList',
+      data: { passWd }
+    });
+    if (result.code !== 2000) {
+      throw result;
+    }
+    adLog.log('getSigninerList-result', result);
+    return result;
+  } catch (e) {
+    adLog.warn('getSigninerList-error', e);
+    throw e;
+  }
+}

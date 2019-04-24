@@ -1,44 +1,55 @@
+import PropTypes from 'prop-types';
 import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { AtIcon } from 'taro-ui';
-import { SigninStatus } from '../../../utils/consts';
+import { SigninerStatus } from '../../../utils/consts';
 import './index.less';
 
-const IconConfig = {
-  [SigninStatus.ARRIVED]: {
-    value: 'check-circle',
+const signinStatusConfig = {
+  [SigninerStatus.ARRIVED]: {
+    icon: 'check-circle',
     color: '#78a4fa',
     text: '已到'
   },
-  [SigninStatus.LATE]: {
-    value: 'clock',
+  [SigninerStatus.LATE]: {
+    icon: 'clock',
+    color: '#ffc82c',
     text: '迟到'
   },
-  [SigninStatus.OUT_OF_DIST]: {
-    value: 'map-pin',
+  [SigninerStatus.OUT_OF_DIST]: {
+    icon: 'map-pin',
+    color: '#ff4949',
     text: '超距'
   }
 }
 
 export default class SigninInfo extends Component {
 
+  static propTypes = {
+    item: PropTypes.object
+  }
+
   static defaultProps = {
     item: {}
   }
 
+  componentDidMount() { }
+
   render() {
+    const { name = '*', stuId, distance, signinerStatus } = this.props.item;
+    const status = signinStatusConfig[signinerStatus] || {};
     return (
       <View className="signin-info">
         <View className="signin-info__user">
-          <Text className="signin-info__avatar">臭</Text>
+          <Text className="signin-info__avatar">{name[0] || '*'}</Text>
           <View className="signin-info__info">
-            <Text className="signin-info__info--name">臭猪asdfasd上了肯德基弗雷斯科就到了疯狂世界</Text>
-            <Text className="signin-info__info--desc">距离：200m阿里斯顿肌肤垃圾数量的减肥路上看见的</Text>
+            <Text className="signin-info__info--name">{`${name} ${stuId}`}</Text>
+            <Text className="signin-info__info--desc">距离：{distance}m</Text>
           </View>
         </View>
         <View className="signin-info__status">
-          <AtIcon value="check-circle" size={16} color="#78a4fa"/>
-          <Text className="signin-info__status--desc" style={{color: '#78a4fa'}}>已到</Text>
+          <AtIcon value={status.icon} size={16} color={status.color}/>
+          <Text className="signin-info__status--desc" style={{color: status.color}}>{status.text}</Text>
         </View>
       </View>
     )

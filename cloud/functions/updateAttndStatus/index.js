@@ -5,13 +5,13 @@ exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
   const attndCollection = db.collection('attnd');
-  const { passWd, status } = event;
+  const { passWd, attndStatus } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
   const statusSet = new Set([0, 1]);
 
   if (typeof passWd !== 'string' || !passWd
-    || typeof status !== 'number' || !statusSet.has(status)) {
+    || typeof attndStatus !== 'number' || !statusSet.has(attndStatus)) {
     return { code: 4000 };
   }
 
@@ -28,7 +28,7 @@ exports.main = async (event) => {
         passWd: _.eq(passWd),
         hostOpenId: _.eq(openId)
       }).update({
-        data: { status }
+        data: { attndStatus }
       });
       return { code: 2000 };
     } else {

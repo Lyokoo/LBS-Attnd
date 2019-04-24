@@ -40,10 +40,14 @@ export default class List extends Component {
     this.computeHeight();
   }
 
-  componentDidShow() {
-    this.getSigninList();
-    this.getAttndList();
-  }
+  componentDidShow = throttle(async function () {
+    Taro.showNavigationBarLoading();
+    await Promise.all([
+      this.getSigninList(),
+      this.getAttndList()
+    ]);
+    Taro.hideNavigationBarLoading();
+  }, 6000);
 
   computeHeight = () => {
     try {
@@ -82,7 +86,7 @@ export default class List extends Component {
         offset,
         offsetId: attndOffsetId
       });
-  
+
       // offset === 0 时更新偏移基准 offsetId
       if (offset === 0 && offsetId) {
         this.setState({ attndOffsetId: offsetId });
@@ -92,7 +96,7 @@ export default class List extends Component {
         attndData: offset === 0 ? list : attndData.concat(list),
         attndHasMore: hasMore
       });
-      
+
     } catch (e) {
       adLog.log('getAttndList-error', e);
     }
@@ -142,7 +146,7 @@ export default class List extends Component {
     this.getSigninList(offset);
   }
 
-  render () {
+  render() {
     const {
       listHeight,
       windowHeight,

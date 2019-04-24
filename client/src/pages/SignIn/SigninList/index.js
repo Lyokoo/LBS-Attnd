@@ -38,13 +38,14 @@ export default class AttndList extends Component {
           onScrollToLower={this.onLoadMore}
         >
           <View className="signin-list__content">
+            <View className="signin-list__content--count">当前人数：{data.listData.length}</View>
             {data.listData.map(item => (
               <View className="signin-list__content--item" key={item}>
                 <SigninInfo item={item}/>
               </View>
             ))}
           </View>
-          <LoadMore hasMore={data.hasMore}/>
+          {/* <LoadMore hasMore={data.hasMore}/> */}
         </ScrollView>
       </View>
     )

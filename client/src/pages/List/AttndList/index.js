@@ -1,4 +1,4 @@
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View, ScrollView } from '@tarojs/components';
 import LoadMore from '../../../components/LoadMore';
 import AttndInfo from '../../../components/AttndInfo';
@@ -27,6 +27,12 @@ export default class AttndList extends Component {
     console.log('loadmore');
   }
 
+  onAttndClick = (passWd) => {
+    if (passWd) {
+      Taro.navigateTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
+    }
+  }
+
   render() {
     const { data, height, hasMore } = this.props;
     return (
@@ -41,7 +47,7 @@ export default class AttndList extends Component {
           <View className="attnd-list__content">
             {data.map(item => (
               <View className="attnd-list__item" key={item._id}>
-                <AttndInfo item={item}/>
+                <AttndInfo item={item} onClick={() => this.onAttndClick(item.passWd)}/>
               </View>
             ))}
           </View>

@@ -93,7 +93,7 @@ export default class EditUserInfo extends Component {
       }, 1500);
     } catch (e) {
       adLog.warn('EditUserInfo-error', e);
-      Taro.adToast({ text: '保存失败', status: 'error' });
+      Taro.adToast({ text: '保存失败' });
     }
     this.setState({ submiting: false });
   }

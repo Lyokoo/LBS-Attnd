@@ -11,7 +11,8 @@ import './index.less';
 export default class Profile extends Component {
 
   config = {
-    navigationBarTitleText: ''
+    navigationBarTitleText: '',
+    backgroundColor: '#f2f2f2'
   }
 
   state = {
@@ -39,9 +40,7 @@ export default class Profile extends Component {
   }
 
   onUserInfoClick = () => {
-    Taro.navigateTo({
-      url: '../EditUserInfo/index'
-    })
+    Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
   }
 
   render () {

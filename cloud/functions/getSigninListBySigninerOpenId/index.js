@@ -38,25 +38,29 @@ exports.main = async (event) => {
     console.log('passWdSet', passWdSet);
     
     const signinListData = await Promise.all(passWdSet.map(async (passWd) => {
-      // res = { data: [], errMsg }
-      const { data } = await attndCollection.where({
-        passWd: _.eq(passWd)
-      }).get();
-
-      // 根据 hostOpenId 获取发布者名称
-      if (data.length > 0) {
-        const hostOpenId = data[0].hostOpenId;
-        const userRes = await userCollection.where({
-          openId: _.eq(hostOpenId)
+      try {
+        // res = { data: [], errMsg }
+        const { data } = await attndCollection.where({
+          passWd: _.eq(passWd)
         }).get();
-        if (userRes.data.length > 0) {
-          return {
-            ...data[0],
-            hostName: userRes.data[0].name
+
+        // 根据 hostOpenId 获取发布者名称
+        if (data.length > 0) {
+          const hostOpenId = data[0].hostOpenId;
+          const userRes = await userCollection.where({
+            openId: _.eq(hostOpenId)
+          }).get();
+          if (userRes.data.length > 0) {
+            return {
+              ...data[0],
+              hostName: userRes.data[0].name
+            }
           }
         }
-      }
       return {};
+      } catch (e) {
+        throw e;
+      }
     }));
 
     console.log('signinListData', signinListData);

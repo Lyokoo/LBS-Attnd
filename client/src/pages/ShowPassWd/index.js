@@ -20,7 +20,7 @@ export default class ShowPassWd extends Component {
 
   onClickGotoSignin = () => {
     Taro.redirectTo({
-      url: `../SignIn/index?passWd=${this.state.passWd}`
+      url: `/pages/SignIn/index?passWd=${this.state.passWd}`
     })
   }
 

@@ -19,7 +19,7 @@ export default class FindAttnd extends Component {
 
   onConfirm = () => {
     Taro.redirectTo({
-      url: `../SignIn/index?passWd=${this.state.passWd}`
+      url: `/pages/SignIn/index?passWd=${this.state.passWd}`
     });
   }
 

@@ -49,7 +49,7 @@ export default class EditAttnd extends Component {
 
       // 未授权获取位置
       if (!location) {
-        Taro.navigateTo({ url: '../EditAuth/index' });
+        Taro.navigateTo({ url: '/pages/EditAuth/index' });
         this.setState({ submiting: false });
         return;
       }
@@ -60,7 +60,7 @@ export default class EditAttnd extends Component {
       if (res.code === 3001) {
         Taro.adToast({ text: '请完善个人信息' });
         setTimeout(() => {
-          Taro.navigateTo({ url: '../EditUserInfo/index' });
+          Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
         }, 1500);
         this.setState({ submiting: false });
         return;
@@ -70,12 +70,12 @@ export default class EditAttnd extends Component {
       Taro.adToast({ text: '发起成功', status: 'success'});
       setTimeout(() => {
         Taro.redirectTo({
-          url: `../ShowPassWd/index?passWd=${passWd}`
+          url: `/pages/ShowPassWd/index?passWd=${passWd}`
         });
       }, 1500);
     } catch (e) {
       adLog.warn('EditAttnd-error', e);
-      Taro.adToast({ text: '发起失败', status: 'error' });
+      Taro.adToast({ text: '发起失败' });
     }
     this.setState({ submiting: false });
   }

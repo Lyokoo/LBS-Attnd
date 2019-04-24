@@ -16,19 +16,19 @@ export default class Index extends Component {
 
   onFindAttndClick = () => {
     Taro.navigateTo({
-      url: '../FindAttnd/index'
+      url: '/pages/FindAttnd/index'
     });
   }
 
   onEditAttndClick = () => {
     Taro.navigateTo({
-      url: '../EditAttnd/index'
+      url: '/pages/EditAttnd/index'
     });
   }
 
   onTest = () => {
     Taro.navigateTo({
-      url: '../SignIn/index?passWd=B96pyg'
+      url: '/pages/SignIn/index?passWd=eGnLue'
     });
   }
 
