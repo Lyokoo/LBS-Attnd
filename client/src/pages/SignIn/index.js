@@ -166,17 +166,38 @@ export default class Index extends Component {
         return;
       }
       const res = await signin({ passWd, location });
-      if (res.code === 3002) {
-        this.setState({ signinLoading: false });
-        Taro.hideLoading();
-        Taro.adToast({ text: '已签到', status: 'success' });
-        return;
+      switch (res.code) {
+        case 2000: // 成功
+          this.setState({ signinLoading: false });
+          Taro.hideLoading();
+          Taro.adToast({ text: '签到成功', status: 'success' }, () => {
+            Taro.startPullDownRefresh(); // 触发下拉刷新
+          });
+          break;
+        case 3002: // 已签到
+          this.setState({ signinLoading: false });
+          Taro.hideLoading();
+          Taro.adToast({ text: '已签到', status: 'success' });
+          break;
+        case 3003: // 个人信息不完整
+          this.setState({ signinLoading: false });
+          Taro.hideLoading();
+          Taro.showModal({
+            title: '个人信息',
+            content: '请完善个人信息',
+            confirmText: '前往',
+            confirmColor: '#78a4fa',
+            success: res => res.confirm && Taro.navigateTo({ url: '/pages/EditUserInfo/index' })
+          });
+          break;
+        case 3004: // 签到人数超过限制
+          this.setState({ signinLoading: false });
+          Taro.hideLoading();
+          Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 });
+          break;
+        default:
+          break;
       }
-      this.setState({ signinLoading: false });
-      Taro.hideLoading();
-      Taro.adToast({ text: '签到成功', status: 'success' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
-      });
     } catch (e) {
       this.setState({ signinLoading: false });
       Taro.hideLoading();

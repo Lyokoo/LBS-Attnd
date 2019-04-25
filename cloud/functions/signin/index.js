@@ -22,11 +22,13 @@ const getDistance = (lng1, lat1, lng2, lat2) => {
 exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
+  const userCollection = db.collection('user');
   const signinCollection = db.collection('signin');
   const attndCollection = db.collection('attnd');
   const { passWd, location: signinerLocation } = event;
   const { openId: signinerOpenId } = event.userInfo;
   const validDistance = 200;
+  const MaxSigninerCount = 100;
   console.log('event', event);
 
   if (typeof passWd !== 'string' || !passWd
@@ -42,6 +44,7 @@ exports.main = async (event) => {
     const attndRes = await attndCollection.where({
       passWd: _.eq(passWd)
     }).get();
+    console.log('attndRes', attndRes);
     if (attndRes.data.length <= 0) {
       throw new Error('找不到考勤');
     }
@@ -57,12 +60,31 @@ exports.main = async (event) => {
       throw new Error('无法在自己发布的考勤上签到');
     }
 
+    // 检查签到人数上限
+    const countRes = await signinCollection.where({
+      passWd: _.eq(passWd)
+    }).count();
+    console.log('countRes', countRes);
+    if (countRes.total >= MaxSigninerCount) {
+      return { code: 3004 };
+    }
+
+    // 检查个人信息是否完善
+    const userRes = await userCollection.where({
+      openId: _.eq(signinerOpenId)
+    }).get();
+    console.log('userRes', userRes);
+    if (Array.isArray(userRes.data) && userRes.data.length === 0) {
+      return { code: 3003 };
+    }
+
     // 获取签到信息
     // res = { data:[], errMsg }
     let signinRes = await signinCollection.where({
       passWd: _.eq(passWd),
       signinerOpenId: _.eq(signinerOpenId)
     }).get();
+    console.log('signinRes', signinRes);
 
     // 若存在该记录
     if (signinRes.data.length > 0) {
@@ -101,6 +123,7 @@ exports.main = async (event) => {
       passWd: _.eq(passWd),
       signinerOpenId: _.eq(signinerOpenId)
     }).get();
+    console.log('signinRes2', signinRes2);
 
     if (signinRes2.data.length > 0) {
       const reqData = {

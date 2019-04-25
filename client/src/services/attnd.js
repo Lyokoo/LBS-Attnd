@@ -10,7 +10,7 @@ export const createAttnd = async ({ attndName, location }) => {
       name: 'createAttnd',
       data: { attndName, location }
     });
-    if (result.code !== 2000 && result.code !== 3001) throw result;
+    if (result.code !== 2000 && result.code !== 3003) throw result;
     adLog.log('createAttnd-result', result);
     return result;
   } catch (e) {

@@ -52,7 +52,7 @@ exports.main = async (event) => {
     }).get();
     console.log(data);
     if (Array.isArray(data) && data.length === 0) {
-      return { code: 3001 };
+      return { code: 3003 };
     }
 
     // 计算签到口令

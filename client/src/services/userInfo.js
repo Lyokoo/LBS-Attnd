@@ -25,15 +25,15 @@ export const updateUserInfo = async ({ name, stuId }) => {
 
 export const getUserInfo = async () => {
   // 从缓存获取
-  const userInfo = adStorage.get('userInfo');
-  if (userInfo) {
-    const result = {
-      code: 2000,
-      data: userInfo
-    };
-    adLog.log('getUserInfo-getStorage', result);
-    return result;
-  }
+  // const userInfo = adStorage.get('userInfo');
+  // if (userInfo) {
+  //   const result = {
+  //     code: 2000,
+  //     data: userInfo
+  //   };
+  //   adLog.log('getUserInfo-getStorage', result);
+  //   return result;
+  // }
 
   // 从数据库获取
   try {

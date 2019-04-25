@@ -25,7 +25,7 @@ exports.main = async (event) => {
         const userRes = await userCollection.where({
           openId: _.eq(signinerOpenId)
         }).get();
-        const { name, stuId } = userRes.data[0];
+        const { name, stuId } = userRes.data[0] || {};
         return {
           signinerOpenId, signinerStatus, signinerLocation, distance, name, stuId
         };

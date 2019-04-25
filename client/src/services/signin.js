@@ -10,7 +10,7 @@ export const signin = async ({ passWd, location }) => {
       name: 'signin',
       data: { passWd, location }
     });
-    if (result.code !== 2000 && result.code !== 3002) {
+    if (![2000, 3002, 3003, 3004].includes(result.code)) {
       throw result;
     }
     adLog.log('signin-result', result);

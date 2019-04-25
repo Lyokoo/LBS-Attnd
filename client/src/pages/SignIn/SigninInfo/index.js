@@ -36,12 +36,13 @@ export default class SigninInfo extends Component {
   componentDidMount() { }
 
   render() {
-    const { name = '*', stuId, distance, signinerStatus } = this.props.item;
+    const { name = '*', stuId = '', distance, signinerStatus } = this.props.item;
+    const avatar = name[0] || '*';
     const status = signinStatusConfig[signinerStatus] || {};
     return (
       <View className="signin-info">
         <View className="signin-info__user">
-          <Text className="signin-info__avatar">{name[0] || '*'}</Text>
+          <Text className="signin-info__avatar">{avatar}</Text>
           <View className="signin-info__info">
             <Text className="signin-info__info--name">{`${name} ${stuId}`}</Text>
             <Text className="signin-info__info--desc">距离：{distance}m</Text>

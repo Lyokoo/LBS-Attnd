@@ -57,11 +57,14 @@ export default class EditAttnd extends Component {
       const res = await createAttnd({ attndName, location });
 
       // 未填写个人信息
-      if (res.code === 3001) {
-        Taro.adToast({ text: '请完善个人信息' });
-        setTimeout(() => {
-          Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
-        }, 1500);
+      if (res.code === 3003) {
+        Taro.showModal({
+          title: '个人信息',
+          content: '请完善个人信息',
+          confirmText: '前往',
+          confirmColor: '#78a4fa',
+          success: res => res.confirm && Taro.navigateTo({ url: '/pages/EditUserInfo/index' })
+        });
         this.setState({ submiting: false });
         return;
       }
