@@ -35,7 +35,7 @@ export default class SigninInfo extends Component {
 
   componentDidMount() { }
 
-  withDistance = (d = 0) => {
+  geiDistance = (d = 0) => {
     switch (true) {
       case d < 0: return '*';
       case d >= Number.MAX_SAFE_INTEGER: return '**';
@@ -47,16 +47,15 @@ export default class SigninInfo extends Component {
   }
 
   render() {
-    const { name = '*', stuId = '', distance, signinerStatus } = this.props.item;
-    const avatar = name[0] || '*';
+    const { name = '?', stuId = '', distance, signinerStatus } = this.props.item;
     const status = signinStatusConfig[signinerStatus] || {};
     return (
       <View className="signin-info">
         <View className="signin-info__user">
-          <Text className="signin-info__avatar">{avatar}</Text>
+          <Text className="signin-info__avatar">{name[0]}</Text>
           <View className="signin-info__info">
             <Text className="signin-info__info--name">{`${name} ${stuId}`}</Text>
-            <Text className="signin-info__info--desc">距离：{this.withDistance(distance)}</Text>
+            <Text className="signin-info__info--desc">距离：{this.geiDistance(distance)}</Text>
           </View>
         </View>
         <View className="signin-info__status">

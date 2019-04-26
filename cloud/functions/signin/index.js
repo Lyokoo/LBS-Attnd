@@ -3,15 +3,16 @@ cloud.init();
 
 // 计算两个经纬度坐标之间的距离
 const getDistance = (lng1, lat1, lng2, lat2) => {
-  var radLat1 = lat1 * Math.PI / 180.0;
-  var radLat2 = lat2 * Math.PI / 180.0;
-  var a = radLat1 - radLat2;
-  var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
-  var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+  let radLat1 = lat1 * Math.PI / 180.0;
+  let radLat2 = lat2 * Math.PI / 180.0;
+  let a = radLat1 - radLat2;
+  let b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+  let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
     Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
   s = s * 6378.137; // 🌍 地球半径
+  // s = s * 6371.393; // 🌍 真正地球半径
   s = Math.round(s * 10000) / 10000;
-  return s;
+  return s * 1000;
 };
 
 /**
@@ -70,11 +71,15 @@ exports.main = async (event) => {
     }
 
     // 检查个人信息是否完善
+    let signinerName = '';
     const userRes = await userCollection.where({
       openId: _.eq(signinerOpenId)
     }).get();
     console.log('userRes', userRes);
-    if (Array.isArray(userRes.data) && userRes.data.length === 0) {
+    if (Array.isArray(userRes.data) && userRes.data.length > 0) {
+      signinerName = userRes.data[0].name;
+      console.log('signinerName', signinerName);
+    } else {
       return { code: 3003 };
     }
 
@@ -128,7 +133,7 @@ exports.main = async (event) => {
 
     if (signinRes2.data.length > 0) {
       const reqData = {
-        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, updateTime: new Date()
+        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.where({
@@ -146,7 +151,7 @@ exports.main = async (event) => {
       const { attndName } = attndRes.data[0];
 
       const reqData = {
-        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, createTime: new Date(), updateTime: new Date()
+        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, createTime: new Date(), updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.add({

@@ -14,7 +14,7 @@ import './index.less';
 export default class Index extends Component {
 
   config = {
-    navigationBarTitleText: '签到 Attnd',
+    navigationBarTitleText: '考勤 Attnd',
     enablePullDownRefresh: true,
     backgroundColor: '#f2f2f2',
     backgroundTextStyle: 'dark'
@@ -211,8 +211,19 @@ export default class Index extends Component {
     }
   }
 
+  onFinishAttnd = () => {
+    Taro.showModal({
+      title: '结束考勤',
+      content: '即将结束考勤，考勤结束之后的签到会被记为迟到',
+      confirmText: '现在结束',
+      cancelText: '稍后',
+      confirmColor: '#78a4fa',
+      success: res => res.confirm && this.finishAttnd()
+    });
+  }
+
   // 结束考勤
-  onFinishAttnd = async () => {
+  finishAttnd = async () => {
     const { passWd, getInfoLoading, finishAtLoading } = this.state;
     if (getInfoLoading || finishAtLoading) return;
     this.setState({ finishAtLoading: true });

@@ -5,7 +5,7 @@ import './index.less';
 export default class Index extends Component {
 
   config = {
-    navigationBarTitleText: '签到 Attnd',
+    navigationBarTitleText: '考勤 Attnd',
     backgroundColor: '#f2f2f2'
   }
 

@@ -25,6 +25,11 @@ class App extends Component {
       navigationBarTextStyle: 'black'
     },
     cloud: true,
+    permission: {
+      'scope.userLocation': {
+        desc: "你的位置信息将用于小程序位置接口的效果展示"
+      }
+    },
     tabBar: {
       color: '#6d6d6d',
       selectedColor: '#78a4fa',
@@ -57,6 +62,15 @@ class App extends Component {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init()
     }
+
+    // 弹窗询问用户是否同意授权小程序使用地理位置
+    Taro.getSetting({
+      success: res => {
+        if (!res.authSetting['scope.userLocation']) {
+          Taro.authorize({ scope: 'scope.userLocation' });
+        }
+      }
+    });
   }
 
   componentDidShow() { }

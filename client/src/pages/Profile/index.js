@@ -44,15 +44,18 @@ export default class Profile extends Component {
   onAboutClick = () => Taro.navigateTo({ url: '/pages/About/index' });
 
   render() {
-    const { name, stuId } = this.state;
+    const { name, stuId = '', pulling } = this.state;
+    const getAvatar = () => (name && name[0]) ? name[0] : '';
+    const getName = () => pulling ? '获取中...' : name || '完善个人信息';
+    const getStuId = () => pulling ? '获取中...' : stuId;
     return (
       <View className="profile">
         <View className="profile__group">
           <View className="profile__header" onClick={this.onUserInfoClick}>
-            <Text className="profile__avatar">{name[0]}</Text>
+            <Text className="profile__avatar">{getAvatar()}</Text>
             <View className="profile__info">
-              <Text className="profile__info--name">{name || '完善个人信息'}</Text>
-              <Text className="profile__info--stuid">{stuId}</Text>
+              <Text className="profile__info--name">{getName()}</Text>
+              <Text className="profile__info--stuid">{getStuId()}</Text>
             </View>
           </View>
         </View>
