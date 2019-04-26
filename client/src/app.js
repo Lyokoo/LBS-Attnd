@@ -16,7 +16,7 @@ class App extends Component {
       'pages/EditUserInfo/index',
       'pages/SignIn/index',
       'pages/ShowPassWd/index',
-      // 'pages/About/index',
+      'pages/About/index',
     ],
     window: {
       backgroundTextStyle: 'light',

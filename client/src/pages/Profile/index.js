@@ -39,9 +39,9 @@ export default class Profile extends Component {
     this.setState({ pulling: false });
   }
 
-  onUserInfoClick = () => {
-    Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
-  }
+  onUserInfoClick = () => Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
+
+  onAboutClick = () => Taro.navigateTo({ url: '/pages/About/index' });
 
   render () {
     const { name, stuId } = this.state;
@@ -61,7 +61,7 @@ export default class Profile extends Component {
         </View>
         <View className="profile__group">
           <ProfileItem title="问题反馈" openType="feedback"/>
-          <ProfileItem title="关于我们"/>
+          <ProfileItem title="关于我们" onClick={this.onAboutClick}/>
         </View>
       </View>
     )
