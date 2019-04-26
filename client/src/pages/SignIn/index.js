@@ -136,7 +136,7 @@ export default class Index extends Component {
         btnStatus.text = '结束此考勤';
         btnStatus.handleFunc = this.onFinishAttnd;
       } else {
-        btnStatus.text = '结束此考勤';
+        btnStatus.text = '已结束';
         btnStatus.disabled = true;
       }
     } else {

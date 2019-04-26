@@ -1,5 +1,6 @@
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
+import AdToast from '../../components/AdToast';
 import avatarLzy from '../../assets/images/avatar-lzy.jpg';
 import avatarLyx from '../../assets/images/avatar-lyx.jpeg';
 import avatarLzp from '../../assets/images/avatar-lzp.jpg';
@@ -37,6 +38,15 @@ export default class About extends Component {
     ]
   }
 
+  onGithubClick = () => {
+    const { github } = this.state;
+    if (!github) return;
+    Taro.setClipboardData({
+      data: github,
+      success: () => Taro.adToast({ text: '拷贝成功', status: 'success' })
+    });
+  }
+
   render() {
     const { t1, t2, t3, t4, aps1, aps2, aps3, github } = this.state;
     return (
@@ -55,7 +65,7 @@ export default class About extends Component {
         <View className="about__title">{t3}</View>
         <View>
           {aps3.map(p => <View key={p} className="about__paragraph">{p}</View>)}
-          <View className="about__paragraph">仓库地址: <Text className="about__link">{github}</Text></View>
+          <View className="about__paragraph">仓库地址: <Text onClick={this.onGithubClick} className="about__link">{github}</Text></View>
         </View>
         {/* 贡献者 Contributors */}
         <View className="about__title">{t4}</View>
@@ -71,6 +81,7 @@ export default class About extends Component {
             </View>
           ))}
         </View>
+        <AdToast />
       </View>
     )
   }
