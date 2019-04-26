@@ -11,7 +11,7 @@ const getDistance = (lng1, lat1, lng2, lat2) => {
     Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
   s = s * 6378.137; // 🌍 地球半径
   s = Math.round(s * 10000) / 10000;
-  return Math.floor(s);
+  return s;
 };
 
 /**
@@ -98,6 +98,7 @@ exports.main = async (event) => {
 
     // 计算发布考勤者与签到者的距离
     const distance = getDistance(hostLocation.lng, hostLocation.lat, signinerLocation.lng, signinerLocation.lat) || Number.MAX_SAFE_INTEGER;
+    console.log('distance', distance);
 
     // 计算签到状态
     // attndStatus: 0-->已结束，1-->进行中
@@ -143,7 +144,7 @@ exports.main = async (event) => {
         passWd: _.eq(passWd)
       }).get();
       const { attndName } = attndRes.data[0];
-      
+
       const reqData = {
         passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, createTime: new Date(), updateTime: new Date()
       };

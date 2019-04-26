@@ -35,7 +35,7 @@ export default class Profile extends Component {
         const { name, stuId } = result.data;
         this.setState({ name, stuId });
       }
-    } catch (e) {}
+    } catch (e) { }
     this.setState({ pulling: false });
   }
 
@@ -43,7 +43,7 @@ export default class Profile extends Component {
 
   onAboutClick = () => Taro.navigateTo({ url: '/pages/About/index' });
 
-  render () {
+  render() {
     const { name, stuId } = this.state;
     return (
       <View className="profile">
@@ -57,11 +57,11 @@ export default class Profile extends Component {
           </View>
         </View>
         <View className="profile__group">
-          <ProfileItem title="授权管理" openType="openSetting"/>
+          <ProfileItem title="授权管理" openType="openSetting" />
         </View>
         <View className="profile__group">
-          <ProfileItem title="问题反馈" openType="feedback"/>
-          <ProfileItem title="关于我们" onClick={this.onAboutClick}/>
+          <ProfileItem title="问题反馈" openType="feedback" />
+          <ProfileItem title="关于我们" onClick={this.onAboutClick} />
         </View>
       </View>
     )

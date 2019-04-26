@@ -35,6 +35,17 @@ export default class SigninInfo extends Component {
 
   componentDidMount() { }
 
+  withDistance = (d = 0) => {
+    switch (true) {
+      case d < 0: return '*';
+      case d >= Number.MAX_SAFE_INTEGER: return '**';
+      case d < 1: return '< 1m';
+      case d <= 200: return `${Math.floor(d)}m`;
+      case d > 200 && d < 1000: return '> 200m';
+      case d > 1000: default: return '> 1km';
+    }
+  }
+
   render() {
     const { name = '*', stuId = '', distance, signinerStatus } = this.props.item;
     const avatar = name[0] || '*';
@@ -45,12 +56,12 @@ export default class SigninInfo extends Component {
           <Text className="signin-info__avatar">{avatar}</Text>
           <View className="signin-info__info">
             <Text className="signin-info__info--name">{`${name} ${stuId}`}</Text>
-            <Text className="signin-info__info--desc">距离：{distance}m</Text>
+            <Text className="signin-info__info--desc">距离：{this.withDistance(distance)}</Text>
           </View>
         </View>
         <View className="signin-info__status">
-          <AtIcon value={status.icon} size={16} color={status.color}/>
-          <Text className="signin-info__status--desc" style={{color: status.color}}>{status.text}</Text>
+          <AtIcon value={status.icon} size={16} color={status.color} />
+          <Text className="signin-info__status--desc" style={{ color: status.color }}>{status.text}</Text>
         </View>
       </View>
     )

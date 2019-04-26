@@ -30,7 +30,7 @@ export default class AttndInfo extends Component {
         </View>
         <View className="attnd-info__desc">
           <Text className="attnd-info__desc--text">口令：{passWd || 'loading...'}</Text>
-          <Text className="attnd-info__desc--text">发布者：{hostName || 'loading...'}</Text>
+          <Text className="attnd-info__desc--text">发起者：{hostName || 'loading...'}</Text>
           <Text className="attnd-info__desc--text">时间：{formatDate(createTime) || 'loading...'}</Text>
         </View>
       </View>

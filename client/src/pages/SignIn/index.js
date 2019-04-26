@@ -177,7 +177,9 @@ export default class Index extends Component {
         case 3002: // 已签到
           this.setState({ signinLoading: false });
           Taro.hideLoading();
-          Taro.adToast({ text: '已签到', status: 'success' });
+          Taro.adToast({ text: '已签到', status: 'success' }, () => {
+            Taro.startPullDownRefresh(); // 触发下拉刷新
+          });
           break;
         case 3003: // 个人信息不完整
           this.setState({ signinLoading: false });
@@ -193,7 +195,9 @@ export default class Index extends Component {
         case 3004: // 签到人数超过限制
           this.setState({ signinLoading: false });
           Taro.hideLoading();
-          Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 });
+          Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 }, () => {
+            Taro.startPullDownRefresh(); // 触发下拉刷新
+          });
           break;
         default:
           break;

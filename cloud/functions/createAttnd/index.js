@@ -22,8 +22,8 @@ const buildPassWd = () => {
   let passwd = '';
 
   passwd = digits[getRandomInt(0, 61)]
-  + getTimeIn62(Date.now()).slice(0, 3)
-  + digits[getRandomInt(0, 61)] + digits[getRandomInt(0, 61)];
+    + getTimeIn62(Date.now()).slice(0, 3)
+    + digits[getRandomInt(0, 61)] + digits[getRandomInt(0, 61)];
 
   return passwd;
 }
@@ -37,10 +37,10 @@ exports.main = async (event) => {
   const { openId } = event.userInfo;
   console.log('event', event);
 
-  if (typeof attndName !== 'string' 
-    || !attndName 
-    || typeof location !== 'object' 
-    || typeof location.lng !== 'number' 
+  if (typeof attndName !== 'string'
+    || !attndName
+    || typeof location !== 'object'
+    || typeof location.lng !== 'number'
     || typeof location.lat !== 'number') {
     return { code: 4000 };
   }
@@ -60,7 +60,7 @@ exports.main = async (event) => {
 
     // 查询是否存在与此口令相同的考勤
     // res = { data: [], errMsg }
-    while(true) {
+    while (true) {
       const { data } = await attndCollection.where({
         passWd: _.eq(passWd)
       }).get();

@@ -70,12 +70,8 @@ export default class EditAttnd extends Component {
       }
 
       const passWd = res.data.passWd;
-      Taro.adToast({ text: '发起成功', status: 'success'});
-      setTimeout(() => {
-        Taro.redirectTo({
-          url: `/pages/ShowPassWd/index?passWd=${passWd}`
-        });
-      }, 1500);
+      Taro.adToast({ text: '发起成功', status: 'success' });
+      setTimeout(() => Taro.redirectTo({ url: `/pages/ShowPassWd/index?passWd=${passWd}` }), 1500);
     } catch (e) {
       adLog.warn('EditAttnd-error', e);
       Taro.adToast({ text: '发起失败' });
@@ -83,7 +79,7 @@ export default class EditAttnd extends Component {
     this.setState({ submiting: false });
   }
 
-  render () {
+  render() {
     const { attndName, isAttndNameErr, submiting } = this.state;
     return (
       <View className="edit-attnd">

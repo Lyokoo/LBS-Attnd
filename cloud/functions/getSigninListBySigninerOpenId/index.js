@@ -36,7 +36,7 @@ exports.main = async (event) => {
     console.log('signinRes', signinRes);
     const passWdSet = signinRes.data.map(el => el.passWd);
     console.log('passWdSet', passWdSet);
-    
+
     const signinListData = await Promise.all(passWdSet.map(async (passWd) => {
       try {
         // res = { data: [], errMsg }
@@ -57,7 +57,7 @@ exports.main = async (event) => {
             }
           }
         }
-      return {};
+        return {};
       } catch (e) {
         throw e;
       }

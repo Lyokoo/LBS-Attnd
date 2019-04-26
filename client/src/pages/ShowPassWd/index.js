@@ -13,7 +13,7 @@ export default class ShowPassWd extends Component {
     passWd: ''
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const { passWd } = this.$router.params;
     this.setState({ passWd });
   }

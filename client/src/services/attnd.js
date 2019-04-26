@@ -50,10 +50,10 @@ export const getAttndByPassWd = async ({ passWd }) => {
       name: 'getAttndByPassWd',
       data: { passWd }
     });
-    if (result.code !== 2000) throw result;
+    if (result.code !== 2000 && result.code !== 3001) throw result;
     adLog.log('getAttndByPassWd-result', result);
     return result;
-   } catch (e) {
+  } catch (e) {
     adLog.warn('getAttndByPassWd-error', e);
     throw e;
   }

@@ -23,7 +23,7 @@ export default class LoadMore extends Component {
     return (
       <View className="loadmore">
         {hasMore
-          ? <AtActivityIndicator size={24} content={loadingText}/>
+          ? <AtActivityIndicator size={24} content={loadingText} />
           : noMoreText
         }
       </View>

@@ -14,7 +14,7 @@ export default class EditAuth extends Component {
     return (
       <View className="edit-auth">
         <View className="edit-auth__img">
-          <Image src={location} mode="aspectFit" style={{width: '100%'}}/>
+          <Image src={location} mode="aspectFit" style={{ width: '100%' }} />
         </View>
         <View className="edit-auth__desc">需要授权开启位置服务才能参加考勤的哦</View>
         <View className="edit-auth__opt">

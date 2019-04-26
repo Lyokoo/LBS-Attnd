@@ -13,10 +13,10 @@ export default class ProfileItem extends Component {
   static defaultProps = {
     title: '项',
     openType: '',
-    onClick: () => {}
+    onClick: () => { }
   }
 
-  render () {
+  render() {
     const { title, openType, onClick } = this.props;
     return (
       <View className="profile-item">
