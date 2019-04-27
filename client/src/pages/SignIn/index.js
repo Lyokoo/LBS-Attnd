@@ -243,13 +243,22 @@ export default class Index extends Component {
     }
   }
 
+  onAttndInfoClick = () => {
+    const { passWd } = this.state;
+    if (!passWd) return;
+    Taro.setClipboardData({
+      data: passWd,
+      success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
+    });
+  }
+
   render() {
     const {
       windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging, getListLoading
     } = this.state;
     return (
       <View className="signin" style={{ height: `${windowHeight}px` }}>
-        <View className="signin__header">
+        <View className="signin__header" onClick={this.onAttndInfoClick}>
           <AttndInfo item={attndInfo} />
         </View>
         <View className="signin__content" style={{ height: `${listHeight}px` }}>

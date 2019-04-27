@@ -41,12 +41,8 @@ export default class List extends Component {
   }
 
   componentDidShow = throttle(async function () {
-    Taro.showNavigationBarLoading();
-    await Promise.all([
-      this.getSigninList(),
-      this.getAttndList()
-    ]);
-    Taro.hideNavigationBarLoading();
+    this.getSigninList();
+    this.getAttndList();
   }, 6000);
 
   computeHeight = () => {
