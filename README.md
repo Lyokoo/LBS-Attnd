@@ -50,22 +50,24 @@ npm run dev:weapp
 
 ### 考勤 Attnd
 
-考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤的效率。
+![扫码_搜索联合传播样式-标准色版.png](https://upload-images.jianshu.io/upload_images/2351420-59895d882dd6238e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤的效率
 
 ### 优势与局限
 
-考勤 Attnd 被设计成快捷、轻量级的考勤应用，老师创建考勤以快速记录已到学生和人数，学生输入对应口令即可签到。
+考勤 Attnd 被设计成快捷、轻量级的考勤应用，老师创建考勤以快速记录已到学生和人数，学生输入对应口令即可签到
 
-但也存在其局限性，没有创建班级或导入功能，即无法知道班级名单，简单来说，老师知道 “谁到了”，但不知道 “谁没到”。后续会考虑加入 “导出到邮箱” 功能，以便老师统计和存档。
+但也存在其局限性，没有创建班级或导入功能，即无法知道班级名单，简单来说，老师知道 “谁到了”，但不知道 “谁没到”。后续会考虑加入 “导出到邮箱” 功能，以便老师统计和存档
 
-考勤 Attnd 如今的设计似乎更适用于自主举办活动的人数记录和统计。
+考勤 Attnd 如今的设计似乎更适用于自主举办活动的人数记录和统计
 
 ### 开发
 
-考勤 Attnd 尝鲜微信小程序云开发，使用 Taro + Taro UI，重构曾使用 WePY + Java 开发的第一版。本项目只用于技术学习和交流，欢迎提 issue。
+考勤 Attnd 尝鲜微信小程序云开发，使用 Taro + Taro UI，重构曾使用 WePY + Java 开发的第一版。本项目只用于技术学习和交流，欢迎提 issue
 
-旧前端仓库：https://github.com/PolluxLee/attnd-weapp
-旧后端仓库：https://github.com/WisperDin/attnd-server
+- 旧前端仓库：https://github.com/PolluxLee/attnd-weapp
+- 旧后端仓库：https://github.com/WisperDin/attnd-server
 
 ### 贡献者
 
