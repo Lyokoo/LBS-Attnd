@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
-import SininList from './SigninList';
+import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
 import { getSigninInfo, signin, getSigninerList } from '../../services/signin';
 import { getLocation } from '../../services/location';
@@ -45,8 +45,7 @@ export default class Index extends Component {
 
   async componentDidMount() {
     this.computeHeight();
-    await this.getInfo();
-    this.getSigninerList();
+    Taro.startPullDownRefresh();
   }
 
   async onPullDownRefresh() {
@@ -246,7 +245,7 @@ export default class Index extends Component {
 
   render() {
     const {
-      windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging
+      windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging, getListLoading
     } = this.state;
     return (
       <View className="signin" style={{ height: `${windowHeight}px` }}>
@@ -254,7 +253,10 @@ export default class Index extends Component {
           <AttndInfo item={attndInfo} />
         </View>
         <View className="signin__content" style={{ height: `${listHeight}px` }}>
-          <SininList data={data} height={listHeight} />
+          {data.listData.length === 0 && !getListLoading
+            ? <View className="signin__content--emptyhint">暂时还没有人签到 :)</View>
+            : <SigninList data={data} height={listHeight} />
+          }
         </View>
         <View className="signin__footer">
           {attndBelonging
