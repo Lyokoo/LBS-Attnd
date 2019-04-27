@@ -50,7 +50,7 @@ npm run dev:weapp
 
 ### 考勤 Attnd
 
-![扫码_搜索联合传播样式-标准色版.png](https://upload-images.jianshu.io/upload_images/2351420-59895d882dd6238e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![QR-Code-12.jpg](https://upload-images.jianshu.io/upload_images/2351420-be3506b3de26d05f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤的效率
 
