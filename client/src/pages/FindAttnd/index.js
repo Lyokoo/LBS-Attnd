@@ -13,16 +13,32 @@ export default class FindAttnd extends Component {
 
   state = {
     passWd: '',
-    confirmLoading: false
+    confirmLoading: false,
+    isPassWdErr: false
   }
 
   onInputChange = (value) => {
-    this.setState({ passWd: value });
+    this.setState({
+      passWd: value,
+      isPassWdErr: false
+    });
+  }
+
+  checkFormData = (passWd) => {
+    if (!passWd.trim()) {
+      Taro.adToast({ text: '口令不能为空' });
+      this.setState({ isPassWdErr: true });
+      return false;
+    }
+    return true;
   }
 
   onConfirm = async () => {
     const { passWd, confirmLoading } = this.state;
     if (confirmLoading) return;
+    if (!this.checkFormData(passWd)) {
+      return;
+    }
     this.setState({ confirmLoading: true });
     // 查询考勤是否存在
     try {
@@ -48,6 +64,7 @@ export default class FindAttnd extends Component {
   }
 
   render() {
+    const { isPassWdErr } = this.state;
     return (
       <View className="find-attnd">
         <View className="find-attnd__title">输入签到口令</View>
@@ -58,6 +75,7 @@ export default class FindAttnd extends Component {
             placeholder='输入口令'
             placeholderStyle="color: #cccccc"
             maxLength={150}
+            error={isPassWdErr}
             value={this.state.passWd}
             onChange={this.onInputChange}
           />
