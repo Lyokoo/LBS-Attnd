@@ -68,7 +68,7 @@ export default class FindAttnd extends Component {
     return (
       <View className="find-attnd">
         <View className="find-attnd__title">输入签到口令</View>
-        <View className="find-attnd__desc">*向发起考勤者索要签到口令</View>
+        <View className="find-attnd__desc">* 向发起考勤者索要签到口令</View>
         <View className="find-attnd__input">
           <AtInput
             type='text'

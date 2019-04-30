@@ -85,8 +85,8 @@ export default class EditAttnd extends Component {
       <View className="edit-attnd">
         <View className="edit-attnd__title">发起考勤</View>
         <View>
-          <View className="edit-attnd__desc">*考勤范围是以你为中心的方圆 200 米</View>
-          <View className="edit-attnd__desc">*签到人数上限为 100 人</View>
+          <View className="edit-attnd__desc">* 小程序通过 GPS 定位，确定考勤有效范围是以你当前位置为中心的方圆 200 米，在有效范围内完成签到者视为已到</View>
+          <View className="edit-attnd__desc">* 签到人数上限为 100 人</View>
         </View>
         <View className="edit-attnd__input">
           <AtInput

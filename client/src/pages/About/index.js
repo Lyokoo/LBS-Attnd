@@ -35,20 +35,23 @@ export default class About extends Component {
       { avatar: avatarLyx, name: 'FOON' },
       { avatar: avatarLzp, name: '纸纸纸盆' },
       { avatar: avatarWy, name: '脑浮泥' }
+    ],
+    t5: '联系 Contact',
+    aps5: [
+      'zhipen1874'
     ]
   }
 
-  onGithubClick = () => {
-    const { github } = this.state;
-    if (!github) return;
+  onCopy = (str) => {
+    if (!str) return;
     Taro.setClipboardData({
-      data: github,
+      data: str,
       success: () => Taro.adToast({ text: '拷贝成功', status: 'success' })
     });
   }
 
   render() {
-    const { t1, t2, t3, t4, aps1, aps2, aps3, github } = this.state;
+    const { t1, t2, t3, t4, t5, aps1, aps2, aps3, github, aps5 } = this.state;
     return (
       <View className="about">
         {/* 考勤 Attnd */}
@@ -65,7 +68,12 @@ export default class About extends Component {
         <View className="about__title">{t3}</View>
         <View>
           {aps3.map(p => <View key={p} className="about__paragraph">{p}</View>)}
-          <View className="about__paragraph">仓库地址: <Text onClick={this.onGithubClick} className="about__link">{github}</Text></View>
+          <View className="about__paragraph">仓库地址: <Text onClick={() => this.onCopy(github)} className="about__link">{github}</Text></View>
+        </View>
+        {/*联系 Contact*/}
+        <View className="about__title">{t5}</View>
+        <View>
+          {aps5.map(p => <View key={p} className="about__paragraph">微信：<Text onClick={() => this.onCopy(p)} className="about__link">{p}</Text></View>)}
         </View>
         {/* 贡献者 Contributors */}
         <View className="about__title">{t4}</View>
