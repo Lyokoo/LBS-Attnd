@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View } from '@tarojs/components';
+import { View, Button } from '@tarojs/components';
 import './index.less';
 
 export default class Index extends Component {
@@ -30,10 +30,13 @@ export default class Index extends Component {
 
   onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
 
+  onTest = () => Taro.navigateTo({ url: '/pages/ShowPassWd/index?passWd=tRrhSe' });
+
   render() {
     const { windowHeight } = this.state;
     return (
       <View className="home">
+        <Button onClick={this.onTest}>test</Button>
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
           <View className="home__signin home__opt" onClick={this.onFindAttndClick}>
             <View className="home__circle">签</View>

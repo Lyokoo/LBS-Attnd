@@ -9,6 +9,7 @@ import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
 import { AttndStatus, SigninerStatus } from '../../utils/consts';
+import imgLocation from '../../assets/images/location.png';
 import './index.less';
 
 export default class Index extends Component {
@@ -24,7 +25,24 @@ export default class Index extends Component {
     windowHeight: 0,
     listHeight: 0,
     data: {
-      listData: [],
+      listData: [
+        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+      ],
       hasMore: true
     },
     passWd: '',
@@ -50,8 +68,8 @@ export default class Index extends Component {
 
   async onPullDownRefresh() {
     await this.getInfo();
-    await this.getSigninerList();
-    Taro.stopPullDownRefresh();
+    // await this.getSigninerList();
+    // Taro.stopPullDownRefresh();
   }
 
   computeHeight = () => {
@@ -250,6 +268,14 @@ export default class Index extends Component {
       data: passWd,
       success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
     });
+  }
+
+  onShareAppMessage() {
+    return {
+      title: '快来参加考勤吧！',
+      path: '/pages/Home/index',
+      imageUrl: imgLocation
+    }
   }
 
   render() {
