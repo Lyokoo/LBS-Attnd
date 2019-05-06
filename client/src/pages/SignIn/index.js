@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtButton, AtIcon } from 'taro-ui';
+import { AtButton } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
@@ -267,8 +267,12 @@ export default class Index extends Component {
     this.onRefresh();
     setTimeout(() => {
       this.setState({ refreshDisabled: false });
-    }, 10000);
-    
+    }, 6000);
+  }
+
+  computeRefreshBg = () => {
+    const { refreshDisabled } = this.state;
+    return refreshDisabled ? '#B8CBEE' : '#6190e8';
   }
 
   onShareAppMessage() {
@@ -290,8 +294,8 @@ export default class Index extends Component {
         </View>
         <View className="signin__content" style={{ height: `${listHeight}px` }}>
           {data.listData.length === 0 && !getListLoading
-            ? <View className="signin__content--emptyhint">暂时还没有人签到 :)</View>
-            : <SigninList data={data} height={listHeight} />
+            ? <View className="signin__content--emptyhint">暂时还没有人签到 :) <Text className="signin__content--emptyrefresh" onClick={this.onRefreshClick}>点击刷新</Text></View>
+            : <SigninList data={data} height={listHeight} onRefreshClick={this.onRefreshClick}/>
           }
         </View>
         <View className="signin__footer">
@@ -300,9 +304,6 @@ export default class Index extends Component {
               ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
               : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
             }
-          </View>
-          <View className="signin__footer--refresh" onClick={this.onRefreshClick}>
-            <AtIcon size={24} color="white" value="reload"/>
           </View>
         </View>
         <AdToast />

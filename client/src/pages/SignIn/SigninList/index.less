@@ -8,11 +8,23 @@ page {
 .signin-list {
   &__content {
     padding: 30px;
+    &--bar {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+    }
     &--count {
       .cm-text();
       font-size: 12PX;
       color: @assist-text;
-      margin-bottom: 30px;
+    }
+    &--refresh {
+      .cm-text();
+      font-size: 12PX;
+      color: @dark-blue;
+      &:active {
+        background: @active;
+      }
     }
     &--item {
       margin-bottom: 30px;

@@ -27,6 +27,12 @@ page {
       color: @assist-text;
       text-align: center;
     }
+    &--emptyrefresh {
+      color: @dark-blue;
+      &:active {
+        background: @active;
+      }
+    }
   }
 
   &__footer {
@@ -34,19 +40,7 @@ page {
     display: flex;
     justify-content: space-between;
     &--btn {
-      width: 608px;
-    }
-    &--refresh {
-      width: 92px;
-      height: 92px;
-      border-radius: 10px;
-      background: @dark-blue;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      &:active {
-        background: @tag;
-      }
+      width: 710px;
     }
   }
 }

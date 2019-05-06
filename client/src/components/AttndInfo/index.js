@@ -14,6 +14,10 @@ export default class AttndInfo extends Component {
 
   componentDidMount() { }
 
+  onRefreshClick = (e) => {
+    e.stopPropagation();
+  }
+
   render() {
     const {
       attndName, createTime, hostName, passWd, attndStatus
@@ -25,8 +29,8 @@ export default class AttndInfo extends Component {
             title={attndStatus === 1 ? '进行中' : '已结束'}
             active={attndStatus === 1}
           />
-          {/* <View className="attnd-info__trash">
-            <AtIcon value="trash" color="#888888" size="18"/>
+          {/* <View className="attnd-info__refresh" onClick={this.onRefreshClick}>
+            <AtIcon value="reload" color="#888888" size="18"/>
           </View> */}
         </View>
         <View className="attnd-info__title">
