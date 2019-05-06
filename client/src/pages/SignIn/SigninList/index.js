@@ -10,7 +10,8 @@ export default class AttndList extends Component {
   static propTypes = {
     height: PropTypes.number,
     data: PropTypes.object,
-    onLoadMore: PropTypes.func
+    onLoadMore: PropTypes.func,
+    onRefreshClick: PropTypes.func
   }
 
   static defaultProps = {
@@ -19,7 +20,8 @@ export default class AttndList extends Component {
       listData: [],
       hasMore: true
     },
-    onLoadMore: () => { }
+    onLoadMore: () => { },
+    onRefreshClick: () => { }
   }
 
   onLoadMore = () => {
@@ -38,7 +40,10 @@ export default class AttndList extends Component {
           onScrollToLower={this.onLoadMore}
         >
           <View className="signin-list__content">
-            <View className="signin-list__content--count">当前人数：{data.listData.length}</View>
+            <View className="signin-list__content--bar">
+              <View className="signin-list__content--count">当前人数：{data.listData.length}</View>
+              <View className="signin-list__content--refresh" onClick={this.props.onRefreshClick}>刷新</View>
+            </View>
             {data.listData.map(item => (
               <View className="signin-list__content--item" key={item}>
                 <SigninInfo item={item} />

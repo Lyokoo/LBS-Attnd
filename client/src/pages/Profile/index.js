@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import ProfileItem from './ProfileItem';
 import { getUserInfo } from '../../services/userInfo';
+import imgLocation from '../../assets/images/location.png';
 import './index.less';
 
 /**
@@ -23,6 +24,14 @@ export default class Profile extends Component {
 
   componentDidShow() {
     this.getUserInfo();
+  }
+
+  onShareAppMessage() {
+    return {
+      title: '快来参加考勤吧！',
+      path: '/pages/Home/index',
+      imageUrl: imgLocation
+    }
   }
 
   getUserInfo = async () => {
@@ -64,7 +73,8 @@ export default class Profile extends Component {
         </View>
         <View className="profile__group">
           <ProfileItem title="问题反馈" openType="feedback" />
-          <ProfileItem title="关于我们" onClick={this.onAboutClick} />
+          <ProfileItem title="关于我们" onClick={this.onAboutClick} />  
+          <ProfileItem title="推荐给朋友" openType="share" />
         </View>
       </View>
     )

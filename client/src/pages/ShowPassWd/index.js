@@ -1,7 +1,8 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Button } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
 import AdToast from '../../components/AdToast';
+import imgLocation from '../../assets/images/location.png';
 import './index.less';
 
 export default class ShowPassWd extends Component {
@@ -21,6 +22,14 @@ export default class ShowPassWd extends Component {
 
   onClickGotoSignin = () => Taro.redirectTo({ url: `/pages/SignIn/index?passWd=${this.state.passWd}` });
 
+  onShareAppMessage() {
+    return {
+      title: '快来参加考勤吧！',
+      path: '/pages/Home/index',
+      imageUrl: imgLocation
+    }
+  }
+
   onPassWdClick = () => {
     const { passWd } = this.state;
     if (!passWd) return;
@@ -39,6 +48,9 @@ export default class ShowPassWd extends Component {
           <Text className="show-passwd__card--copy">点击可拷贝口令 :)</Text>
         </View>
         <View className="show-passwd__desc">请向签到者展示签到口令</View>
+        <View className="show-passwd__opt">
+          <AtButton type="secondary" openType="share">邀请朋友签到</AtButton>
+        </View>
         <View className="show-passwd__opt">
           <AtButton type="primary" onClick={this.onClickGotoSignin}>进入考勤详情</AtButton>
         </View>

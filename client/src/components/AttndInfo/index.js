@@ -2,6 +2,7 @@ import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import Tag from '../Tag';
 import { formatDate } from '../../utils/func';
+import { AtIcon } from 'taro-ui';
 import './index.less';
 
 export default class AttndInfo extends Component {
@@ -12,6 +13,10 @@ export default class AttndInfo extends Component {
   }
 
   componentDidMount() { }
+
+  onRefreshClick = (e) => {
+    e.stopPropagation();
+  }
 
   render() {
     const {
@@ -24,6 +29,9 @@ export default class AttndInfo extends Component {
             title={attndStatus === 1 ? '进行中' : '已结束'}
             active={attndStatus === 1}
           />
+          {/* <View className="attnd-info__refresh" onClick={this.onRefreshClick}>
+            <AtIcon value="reload" color="#888888" size="18"/>
+          </View> */}
         </View>
         <View className="attnd-info__title">
           <Text className="attnd-info__title--text">{attndName || 'loading...'}</Text>

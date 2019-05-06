@@ -9,13 +9,13 @@ import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
 import { AttndStatus, SigninerStatus } from '../../utils/consts';
+import imgLocation from '../../assets/images/location.png';
 import './index.less';
 
 export default class Index extends Component {
 
   config = {
     navigationBarTitleText: '考勤 Attnd',
-    enablePullDownRefresh: true,
     backgroundColor: '#f2f2f2',
     backgroundTextStyle: 'dark'
   }
@@ -24,7 +24,12 @@ export default class Index extends Component {
     windowHeight: 0,
     listHeight: 0,
     data: {
-      listData: [],
+      listData: [
+        // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        // { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        // { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        // { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+      ],
       hasMore: true
     },
     passWd: '',
@@ -35,7 +40,8 @@ export default class Index extends Component {
     getInfoLoading: false,
     getListLoading: false,
     signinLoading: false,
-    finishAtLoading: false
+    finishAtLoading: false,
+    refreshDisabled: false
   }
 
   componentWillMount() {
@@ -45,13 +51,12 @@ export default class Index extends Component {
 
   async componentDidMount() {
     this.computeHeight();
-    Taro.startPullDownRefresh();
+    this.onRefresh();
   }
 
-  async onPullDownRefresh() {
+  async onRefresh() {
     await this.getInfo();
     await this.getSigninerList();
-    Taro.stopPullDownRefresh();
   }
 
   computeHeight = () => {
@@ -170,14 +175,14 @@ export default class Index extends Component {
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '签到成功', status: 'success' }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         case 3002: // 已签到
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '已签到', status: 'success' }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         case 3003: // 个人信息不完整
@@ -195,7 +200,7 @@ export default class Index extends Component {
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         default:
@@ -205,7 +210,7 @@ export default class Index extends Component {
       this.setState({ signinLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '抱歉，无法签到' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     }
   }
@@ -232,13 +237,13 @@ export default class Index extends Component {
       this.setState({ finishAtLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '完成考勤', status: 'success' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     } catch (e) {
       this.setState({ finishAtLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '抱歉，结束考勤时遇到了问题' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     }
   }
@@ -252,6 +257,32 @@ export default class Index extends Component {
     });
   }
 
+  onRefreshClick = () => {
+    const { refreshDisabled } = this.state;
+    if (refreshDisabled) {
+      Taro.adToast({ text: '操作过于频繁～' });
+      return;
+    }
+    this.setState({ refreshDisabled: true });
+    this.onRefresh();
+    setTimeout(() => {
+      this.setState({ refreshDisabled: false });
+    }, 6000);
+  }
+
+  computeRefreshBg = () => {
+    const { refreshDisabled } = this.state;
+    return refreshDisabled ? '#B8CBEE' : '#6190e8';
+  }
+
+  onShareAppMessage() {
+    return {
+      title: '快来参加考勤吧！',
+      path: '/pages/Home/index',
+      imageUrl: imgLocation
+    }
+  }
+
   render() {
     const {
       windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging, getListLoading
@@ -263,15 +294,17 @@ export default class Index extends Component {
         </View>
         <View className="signin__content" style={{ height: `${listHeight}px` }}>
           {data.listData.length === 0 && !getListLoading
-            ? <View className="signin__content--emptyhint">暂时还没有人签到 :)</View>
-            : <SigninList data={data} height={listHeight} />
+            ? <View className="signin__content--emptyhint">暂时还没有人签到 :) <Text className="signin__content--emptyrefresh" onClick={this.onRefreshClick}>点击刷新</Text></View>
+            : <SigninList data={data} height={listHeight} onRefreshClick={this.onRefreshClick}/>
           }
         </View>
         <View className="signin__footer">
-          {attndBelonging
-            ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
-            : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
-          }
+          <View className="signin__footer--btn">
+            {attndBelonging
+              ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
+              : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
+            }
+          </View>
         </View>
         <AdToast />
       </View>
