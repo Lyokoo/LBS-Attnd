@@ -21,12 +21,32 @@ page {
     // overflow: hidden; /* 这个加了列表中的字体会迷之模糊 */
     &--emptyhint {
       .cm-text();
-      height: 60px;
-      line-height: 60px;
+      height: 120px;
+      line-height: 120px;
       font-size: 24px;
       color: @assist-text;
       text-align: center;
-      margin-top: 60px;
+    }
+  }
+
+  &__footer {
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    &--btn {
+      width: 608px;
+    }
+    &--refresh {
+      width: 92px;
+      height: 92px;
+      border-radius: 10px;
+      background: @dark-blue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:active {
+        background: @tag;
+      }
     }
   }
 }

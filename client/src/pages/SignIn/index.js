@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
+import { AtButton, AtIcon } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
@@ -16,7 +16,6 @@ export default class Index extends Component {
 
   config = {
     navigationBarTitleText: '考勤 Attnd',
-    enablePullDownRefresh: true,
     backgroundColor: '#f2f2f2',
     backgroundTextStyle: 'dark'
   }
@@ -26,22 +25,10 @@ export default class Index extends Component {
     listHeight: 0,
     data: {
       listData: [
-        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
-        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
-        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
-        { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-        { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-        { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-        { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+        // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+        // { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+        // { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+        // { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
       ],
       hasMore: true
     },
@@ -53,7 +40,8 @@ export default class Index extends Component {
     getInfoLoading: false,
     getListLoading: false,
     signinLoading: false,
-    finishAtLoading: false
+    finishAtLoading: false,
+    refreshDisabled: false
   }
 
   componentWillMount() {
@@ -63,13 +51,12 @@ export default class Index extends Component {
 
   async componentDidMount() {
     this.computeHeight();
-    Taro.startPullDownRefresh();
+    this.onRefresh();
   }
 
-  async onPullDownRefresh() {
+  async onRefresh() {
     await this.getInfo();
-    // await this.getSigninerList();
-    // Taro.stopPullDownRefresh();
+    await this.getSigninerList();
   }
 
   computeHeight = () => {
@@ -188,14 +175,14 @@ export default class Index extends Component {
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '签到成功', status: 'success' }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         case 3002: // 已签到
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '已签到', status: 'success' }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         case 3003: // 个人信息不完整
@@ -213,7 +200,7 @@ export default class Index extends Component {
           this.setState({ signinLoading: false });
           Taro.hideLoading();
           Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 }, () => {
-            Taro.startPullDownRefresh(); // 触发下拉刷新
+            this.onRefresh();
           });
           break;
         default:
@@ -223,7 +210,7 @@ export default class Index extends Component {
       this.setState({ signinLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '抱歉，无法签到' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     }
   }
@@ -250,13 +237,13 @@ export default class Index extends Component {
       this.setState({ finishAtLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '完成考勤', status: 'success' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     } catch (e) {
       this.setState({ finishAtLoading: false });
       Taro.hideLoading();
       Taro.adToast({ text: '抱歉，结束考勤时遇到了问题' }, () => {
-        Taro.startPullDownRefresh(); // 触发下拉刷新
+        this.onRefresh();
       });
     }
   }
@@ -268,6 +255,20 @@ export default class Index extends Component {
       data: passWd,
       success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
     });
+  }
+
+  onRefreshClick = () => {
+    const { refreshDisabled } = this.state;
+    if (refreshDisabled) {
+      Taro.adToast({ text: '操作过于频繁～' });
+      return;
+    }
+    this.setState({ refreshDisabled: true });
+    this.onRefresh();
+    setTimeout(() => {
+      this.setState({ refreshDisabled: false });
+    }, 10000);
+    
   }
 
   onShareAppMessage() {
@@ -294,10 +295,15 @@ export default class Index extends Component {
           }
         </View>
         <View className="signin__footer">
-          {attndBelonging
-            ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
-            : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
-          }
+          <View className="signin__footer--btn">
+            {attndBelonging
+              ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
+              : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
+            }
+          </View>
+          <View className="signin__footer--refresh" onClick={this.onRefreshClick}>
+            <AtIcon size={24} color="white" value="reload"/>
+          </View>
         </View>
         <AdToast />
       </View>
