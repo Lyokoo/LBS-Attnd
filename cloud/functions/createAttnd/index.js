@@ -1,5 +1,7 @@
 const cloud = require('wx-server-sdk');
-cloud.init();
+cloud.init({
+  env: 'envlzp-110d2c'
+});
 
 // 生成签到口令
 const buildPassWd = () => {
@@ -80,6 +82,7 @@ exports.main = async (event) => {
 
     // 创建新的考勤
     const reqData = {
+      hostName,
       attndName,
       location,
       passWd,

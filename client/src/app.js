@@ -60,7 +60,10 @@ class App extends Component {
 
   componentDidMount() {
     if (process.env.TARO_ENV === 'weapp') {
-      Taro.cloud.init()
+      Taro.cloud.init({
+        env: 'envlzp-110d2c',
+        traceUser: true
+      });
     }
 
     // 弹窗询问用户是否同意授权小程序使用地理位置

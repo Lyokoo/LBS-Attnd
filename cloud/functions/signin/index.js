@@ -1,5 +1,7 @@
 const cloud = require('wx-server-sdk');
-cloud.init();
+cloud.init({
+  env: 'envlzp-110d2c'
+});
 
 // 计算两个经纬度坐标之间的距离
 const getDistance = (lng1, lat1, lng2, lat2) => {
