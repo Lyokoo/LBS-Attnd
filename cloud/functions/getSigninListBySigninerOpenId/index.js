@@ -46,16 +46,17 @@ exports.main = async (event) => {
 
         // 根据 hostOpenId 获取发布者名称
         if (data.length > 0) {
-          const hostOpenId = data[0].hostOpenId;
-          const userRes = await userCollection.where({
-            openId: _.eq(hostOpenId)
-          }).get();
-          if (userRes.data.length > 0) {
-            return {
-              ...data[0],
-              hostName: userRes.data[0].name
-            }
-          }
+          return data[0];
+          // const hostOpenId = data[0].hostOpenId;
+          // const userRes = await userCollection.where({
+          //   openId: _.eq(hostOpenId)
+          // }).get();
+          // if (userRes.data.length > 0) {
+          //   return {
+          //     ...data[0],
+          //     hostName: userRes.data[0].name
+          //   }
+          // }
         }
         return {};
       } catch (e) {

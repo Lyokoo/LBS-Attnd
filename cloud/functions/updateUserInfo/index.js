@@ -5,6 +5,8 @@ exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
   const userCollection = db.collection('user');
+  const attndCollection = db.collection('attnd');
+  const signinCollection = db.collection('signin');
   const { name, stuId } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
@@ -29,7 +31,6 @@ exports.main = async (event) => {
           updateTime: new Date()
         }
       });
-      return { code: 2000 };
     }
 
     // 存在该记录，更新之
@@ -44,8 +45,34 @@ exports.main = async (event) => {
         }
       });
       console.log(result);
-      return { code: 2000 };
     }
+
+    // 更新 attnd 表的个人信息
+    // res = { data: [], errMsg }
+    const attndRes = await attndCollection.where({
+      hostOpenId: _.eq(openId)
+    }).update({
+      data: {
+        hostName: name,
+        updateTime: new Date()
+      }
+    });
+    console.log('attndRes', attndRes);
+
+    // 更新 signin 表的个人信息
+    // res = { data: [], errMsg }
+    const signinRes = await signinCollection.where({
+      signinerOpenId: _.eq(openId)
+    }).update({
+      data: {
+        signinerName: name,
+        signinerStuId: stuId,
+        updateTime: new Date()
+      }
+    });
+    console.log('signinRes', signinRes);
+
+    return { code: 2000 };
   } catch (e) {
     console.log(e);
     return { code: 5000, msg: e };

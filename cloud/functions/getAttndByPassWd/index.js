@@ -22,19 +22,18 @@ exports.main = async (event) => {
     console.log('data', data);
     if (Array.isArray(data) && data.length > 0) {
       const hostOpenId = data[0].hostOpenId;
-      // 拿 hostOpenId 查用户姓名
-      const res = await userCollection.where({
-        openId: _.eq(hostOpenId)
-      }).get();
-      let hostName = '';
-      if (Array.isArray(res.data) && res.data.length > 0) {
-        hostName = res.data[0].name;
-      }
+      // // 拿 hostOpenId 查用户姓名
+      // const res = await userCollection.where({
+      //   openId: _.eq(hostOpenId)
+      // }).get();
+      // let hostName = '';
+      // if (Array.isArray(res.data) && res.data.length > 0) {
+      //   hostName = res.data[0].name;
+      // }
       return {
         code: 2000,
         data: {
           belonging: hostOpenId === openId,
-          hostName,
           ...data[0]
         }
       };

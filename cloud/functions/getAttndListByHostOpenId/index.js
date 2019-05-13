@@ -33,18 +33,18 @@ exports.main = async (event) => {
     console.log(data);
 
     // 拿 hostOpenId 查用户姓名
-    const res = await userCollection.where({
-      openId: _.eq(openId)
-    }).get();
-    if (Array.isArray(res.data) && res.data.length > 0) {
-      const hostName = res.data[0].name;
-      data = data.map(item => {
-        return {
-          ...item,
-          hostName
-        }
-      });
-    }
+    // const res = await userCollection.where({
+    //   openId: _.eq(openId)
+    // }).get();
+    // if (Array.isArray(res.data) && res.data.length > 0) {
+    //   const hostName = res.data[0].name;
+    //   data = data.map(item => {
+    //     return {
+    //       ...item,
+    //       hostName
+    //     }
+    //   });
+    // }
 
     let hasMore = true;
 
