@@ -114,10 +114,10 @@ export default class Index extends Component {
       // 根据学号对签到列表排序
       if (Array.isArray(listData)) {
         listData.sort((a, b) => {
-          if (a.stuId < b.stuId) {
+          if (a.signinerStuId < b.signinerStuId) {
             return -1;
           }
-          if (a.stuId > b.stuId) {
+          if (a.signinerStuId > b.signinerStuId) {
             return 1;
           }
           return 0;
