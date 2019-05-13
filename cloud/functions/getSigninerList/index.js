@@ -19,20 +19,22 @@ exports.main = async (event) => {
       passWd: _.eq(passWd)
     }).get();
 
-    const signinerList = await Promise.all(signinRes.data.map(async row => {
-      try {
-        const { signinerOpenId, signinerStatus, signinerLocation, distance } = row;
-        const userRes = await userCollection.where({
-          openId: _.eq(signinerOpenId)
-        }).get();
-        const { name, stuId } = userRes.data[0] || {};
-        return {
-          signinerOpenId, signinerStatus, signinerLocation, distance, name, stuId
-        };
-      } catch (e) {
-        throw e;
-      }
-    }));
+    const signinerList = signinRes.data || [];
+
+    // const signinerList = await Promise.all(signinRes.data.map(async row => {
+    //   try {
+    //     const { signinerOpenId, signinerStatus, signinerLocation, distance } = row;
+    //     const userRes = await userCollection.where({
+    //       openId: _.eq(signinerOpenId)
+    //     }).get();
+    //     const { name, stuId } = userRes.data[0] || {};
+    //     return {
+    //       signinerOpenId, signinerStatus, signinerLocation, distance, name, stuId
+    //     };
+    //   } catch (e) {
+    //     throw e;
+    //   }
+    // }));
 
     return {
       code: 2000,

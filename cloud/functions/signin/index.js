@@ -72,13 +72,16 @@ exports.main = async (event) => {
 
     // 检查个人信息是否完善
     let signinerName = '';
+    let signinerStuId = '';
     const userRes = await userCollection.where({
       openId: _.eq(signinerOpenId)
     }).get();
     console.log('userRes', userRes);
     if (Array.isArray(userRes.data) && userRes.data.length > 0) {
       signinerName = userRes.data[0].name;
+      signinerStuId = userRes.data[0].stuId;
       console.log('signinerName', signinerName);
+      console.log('signinerStuId', signinerStuId);
     } else {
       return { code: 3003 };
     }
@@ -133,7 +136,7 @@ exports.main = async (event) => {
 
     if (signinRes2.data.length > 0) {
       const reqData = {
-        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, updateTime: new Date()
+        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.where({
@@ -151,7 +154,7 @@ exports.main = async (event) => {
       const { attndName } = attndRes.data[0];
 
       const reqData = {
-        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, createTime: new Date(), updateTime: new Date()
+        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.add({

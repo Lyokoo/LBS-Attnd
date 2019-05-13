@@ -46,12 +46,15 @@ exports.main = async (event) => {
   }
 
   try {
+    let hostName = '';
     // 查询此用户是否存在
     const { data } = await userCollection.where({
       openId: _.eq(openId)
     }).get();
     console.log(data);
-    if (Array.isArray(data) && data.length === 0) {
+    if (Array.isArray(data) && data.length > 0) {
+      hostName = data[0].name;
+    } else {
       return { code: 3003 };
     }
 

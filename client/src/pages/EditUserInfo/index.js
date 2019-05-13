@@ -58,7 +58,7 @@ export default class EditUserInfo extends Component {
     const { pulling } = this.state;
     if (pulling) return;
     this.setState({ pulling: true });
-    Taro.showNavigationBarLoading();
+    Taro.showLoading({ title: '获取信息', mask: true });
     try {
       const result = await getUserInfo();
       if (result.code === 2000) {
@@ -68,11 +68,8 @@ export default class EditUserInfo extends Component {
     } catch (e) {
       adLog.warn('EditUserInfo-error', e);
     }
-    // 此处为了交互体验稍加延时
-    setTimeout(() => {
-      this.setState({ pulling: false });
-      Taro.hideNavigationBarLoading();
-    }, 500);
+    this.setState({ pulling: false });
+    Taro.hideLoading();
   }
 
   onSubmit = async () => {

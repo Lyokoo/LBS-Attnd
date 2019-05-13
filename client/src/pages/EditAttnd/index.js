@@ -91,7 +91,7 @@ export default class EditAttnd extends Component {
         <View className="edit-attnd__input">
           <AtInput
             type='text'
-            placeholder='输入考勤名称'
+            placeholder='输入考勤名称 例如: 计网-计科151'
             placeholderStyle="color: #cccccc"
             error={isAttndNameErr}
             maxLength={150}

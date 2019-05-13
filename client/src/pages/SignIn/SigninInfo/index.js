@@ -47,14 +47,14 @@ export default class SigninInfo extends Component {
   }
 
   render() {
-    const { name = '?', stuId = '', distance, signinerStatus } = this.props.item;
+    const { signinerName = '?', signinerStuId = '', distance, signinerStatus } = this.props.item;
     const status = signinStatusConfig[signinerStatus] || {};
     return (
       <View className="signin-info">
         <View className="signin-info__user">
-          <Text className="signin-info__avatar">{name[0]}</Text>
+          <Text className="signin-info__avatar">{signinerName[0]}</Text>
           <View className="signin-info__info">
-            <View className="signin-info__info--name">{`${name} ${stuId}`}</View>
+            <View className="signin-info__info--name">{`${signinerStuId + ' '}${signinerName}`}</View>
             <View className="signin-info__info--desc">距离：{this.geiDistance(distance)}</View>
           </View>
         </View>
