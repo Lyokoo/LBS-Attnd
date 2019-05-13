@@ -111,6 +111,18 @@ export default class Index extends Component {
     try {
       const { data: listData } = await getSigninerList({ passWd });
       Taro.hideLoading();
+      // 根据学号对签到列表排序
+      if (Array.isArray(listData)) {
+        listData.sort((a, b) => {
+          if (a.stuId < b.stuId) {
+            return -1;
+          }
+          if (a.stuId > b.stuId) {
+            return 1;
+          }
+          return 0;
+        });
+      }
       this.setState({
         getListLoading: false,
         data: { listData }

@@ -54,7 +54,7 @@ export default class SigninInfo extends Component {
         <View className="signin-info__user">
           <Text className="signin-info__avatar">{name[0]}</Text>
           <View className="signin-info__info">
-            <View className="signin-info__info--name">{`${name} ${stuId}`}</View>
+            <View className="signin-info__info--name">{`${stuId + ' '}${name}`}</View>
             <View className="signin-info__info--desc">距离：{this.geiDistance(distance)}</View>
           </View>
         </View>

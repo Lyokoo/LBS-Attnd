@@ -30,7 +30,7 @@ export default class Index extends Component {
 
   onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  // onTest = () => Taro.navigateTo({ url: '/pages/ShowPassWd/index?passWd=tRrhSe' });
+  // onTest = () => Taro.navigateTo({ url: '/pages/ShowPassWd/index?passWd=yW9EXr' });
 
   render() {
     const { windowHeight } = this.state;

@@ -39,7 +39,7 @@ export default class Profile extends Component {
     if (pulling) return;
     this.setState({ pulling: true });
     try {
-      const result = await getUserInfo();
+      const result = await getUserInfo(true);
       if (result.code === 2000) {
         const { name, stuId } = result.data;
         this.setState({ name, stuId });
