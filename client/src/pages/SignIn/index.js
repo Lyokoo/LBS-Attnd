@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
+import { View, Image } from '@tarojs/components';
+import { AtButton, AtIcon } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
@@ -10,6 +10,8 @@ import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
 import { AttndStatus, SigninerStatus } from '../../utils/consts';
 import imgLocation from '../../assets/images/location.png';
+import imgBack from '../../assets/images/back.png';
+import imgGoHome from '../../assets/images/go-home.png';
 import './index.less';
 
 export default class Index extends Component {
@@ -17,12 +19,18 @@ export default class Index extends Component {
   config = {
     navigationBarTitleText: '考勤 Attnd',
     backgroundColor: '#f2f2f2',
-    backgroundTextStyle: 'dark'
+    backgroundTextStyle: 'dark',
+    navigationStyle: 'custom'
   }
 
   state = {
     windowHeight: 0,
     listHeight: 0,
+    navBarHeight: 0,
+    statusBarHeight: 0,
+    capsuleWidth: 0,
+    capsuleHeight: 0,
+    capsulePadding: 0,
     data: {
       listData: [
         // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
@@ -59,17 +67,29 @@ export default class Index extends Component {
     await this.getSigninerList();
   }
 
-  computeHeight = () => {
+  computeHeight = async () => {
     try {
-      const { windowWidth, windowHeight } = wx.getSystemInfoSync();
+      const {
+        width: capsuleWidth,
+        height: capsuleHeight,
+        top: capsuleTop
+      } = wx.getMenuButtonBoundingClientRect();
+      const { windowWidth, windowHeight, statusBarHeight } = Taro.getSystemInfoSync();
+      const capsulePadding = capsuleTop - statusBarHeight;
+      const navBarHeight = capsuleHeight + 2 * capsulePadding;
       const rpx = windowWidth / 750;
       const headerHeight = 258 * rpx; // PX
       const footerHeight = 100 * rpx; // PX
       const gap = (20 * 4) * rpx; // PX
-      const listHeight = windowHeight - headerHeight - footerHeight - gap;
+      const listHeight = windowHeight - headerHeight - footerHeight - gap - navBarHeight - statusBarHeight;
       this.setState({
         windowHeight,
-        listHeight
+        listHeight,
+        navBarHeight,
+        statusBarHeight,
+        capsuleHeight,
+        capsuleWidth,
+        capsulePadding
       });
     } catch (e) {
       console.log(e);
@@ -288,34 +308,75 @@ export default class Index extends Component {
   }
 
   onShareAppMessage() {
+    const { passWd } = this.state;
     return {
       title: '快来参加考勤吧！',
-      path: '/pages/Home/index',
+      path: `/pages/SignIn/index?passWd=${passWd}`,
       imageUrl: imgLocation
     }
   }
 
+  goBack = () => Taro.navigateBack();
+
+  goHome = () => Taro.switchTab({ url: '/pages/Home/index' });
+
   render() {
     const {
-      windowHeight, listHeight, data, attndInfo, btnStatus, attndBelonging, getListLoading
+      windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging, getListLoading
     } = this.state;
     return (
       <View className="signin" style={{ height: `${windowHeight}px` }}>
-        <View className="signin__header" onClick={this.onAttndInfoClick}>
-          <AttndInfo item={attndInfo} />
+        <View className="signin__statusbar" style={{ height: `${statusBarHeight}px` }}></View>
+        <View className="signin__nav" style={{ height: `${navBarHeight}px` }}>
+          <View className="signin__capsule" style={{ top: `${capsulePadding}px` }}>
+            <View
+              className="signin__capsule--left"
+              style={{
+                height: `${capsuleHeight}px`,
+                width: `${capsuleWidth / 2}px`,
+                borderTopLeftRadius: `${capsuleHeight / 2}px`,
+                borderBottomLeftRadius: `${capsuleHeight / 2}px`
+              }}
+              onClick={this.goBack}
+            >
+              <View className="signin__capsule--iconleft">
+                <Image src={imgBack} style={{ width: '20px', height: '20px' }} />
+              </View>
+            </View>
+            <View
+              className="signin__capsule--right"
+              style={{
+                height: `${capsuleHeight}px`,
+                width: `${capsuleWidth / 2}px`,
+                borderTopRightRadius: `${capsuleHeight / 2}px`,
+                borderBottomRightRadius: `${capsuleHeight / 2}px`
+              }}
+              onClick={this.goHome}
+            >
+              <View className="signin__capsule--iconright">
+                <Image src={imgGoHome} style={{ width: '20px', height: '20px' }} />
+              </View>
+            </View>
+          </View>
+          <View className="signin__nav--title">考勤详情</View>
         </View>
-        <View className="signin__content" style={{ height: `${listHeight}px` }}>
-          {data.listData.length === 0 && !getListLoading
-            ? <View className="signin__content--emptyhint">暂时还没有人签到 :) <Text className="signin__content--emptyrefresh" onClick={this.onRefreshClick}>点击刷新</Text></View>
-            : <SigninList data={data} height={listHeight} onRefreshClick={this.onRefreshClick}/>
-          }
-        </View>
-        <View className="signin__footer">
-          <View className="signin__footer--btn">
-            {attndBelonging
-              ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
-              : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
+        <View className="signin__body">
+          <View className="signin__header" onClick={this.onAttndInfoClick}>
+            <AttndInfo item={attndInfo} />
+          </View>
+          <View className="signin__content" style={{ height: `${listHeight}px` }}>
+            {data.listData.length === 0 && !getListLoading
+              ? <View className="signin__content--emptyhint">暂时还没有人签到 :) <Text className="signin__content--emptyrefresh" onClick={this.onRefreshClick}>点击刷新</Text></View>
+              : <SigninList data={data} height={listHeight} onRefreshClick={this.onRefreshClick}/>
             }
+          </View>
+          <View className="signin__footer">
+            <View className="signin__footer--btn">
+              {attndBelonging
+                ? <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onFinishAttnd}>{btnStatus.text}</AtButton>
+                : <AtButton type="primary" disabled={btnStatus.disabled} onClick={this.onSignin}>{btnStatus.text}</AtButton>
+              }
+            </View>
           </View>
         </View>
         <AdToast />
