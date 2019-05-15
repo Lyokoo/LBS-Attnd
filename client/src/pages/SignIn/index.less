@@ -6,8 +6,58 @@ page {
 }
 
 .signin {
-  box-sizing: border-box;
-  padding: 20px;
+  &__nav {
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    &--title {
+      line-height: 1;
+      font-size: 32px;
+      color: @title-text;
+    }
+  }
+
+  &__capsule {
+    position: absolute;
+    left: 20px;
+    display: flex;
+    &--left, &--right {
+      box-sizing: border-box;
+      padding: 6PX 0;
+      border: 1PX solid @border;
+      &:active {
+        background: @active;
+      }
+    }
+    &--left {
+      border-right: none;
+    }
+    &--right {
+      border-left: none;
+    }
+    &--iconleft, &--iconright {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+    }
+    &--iconleft {
+      border-right: 1PX solid @border;
+    }
+  }
+
+  &__statusbar {
+    background: white;
+  }
+
+  &__body {
+    box-sizing: border-box;
+    padding: 20px;
+  }
 
   &__header {
     margin-bottom: 20px;

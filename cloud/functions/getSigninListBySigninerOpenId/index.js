@@ -34,7 +34,7 @@ exports.main = async (event) => {
     }
 
     // res = { data: [], errMsg }
-    const signinRes = await query.orderBy('updateTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
+    const signinRes = await query.orderBy('createTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
     console.log('signinRes', signinRes);
     const passWdSet = signinRes.data.map(el => el.passWd);
     console.log('passWdSet', passWdSet);

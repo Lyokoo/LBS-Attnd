@@ -23,9 +23,10 @@ export default class ShowPassWd extends Component {
   onClickGotoSignin = () => Taro.redirectTo({ url: `/pages/SignIn/index?passWd=${this.state.passWd}` });
 
   onShareAppMessage() {
+    const { passWd } = this.state;
     return {
       title: '快来参加考勤吧！',
-      path: '/pages/Home/index',
+      path: `/pages/SignIn/index?passWd=${passWd}`,
       imageUrl: imgLocation
     }
   }
@@ -47,7 +48,7 @@ export default class ShowPassWd extends Component {
           <Text className="show-passwd__card--passwd">{this.state.passWd}</Text>
           <Text className="show-passwd__card--copy">点击可拷贝口令 :)</Text>
         </View>
-        <View className="show-passwd__desc">请向签到者展示签到口令</View>
+        <View className="show-passwd__desc">你可以线下展示口令或通过微信群聊邀请朋友签到</View>
         <View className="show-passwd__opt">
           <AtButton type="secondary" openType="share">邀请朋友签到</AtButton>
         </View>

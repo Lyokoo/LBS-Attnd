@@ -66,6 +66,8 @@ class App extends Component {
       });
     }
 
+    this.checkUpdate();
+
     // 弹窗询问用户是否同意授权小程序使用地理位置
     Taro.getSetting({
       success: res => {
@@ -81,6 +83,33 @@ class App extends Component {
   componentDidHide() { }
 
   componentDidCatchError() { }
+
+  checkUpdate = () => {
+    const updateManager = wx.getUpdateManager()
+
+    updateManager.onCheckForUpdate(res => {
+      // 请求完新版本信息的回调
+      console.log('hasUpdate', res.hasUpdate)
+    })
+
+    updateManager.onUpdateReady(() => {
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本已经准备好，是否重启应用？',
+        success: res => {
+          if (res.confirm) {
+            // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+            updateManager.applyUpdate();
+          }
+        }
+      });
+    });
+
+    updateManager.onUpdateFailed(() => {
+      // 新版本下载失败
+      console.log('new version download fail');
+    });
+  }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
