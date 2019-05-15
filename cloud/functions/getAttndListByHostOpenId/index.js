@@ -30,7 +30,7 @@ exports.main = async (event) => {
     }
 
     // res = { data: [], errMsg }
-    let { data } = await query.orderBy('updateTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
+    let { data } = await query.orderBy('createTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
 
     console.log(data);
 
