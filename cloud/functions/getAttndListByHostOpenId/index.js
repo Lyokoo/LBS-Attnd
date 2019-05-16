@@ -21,16 +21,16 @@ exports.main = async (event) => {
       hostOpenId: _.eq(openId)
     });
 
-    // offset 不为零时需要用 _id 去计算偏移
+    // offset 不为零时需要用 createTime 去计算偏移
     if (offsetId && offset !== 0) {
       query = attndCollection.where({
         hostOpenId: _.eq(openId),
-        _id: _.lte(offsetId)
+        createTime: _.lte(new Date(offsetId))
       });
     }
 
     // res = { data: [], errMsg }
-    let { data } = await query.orderBy('createTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
+    let { data } = await query.orderBy('createTime', 'desc').skip(offset).limit(pageSize).get();
 
     console.log(data);
 
@@ -58,7 +58,7 @@ exports.main = async (event) => {
         code: 2000,
         data: {
           hasMore,
-          offsetId: offset === 0 && data[0] ? data[0]._id : null,
+          offsetId: offset === 0 && data[0] ? data[0].createTime : null,
           list: data
         }
       };

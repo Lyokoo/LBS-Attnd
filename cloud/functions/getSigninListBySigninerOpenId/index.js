@@ -25,16 +25,16 @@ exports.main = async (event) => {
       signinerOpenId: _.eq(openId)
     });
 
-    // offset 不为零时需要用 _id 去计算偏移
+    // offset 不为零时需要用 createTime 去计算偏移
     if (offsetId && offset !== 0) {
       query = signinCollection.where({
         signinerOpenId: _.eq(openId),
-        _id: _.lte(offsetId)
+        createTime: _.lte(new Date(offsetId))
       });
     }
 
     // res = { data: [], errMsg }
-    const signinRes = await query.orderBy('createTime', 'desc').orderBy('_id', 'desc').skip(offset).limit(pageSize).get();
+    const signinRes = await query.orderBy('createTime', 'desc').skip(offset).limit(pageSize).get();
     console.log('signinRes', signinRes);
     const passWdSet = signinRes.data.map(el => el.passWd);
     console.log('passWdSet', passWdSet);
@@ -76,7 +76,7 @@ exports.main = async (event) => {
       code: 2000,
       data: {
         hasMore,
-        offsetId: offset === 0 && signinRes.data[0] ? signinRes.data[0]._id : null,
+        offsetId: offset === 0 && signinRes.data[0] ? signinRes.data[0].createTime : null,
         list: signinListData
       }
     }
