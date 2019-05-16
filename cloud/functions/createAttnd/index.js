@@ -1,29 +1,29 @@
 const cloud = require('wx-server-sdk');
-cloud.init({
-  env: 'envlzp-110d2c'
-});
+cloud.init();
 
 // 生成签到口令
-const buildPassWd = (count) => {
-  const digits = "0123456789abcdefghijk+mnopqrstuvwxyzABCDEFGH=JKLMNOPQRSTUVWXYZ";
-  let passwd = '';
-
+const buildPassWd = () => {
   // 返回 [min, max] 范围的整数
   const getRandomInt = (min, max) => {
     return Math.round(Math.random() * (max - min)) + min;
   }
 
-  // 10 进制转 62 进制
-  const to62 = (n) => {
-    let ans = '';
-    while (n !== 0) {
-      ans += digits[n % 62];
-      n = Math.floor(n / 62);
+  // 毫秒时间戳转成 62 进制
+  const getTimeIn62 = (timeInLong) => {
+    let timeIn62 = '';
+    while (timeInLong !== 0) {
+      timeIn62 += digits[timeInLong % 62];
+      timeInLong = Math.floor(timeInLong / 62);
     }
-    return ans;
+    return timeIn62;
   }
 
-  passwd = digits[getRandomInt(0, 61)] + to62(Date.now()).slice(0, 2) + to62(count + 1);
+  const digits = "0123456789abcdefghijk+mnopqrstuvwxyzABCDEFGH=JKLMNOPQRSTUVWXYZ";
+  let passwd = '';
+
+  passwd = digits[getRandomInt(0, 61)]
+    + getTimeIn62(Date.now()).slice(0, 3)
+    + digits[getRandomInt(0, 61)] + digits[getRandomInt(0, 61)];
 
   return passwd;
 }
@@ -59,34 +59,29 @@ exports.main = async (event) => {
     }
 
     // 计算签到口令
-    const countRes = await attndCollection.count();
-    console.log('countRes', countRes);
-    if (!Number.isInteger(countRes.total)) {
-      throw new Error('获取记录数量出现错误');
-    }
-    let passWd = buildPassWd(countRes.total);
+    let passWd = buildPassWd();
 
     // 查询是否存在与此口令相同的考勤
     // res = { data: [], errMsg }
-    // while (true) {
-    //   const { data } = await attndCollection.where({
-    //     passWd: _.eq(passWd)
-    //   }).get();
-    //   // 不存在该记录，可插入
-    //   if (Array.isArray(data) && data.length === 0) {
-    //     break;
-    //   }
-    //   if (!Array.isArray(data)) {
-    //     console.log('查询数据库错误');
-    //     throw new Error('查询数据库错误');
-    //   }
-    //   passWd = buildPassWd();
-    // }
+    while (true) {
+      const { data } = await attndCollection.where({
+        passWd: _.eq(passWd)
+      }).get();
+      // 不存在该记录，可插入
+      if (Array.isArray(data) && data.length === 0) {
+        break;
+      }
+      if (!Array.isArray(data)) {
+        console.log('查询数据库错误');
+        throw new Error('查询数据库错误');
+      }
+      passWd = buildPassWd();
+    }
 
     // 创建新的考勤
     const reqData = {
-      hostName,
       attndName,
+      hostName,
       location,
       passWd,
       hostOpenId: openId,
