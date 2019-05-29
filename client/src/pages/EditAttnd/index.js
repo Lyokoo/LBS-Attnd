@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtInput, AtButton } from 'taro-ui';
 import AdToast from '../../components/AdToast';
-import { getLocation } from '../../services/location';
+import { getLocation, getAddress } from '../../services/location';
 import { createAttnd } from '../../services/attnd';
 import * as adLog from '../../utils/adLog';
 import './index.less';
@@ -54,7 +54,10 @@ export default class EditAttnd extends Component {
         return;
       }
 
-      const res = await createAttnd({ attndName, location });
+      // 获取逆地址解析（地理位置描述）
+      const address = await getAddress();
+
+      const res = await createAttnd({ attndName, location, address });
 
       // 未填写个人信息
       if (res.code === 3003) {

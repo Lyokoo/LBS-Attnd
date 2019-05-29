@@ -28,7 +28,7 @@ exports.main = async (event) => {
   const userCollection = db.collection('user');
   const signinCollection = db.collection('signin');
   const attndCollection = db.collection('attnd');
-  const { passWd, location: signinerLocation } = event;
+  const { passWd, location: signinerLocation, signinerSystemInfo } = event;
   const { openId: signinerOpenId } = event.userInfo;
   const validDistance = 200;
   const MaxSigninerCount = 100;
@@ -138,7 +138,7 @@ exports.main = async (event) => {
 
     if (signinRes2.data.length > 0) {
       const reqData = {
-        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, updateTime: new Date()
+        passWd, signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.where({
@@ -156,7 +156,7 @@ exports.main = async (event) => {
       const { attndName } = attndRes.data[0];
 
       const reqData = {
-        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date()
+        passWd, attndName, signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.add({

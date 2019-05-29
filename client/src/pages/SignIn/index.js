@@ -113,7 +113,9 @@ export default class Index extends Component {
         signinInfo: signinResult.data || {},
         attndBelonging: attndResult.data.belonging || false,
         getInfoLoading: false
-      }, () => this.computeBtnStatus());
+      }, () => {
+        this.computeBtnStatus();
+      });
     } catch (e) {
       Taro.hideLoading();
       this.setState({ getInfoLoading: false });
@@ -179,6 +181,9 @@ export default class Index extends Component {
       if (signinerStatus === SigninerStatus.ARRIVED || signinerStatus === SigninerStatus.LATE) {
         btnStatus.text = '已签到';
         btnStatus.disabled = true;
+      } else if (signinerStatus === SigninerStatus.OUT_OF_DIST) {
+        btnStatus.text = '(超距)重新签到';
+        btnStatus.disabled = false;
       } else {
         btnStatus.text = '签到';
         btnStatus.handleFunc = this.onSignin;

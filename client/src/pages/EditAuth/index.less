@@ -4,18 +4,35 @@
 .edit-auth {
   &__img {
     width: 100%;
-    margin-bottom: 60px;
   }
 
-  &__desc {
-    .cm-text();
-    font-size: 14PX;
-    color: @assist-text;
+  &__msg {
+    font-size: 18PX;
+    color: @title-text;
+    letter-spacing: 2px;
     text-align: center;
     margin-bottom: 60px;
   }
 
-  &__opt {
-    margin: 0 150px;
+  &__wrapper {
+    font-size: 16PX;
+    color: @assist-text;
+    letter-spacing: 2px;
+    padding: 0 100px;
+    text-align: justify; 
+  }
+
+  &__desc {
+    margin-bottom: 30px;
+  }
+
+  &__link {
+    .cm-btn();
+    display: inline;
+    font-size: 16PX;
+    color: @dark-blue;
+    &:active {
+      background: @active;
+    }
   }
 }

@@ -2,13 +2,26 @@ import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
 
 // 创建考勤
-export const createAttnd = async ({ attndName, location }) => {
-  const payload = { attndName, location };
-  adLog.log('createAttnd-params', payload);
+export const createAttnd = async ({ attndName, location, address }) => {
   try {
+    // 获取 systemInfo
+    const res = wx.getSystemInfoSync();
+    const hostSystemInfo = {
+      brand: res.brand,
+      model: res.model,
+      platform: res.platform,
+      system: res.system,
+      wxVersion: res.version,
+      sdkVersion: res.SDKVersion
+    };
+    
+    // 打印参数
+    const payload = { attndName, location, address, hostSystemInfo };
+    adLog.log('createAttnd-params', payload);
+
     const { result } = await Taro.cloud.callFunction({
       name: 'createAttnd',
-      data: { attndName, location }
+      data: { attndName, location, address, hostSystemInfo }
     });
     if (result.code !== 2000 && result.code !== 3003) throw result;
     adLog.log('createAttnd-result', result);
