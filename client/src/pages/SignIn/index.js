@@ -113,7 +113,9 @@ export default class Index extends Component {
         signinInfo: signinResult.data || {},
         attndBelonging: attndResult.data.belonging || false,
         getInfoLoading: false
-      }, () => this.computeBtnStatus());
+      }, () => {
+        this.computeBtnStatus();
+      });
     } catch (e) {
       Taro.hideLoading();
       this.setState({ getInfoLoading: false });
@@ -179,6 +181,9 @@ export default class Index extends Component {
       if (signinerStatus === SigninerStatus.ARRIVED || signinerStatus === SigninerStatus.LATE) {
         btnStatus.text = '已签到';
         btnStatus.disabled = true;
+      } else if (signinerStatus === SigninerStatus.OUT_OF_DIST) {
+        btnStatus.text = '(超距)重新签到';
+        btnStatus.disabled = false;
       } else {
         btnStatus.text = '签到';
         btnStatus.handleFunc = this.onSignin;
@@ -241,6 +246,13 @@ export default class Index extends Component {
     } catch (e) {
       this.setState({ signinLoading: false });
       Taro.hideLoading();
+      adLog.warn('Signin-error', e);
+      if (typeof e === 'object' && e.errCode === 5001) {
+        Taro.adToast({ text: '操作频繁，请稍后再试～' }, () => {
+          this.onRefresh();
+        });
+        return;
+      }
       Taro.adToast({ text: '抱歉，无法签到' }, () => {
         this.onRefresh();
       });
@@ -280,13 +292,33 @@ export default class Index extends Component {
     }
   }
 
-  onAttndInfoClick = () => {
-    const { passWd } = this.state;
-    if (!passWd) return;
-    Taro.setClipboardData({
-      data: passWd,
-      success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
-    });
+  onAttndInfoClick = async () => {
+    try {
+      // 考勤者位置
+      const hostLoc = { longitude: this.state.attndInfo.gcj02Location.lng, latitude: this.state.attndInfo.gcj02Location.lat };
+
+      Taro.showLoading({ title: '获取位置', mask: true });
+      // 签到者位置
+      const { lng, lat } = await getLocation('gcj02');
+      const signinerLoc = { longitude: lng, latitude: lat };
+
+      adLog.log('Signin-showLocation', { hostLoc, signinerLoc });
+      // 验证
+      if (typeof hostLoc.longitude !== 'number' || typeof hostLoc.latitude !== 'number'
+        || typeof signinerLoc.longitude !== 'number' || typeof signinerLoc.latitude !== 'number') {
+          Taro.hideLoading();
+          Taro.adToast({ text: '未获取位置' });
+        return;
+      }
+
+      Taro.hideLoading();
+      Taro.navigateTo({
+        url: `/pages/ShowLocation/index?hostLoc=${JSON.stringify(hostLoc)}&signinerLoc=${JSON.stringify(signinerLoc)}`
+      });
+    } catch (e) {
+      Taro.hideLoading();
+      Taro.adToast({ text: '未获取位置' });
+    }
   }
 
   onRefreshClick = () => {

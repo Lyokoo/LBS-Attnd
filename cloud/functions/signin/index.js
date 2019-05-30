@@ -28,10 +28,10 @@ exports.main = async (event) => {
   const userCollection = db.collection('user');
   const signinCollection = db.collection('signin');
   const attndCollection = db.collection('attnd');
-  const { passWd, location: signinerLocation } = event;
+  const { passWd, location: signinerLocation, signinerSystemInfo } = event;
   const { openId: signinerOpenId } = event.userInfo;
   const validDistance = 200;
-  const MaxSigninerCount = 100;
+  // const MaxSigninerCount = 100;
   console.log('event', event);
 
   if (typeof passWd !== 'string' || !passWd
@@ -64,13 +64,13 @@ exports.main = async (event) => {
     }
 
     // 检查签到人数上限
-    const countRes = await signinCollection.where({
-      passWd: _.eq(passWd)
-    }).count();
-    console.log('countRes', countRes);
-    if (countRes.total >= MaxSigninerCount) {
-      return { code: 3004 };
-    }
+    // const countRes = await signinCollection.where({
+    //   passWd: _.eq(passWd)
+    // }).count();
+    // console.log('countRes', countRes);
+    // if (countRes.total >= MaxSigninerCount) {
+    //   return { code: 3004 };
+    // }
 
     // 检查个人信息是否完善
     let signinerName = '';
@@ -138,7 +138,7 @@ exports.main = async (event) => {
 
     if (signinRes2.data.length > 0) {
       const reqData = {
-        passWd, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, updateTime: new Date()
+        passWd, signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.where({
@@ -156,7 +156,7 @@ exports.main = async (event) => {
       const { attndName } = attndRes.data[0];
 
       const reqData = {
-        passWd, attndName, signinerOpenId, signinerLocation, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date()
+        passWd, attndName, signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date()
       };
       console.log(reqData);
       await signinCollection.add({
@@ -167,7 +167,11 @@ exports.main = async (event) => {
       throw new Error('数据库错误');
     }
   } catch (e) {
+    // {"errCode":-502001,"errMsg":"云资源数据库错误：数据库请求失败 "}
     console.log(e);
+    if (typeof e === 'object' && e.errCode === -502001) {
+      return { code: 5001, msg: e };
+    }
     return { code: 5000, msg: e };
   }
 }

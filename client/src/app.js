@@ -17,6 +17,7 @@ class App extends Component {
       'pages/SignIn/index',
       'pages/ShowPassWd/index',
       'pages/About/index',
+      'pages/ShowLocation/index'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -44,7 +45,7 @@ class App extends Component {
         },
         {
           pagePath: 'pages/List/index',
-          text: '列表',
+          text: '记录',
           iconPath: 'assets/images/list.png',
           selectedIconPath: 'assets/images/list-active.png'
         },

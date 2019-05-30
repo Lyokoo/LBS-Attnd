@@ -3,12 +3,25 @@ import * as adLog from '../utils/adLog';
 
 // 签到
 export const signin = async ({ passWd, location }) => {
-  const payload = { passWd, location };
-  adLog.log('signin-params', payload);
   try {
+    // 获取 systemInfo
+    const res = wx.getSystemInfoSync();
+    const signinerSystemInfo = {
+      brand: res.brand,
+      model: res.model,
+      platform: res.platform,
+      system: res.system,
+      wxVersion: res.version,
+      sdkVersion: res.SDKVersion
+    };
+
+    // 打印参数
+    const payload = { passWd, location, signinerSystemInfo };
+    adLog.log('signin-params', payload);
+
     const { result } = await Taro.cloud.callFunction({
       name: 'signin',
-      data: { passWd, location }
+      data: { passWd, location, signinerSystemInfo }
     });
     if (![2000, 3002, 3003, 3004].includes(result.code)) {
       throw result;

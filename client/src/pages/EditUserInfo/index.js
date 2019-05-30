@@ -90,6 +90,10 @@ export default class EditUserInfo extends Component {
       }, 1500);
     } catch (e) {
       adLog.warn('EditUserInfo-error', e);
+      if (typeof e === 'object' && e.errCode === 5001) {
+        Taro.adToast({ text: '操作频繁，请稍后再试～' });
+        return;
+      }
       Taro.adToast({ text: '保存失败' });
     }
     this.setState({ submiting: false });

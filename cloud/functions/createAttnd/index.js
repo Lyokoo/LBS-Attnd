@@ -33,7 +33,7 @@ exports.main = async (event) => {
   const _ = db.command;
   const attndCollection = db.collection('attnd');
   const userCollection = db.collection('user');
-  const { attndName, location } = event;
+  const { attndName, location, gcj02Location, address, hostSystemInfo } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
 
@@ -83,6 +83,9 @@ exports.main = async (event) => {
       attndName,
       hostName,
       location,
+      gcj02Location,
+      address,
+      hostSystemInfo,
       passWd,
       hostOpenId: openId,
       attndStatus: 1, // 考勤状态 0-->已结束，1-->进行中
@@ -98,7 +101,11 @@ exports.main = async (event) => {
       data: { passWd }
     };
   } catch (e) {
+    // {"errCode":-502001,"errMsg":"云资源数据库错误：数据库请求失败 "}
     console.log(e);
+    if (typeof e === 'object' && e.errCode === -502001) {
+      return { code: 5001, msg: e };
+    }
     return { code: 5000, msg: e };
   }
 }

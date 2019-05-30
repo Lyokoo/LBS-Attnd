@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button } from '@tarojs/components';
 import './index.less';
+import { getAddress } from '../../services/location';
 
 export default class Index extends Component {
 
@@ -13,7 +14,7 @@ export default class Index extends Component {
     windowHeight: 0
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.computeHeight();
   }
 
@@ -30,7 +31,7 @@ export default class Index extends Component {
 
   onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  // onTest = () => Taro.navigateTo({ url: '/pages/ShowPassWd/index?passWd=ht2ADJ' });
+  // onTest = () => Taro.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
 
   render() {
     const { windowHeight } = this.state;
