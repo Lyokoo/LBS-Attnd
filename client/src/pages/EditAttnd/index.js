@@ -54,10 +54,13 @@ export default class EditAttnd extends Component {
         return;
       }
 
+      // 用于地图显示的 gcj02 坐标
+      const gcj02Location = await getLocation('gcj02');
+
       // 获取逆地址解析（地理位置描述）
       const address = await getAddress();
 
-      const res = await createAttnd({ attndName, location, address });
+      const res = await createAttnd({ attndName, location, address, gcj02Location });
 
       // 未填写个人信息
       if (res.code === 3003) {

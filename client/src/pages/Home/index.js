@@ -16,13 +16,6 @@ export default class Index extends Component {
 
   async componentDidMount() {
     this.computeHeight();
-    try {
-      const res = wx.getSystemInfoSync()
-      const { brand, model, version, system, platform, SDKVersion } = res;
-      console.log({ brand, model, version, system, platform, SDKVersion });
-    } catch (e) {
-      // Do something when catch error
-    }
   }
 
   computeHeight = () => {
@@ -38,13 +31,13 @@ export default class Index extends Component {
 
   onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  onTest = () => Taro.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
+  // onTest = () => Taro.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
 
   render() {
     const { windowHeight } = this.state;
     return (
       <View className="home">
-        <Button onClick={this.onTest}>test</Button>
+        {/* <Button onClick={this.onTest}>test</Button> */}
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
           <View className="home__signin home__opt" onClick={this.onFindAttndClick}>
             <View className="home__circle">签</View>

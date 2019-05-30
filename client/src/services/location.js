@@ -2,11 +2,11 @@ import * as adLog from '../utils/adLog';
 import Taro from '@tarojs/taro';
 var QQMapWX = require('../utils/qqmap-wx-jssdk.js');
 
-export const getLocation = async () => {
+export const getLocation = async (type = 'wgs84') => {
   try {
     return await new Promise((resolve, reject) => {
       Taro.getLocation({
-        type: 'wgs84',
+        type,
         success: res => {
           const location = {
             lng: res.longitude,

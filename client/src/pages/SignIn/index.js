@@ -292,13 +292,33 @@ export default class Index extends Component {
     }
   }
 
-  onAttndInfoClick = () => {
-    const { passWd } = this.state;
-    if (!passWd) return;
-    Taro.setClipboardData({
-      data: passWd,
-      success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
-    });
+  onAttndInfoClick = async () => {
+    try {
+      // 考勤者位置
+      const hostLoc = { longitude: this.state.attndInfo.gcj02Location.lng, latitude: this.state.attndInfo.gcj02Location.lat };
+
+      Taro.showLoading({ title: '获取位置', mask: true });
+      // 签到者位置
+      const { lng, lat } = await getLocation('gcj02');
+      const signinerLoc = { longitude: lng, latitude: lat };
+
+      adLog.log('Signin-showLocation', { hostLoc, signinerLoc });
+      // 验证
+      if (typeof hostLoc.longitude !== 'number' || typeof hostLoc.latitude !== 'number'
+        || typeof signinerLoc.longitude !== 'number' || typeof signinerLoc.latitude !== 'number') {
+          Taro.hideLoading();
+          Taro.adToast({ text: '未获取位置' });
+        return;
+      }
+
+      Taro.hideLoading();
+      Taro.navigateTo({
+        url: `/pages/ShowLocation/index?hostLoc=${JSON.stringify(hostLoc)}&signinerLoc=${JSON.stringify(signinerLoc)}`
+      });
+    } catch (e) {
+      Taro.hideLoading();
+      Taro.adToast({ text: '未获取位置' });
+    }
   }
 
   onRefreshClick = () => {

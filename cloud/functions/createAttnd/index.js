@@ -33,7 +33,7 @@ exports.main = async (event) => {
   const _ = db.command;
   const attndCollection = db.collection('attnd');
   const userCollection = db.collection('user');
-  const { attndName, location, address, hostSystemInfo } = event;
+  const { attndName, location, gcj02Location, address, hostSystemInfo } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
 
@@ -83,6 +83,7 @@ exports.main = async (event) => {
       attndName,
       hostName,
       location,
+      gcj02Location,
       address,
       hostSystemInfo,
       passWd,
