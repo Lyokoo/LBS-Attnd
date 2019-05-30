@@ -76,7 +76,11 @@ exports.main = async (event) => {
 
     return { code: 2000 };
   } catch (e) {
+    // {"errCode":-502001,"errMsg":"云资源数据库错误：数据库请求失败 "}
     console.log(e);
+    if (typeof e === 'object' && e.errCode === -502001) {
+      return { code: 5001, msg: e };
+    }
     return { code: 5000, msg: e };
   }
 }

@@ -246,6 +246,13 @@ export default class Index extends Component {
     } catch (e) {
       this.setState({ signinLoading: false });
       Taro.hideLoading();
+      adLog.warn('Signin-error', e);
+      if (typeof e === 'object' && e.errCode === 5001) {
+        Taro.adToast({ text: '操作频繁，请稍后再试～' }, () => {
+          this.onRefresh();
+        });
+        return;
+      }
       Taro.adToast({ text: '抱歉，无法签到' }, () => {
         this.onRefresh();
       });

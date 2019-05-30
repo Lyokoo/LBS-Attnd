@@ -77,6 +77,10 @@ export default class EditAttnd extends Component {
       setTimeout(() => Taro.redirectTo({ url: `/pages/ShowPassWd/index?passWd=${passWd}` }), 1500);
     } catch (e) {
       adLog.warn('EditAttnd-error', e);
+      if (typeof e === 'object' && e.errCode === 5001) {
+        Taro.adToast({ text: '操作频繁，请稍后再试～' });
+        return;
+      }
       Taro.adToast({ text: '发起失败' });
     }
     this.setState({ submiting: false });
@@ -89,7 +93,7 @@ export default class EditAttnd extends Component {
         <View className="edit-attnd__title">发起考勤</View>
         <View>
           <View className="edit-attnd__desc">* 小程序通过 GPS 定位，确定考勤有效范围是以你当前位置为中心的方圆 200 米，在有效范围内完成签到者视为已到</View>
-          <View className="edit-attnd__desc">* 签到人数上限为 100 人</View>
+          {/* <View className="edit-attnd__desc">* 签到人数上限为 100 人</View> */}
         </View>
         <View className="edit-attnd__input">
           <AtInput
