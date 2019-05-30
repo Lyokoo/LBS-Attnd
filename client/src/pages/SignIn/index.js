@@ -307,7 +307,7 @@ export default class Index extends Component {
       if (typeof hostLoc.longitude !== 'number' || typeof hostLoc.latitude !== 'number'
         || typeof signinerLoc.longitude !== 'number' || typeof signinerLoc.latitude !== 'number') {
           Taro.hideLoading();
-          Taro.adToast({ text: '未获取位置' });
+          // Taro.adToast({ text: '未获取位置' });
         return;
       }
 
@@ -317,7 +317,7 @@ export default class Index extends Component {
       });
     } catch (e) {
       Taro.hideLoading();
-      Taro.adToast({ text: '未获取位置' });
+      // Taro.adToast({ text: '未获取位置' });
     }
   }
 
