@@ -11,9 +11,15 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
-        version: '当前版本 v1.1.0',
+        version: '当前版本 v1.1.1',
         points: [
           '[todo] 部分机型定位偏差较大'
+        ]
+      },
+      {
+        version: 'v1.1.1 @2019.06.01',
+        points: [
+          '[feat] 新增赞赏功能 么么哒😘'
         ]
       },
       {
@@ -91,10 +97,10 @@ export default class UpdateLog extends Component {
     return (
       <View className="update-log">
         {logs.map(log => (
-          <View className="update-log__item">
+          <View className="update-log__item" key={log.version}>
             <View className="update-log__item--version">{log.version}</View>
             {log.points.map(point => (
-              <View className="update-log__item--point">{point}</View>
+              <View className="update-log__item--point" key={point}>{point}</View>
             ))}
           </View>
         ))}
