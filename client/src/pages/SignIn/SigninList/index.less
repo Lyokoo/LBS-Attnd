@@ -11,19 +11,27 @@ page {
     &--bar {
       margin-bottom: 30px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
     }
     &--count {
       .cm-text();
       font-size: 14PX;
       color: @assist-text;
+      margin-right: 30px;
     }
-    &--refresh {
+    &--opt {
+      display: flex;
+      margin-right: 20px;
+    }
+    &--link {
       .cm-text();
       font-size: 14PX;
       color: @dark-blue;
       &:active {
         background: @active;
+      }
+      &:first-child {
+        margin-right: 20px;
       }
     }
     &--item {
@@ -32,5 +40,13 @@ page {
         margin-bottom: 0;
       }
     }
+  }
+  &__hint {
+    .cm-text();
+    height: 120px;
+    line-height: 120px;
+    font-size: 14PX;
+    color: @assist-text;
+    text-align: center;
   }
 }

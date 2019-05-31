@@ -52,6 +52,8 @@ export default class Profile extends Component {
 
   onAboutClick = () => Taro.navigateTo({ url: '/pages/About/index' });
 
+  onUpdateLogClick = () => Taro.navigateTo({ url: '/pages/UpdateLog/index' });
+
   render() {
     const { name, stuId = '', pulling } = this.state;
     const getAvatar = () => (name && name[0]) ? name[0] : '';
@@ -72,9 +74,12 @@ export default class Profile extends Component {
           <ProfileItem title="授权管理" openType="openSetting" />
         </View>
         <View className="profile__group">
-          <ProfileItem title="问题反馈" openType="feedback" />
-          <ProfileItem title="关于我们" onClick={this.onAboutClick} />  
+          <ProfileItem title="问题反馈" openType="feedback" />  
+          <ProfileItem title="关于我们" onClick={this.onAboutClick} />
           <ProfileItem title="推荐给朋友" openType="share" />
+        </View>
+        <View className="profile__group">
+          <ProfileItem title="更新日志" onClick={this.onUpdateLogClick} />
         </View>
       </View>
     )

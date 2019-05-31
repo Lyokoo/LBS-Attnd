@@ -11,7 +11,8 @@ export default class AttndList extends Component {
     height: PropTypes.number,
     data: PropTypes.object,
     onLoadMore: PropTypes.func,
-    onRefreshClick: PropTypes.func
+    onRefreshClick: PropTypes.func,
+    onShowLocClick: PropTypes.func
   }
 
   static defaultProps = {
@@ -21,7 +22,8 @@ export default class AttndList extends Component {
       hasMore: true
     },
     onLoadMore: () => { },
-    onRefreshClick: () => { }
+    onRefreshClick: () => { },
+    onShowLocClick: () => { }
   }
 
   onLoadMore = () => {
@@ -30,6 +32,7 @@ export default class AttndList extends Component {
 
   render() {
     const { data, height } = this.props;
+    const count = data.listData.length > 999 ? '999+' : data.listData.length;
     return (
       <View className="signin-list">
         <ScrollView
@@ -41,13 +44,18 @@ export default class AttndList extends Component {
         >
           <View className="signin-list__content">
             <View className="signin-list__content--bar">
-              <View className="signin-list__content--count">当前人数：{data.listData.length}</View>
-              <View className="signin-list__content--refresh" onClick={this.props.onRefreshClick}>刷新</View>
-            </View>
-            {data.listData.map(item => (
-              <View className="signin-list__content--item" key={item}>
-                <SigninInfo item={item} />
+              <View className="signin-list__content--count">当前人数: {count}</View>
+              <View className="signin-list__content--opt">
+                <View className="signin-list__content--link" onClick={this.props.onShowLocClick}>查看位置</View>
+                <View className="signin-list__content--link" onClick={this.props.onRefreshClick}>刷新</View>
               </View>
+            </View>
+            {data.listData.length === 0 ? 
+              <View className="signin-list__hint">暂时还没有人签到 :) </View>
+              : data.listData.map(item => (
+                <View className="signin-list__content--item" key={item}>
+                  <SigninInfo item={item} />
+                </View>
             ))}
           </View>
           {/* <LoadMore hasMore={data.hasMore}/> */}

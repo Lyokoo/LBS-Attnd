@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Map } from '@tarojs/components';
 
-export default class ShowPassWd extends Component {
+export default class ShowLocation extends Component {
 
   config = {
     navigationBarTitleText: '位置'
@@ -29,14 +29,20 @@ export default class ShowPassWd extends Component {
       callout: {
         content: '考勤地点',
         display: 'ALWAYS',
-        fontSize: '16px',
+        fontSize: '14px',
         borderWidth: '1px',
-        borderColor: '#ebebeb',
         borderRadius: '6px',
         padding: '10px',
         color: '#000',
         bgColor: '#fff'
       }
+    }
+    const circle = {
+      ...hostLoc,
+      color: '#6190e8',
+      fillColor: '#78a4fa55',
+      radius: 200,
+      strokeWidth: 1
     }
     return (
       <View className="show-location">
@@ -45,9 +51,15 @@ export default class ShowPassWd extends Component {
           style={{ width: '100%', height: '100vh' }}
           longitude={hostLoc.longitude}
           latitude={hostLoc.latitude}
-          scale={17}
+          scale={16}
           markers={[hostMarker]}
+          circles={[circle]}
           showLocation={true}
+          showCompass={true}
+          enableOverlooking={true}
+          enableRotate={true}
+          enable3D={true}
+          skew={1}
         />
       </View>
     )
