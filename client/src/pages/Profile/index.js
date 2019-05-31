@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components';
 import ProfileItem from './ProfileItem';
 import { getUserInfo } from '../../services/userInfo';
 import imgLocation from '../../assets/images/location.png';
+import { AppIds } from '../../utils/consts';
 import './index.less';
 
 /**
@@ -54,6 +55,13 @@ export default class Profile extends Component {
 
   onUpdateLogClick = () => Taro.navigateTo({ url: '/pages/UpdateLog/index' });
 
+  onRewardClick = () => {
+    wx.navigateToMiniProgram({
+      appId: AppIds.GeiZan,
+      path: 'pages/apps/largess/detail?id=AZtypSUMi4s%3D'
+    });
+  }
+
   render() {
     const { name, stuId = '', pulling } = this.state;
     const getAvatar = () => (name && name[0]) ? name[0] : '';
@@ -76,6 +84,9 @@ export default class Profile extends Component {
         <View className="profile__group">
           <ProfileItem title="问题反馈" openType="feedback" />  
           <ProfileItem title="关于我们" onClick={this.onAboutClick} />
+        </View>
+        <View className="profile__group">
+          <ProfileItem title="赞赏一下" onClick={this.onRewardClick} />
           <ProfileItem title="推荐给朋友" openType="share" />
         </View>
         <View className="profile__group">

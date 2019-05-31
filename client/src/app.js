@@ -32,6 +32,9 @@ class App extends Component {
         desc: "你的位置信息将用于小程序位置接口的效果展示"
       }
     },
+    navigateToMiniProgramAppIdList: [
+      'wx18a2ac992306a5a4'
+    ],
     tabBar: {
       color: '#6d6d6d',
       selectedColor: '#78a4fa',
