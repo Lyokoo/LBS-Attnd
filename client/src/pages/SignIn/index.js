@@ -292,7 +292,18 @@ export default class Index extends Component {
     }
   }
 
-  onAttndInfoClick = async () => {
+  // 拷贝口令
+  onAttndInfoClick = () => {
+    const { passWd } = this.state;
+    if (!passWd) return;
+    Taro.setClipboardData({
+      data: passWd,
+      success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
+    });
+  }
+
+  // 查看考勤位置和当前位置
+  onShowLocClick = async () => {
     try {
       // 考勤者位置
       const hostLoc = { longitude: this.state.attndInfo.gcj02Location.lng, latitude: this.state.attndInfo.gcj02Location.lat };
@@ -397,10 +408,12 @@ export default class Index extends Component {
             <AttndInfo item={attndInfo} />
           </View>
           <View className="signin__content" style={{ height: `${listHeight}px` }}>
-            {data.listData.length === 0 && !getListLoading
-              ? <View className="signin__content--emptyhint">暂时还没有人签到 :) <Text className="signin__content--emptyrefresh" onClick={this.onRefreshClick}>点击刷新</Text></View>
-              : <SigninList data={data} height={listHeight} onRefreshClick={this.onRefreshClick}/>
-            }
+            <SigninList
+              data={data}
+              height={listHeight}
+              onRefreshClick={this.onRefreshClick}
+              onShowLocClick={this.onShowLocClick}
+            />
           </View>
           <View className="signin__footer">
             <View className="signin__footer--btn">
