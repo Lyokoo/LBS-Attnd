@@ -19,7 +19,7 @@ export const createAttnd = async ({ attndName, location, gcj02Location, address 
     const payload = { attndName, location, gcj02Location, address, hostSystemInfo };
     adLog.log('createAttnd-params', payload);
 
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'createAttnd',
       data: { attndName, location, gcj02Location, address, hostSystemInfo }
     });
@@ -37,7 +37,7 @@ export const getAttndListByHostOpenId = async ({ offset, offsetId }) => {
   const payload = { offset, offsetId };
   adLog.log('getAttndListByHostOpenId-params', payload);
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getAttndListByHostOpenId',
       data: { offset, offsetId }
     });
@@ -59,7 +59,7 @@ export const getAttndListByHostOpenId = async ({ offset, offsetId }) => {
 export const getAttndByPassWd = async ({ passWd }) => {
   adLog.log('getAttndByPassWd-params', { passWd });
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getAttndByPassWd',
       data: { passWd }
     });
@@ -76,7 +76,7 @@ export const getAttndByPassWd = async ({ passWd }) => {
 export const updateAttndStatus = async ({ passWd, attndStatus }) => {
   adLog.log('updateAttndStatus-params', { passWd, attndStatus });
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'updateAttndStatus',
       data: { passWd, attndStatus }
     });

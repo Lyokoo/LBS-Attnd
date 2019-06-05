@@ -20,7 +20,7 @@ export default class ShowPassWd extends Component {
     this.setState({ passWd });
   }
 
-  onClickGotoSignin = () => Taro.redirectTo({ url: `/pages/SignIn/index?passWd=${this.state.passWd}` });
+  onClickGotoSignin = () => wx.redirectTo({ url: `/pages/SignIn/index?passWd=${this.state.passWd}` });
 
   onShareAppMessage() {
     const { passWd } = this.state;
@@ -34,7 +34,7 @@ export default class ShowPassWd extends Component {
   onPassWdClick = () => {
     const { passWd } = this.state;
     if (!passWd) return;
-    Taro.setClipboardData({
+    wx.setClipboardData({
       data: passWd,
       success: () => Taro.adToast({ text: '拷贝成功', status: 'success' })
     });

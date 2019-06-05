@@ -44,7 +44,7 @@ export default class About extends Component {
 
   onCopy = (str) => {
     if (!str) return;
-    Taro.setClipboardData({
+    wx.setClipboardData({
       data: str,
       success: () => Taro.adToast({ text: '拷贝成功', status: 'success' })
     });

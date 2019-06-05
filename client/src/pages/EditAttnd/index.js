@@ -49,7 +49,7 @@ export default class EditAttnd extends Component {
 
       // 未授权获取位置
       if (!location) {
-        Taro.navigateTo({ url: '/pages/EditAuth/index' });
+        wx.navigateTo({ url: '/pages/EditAuth/index' });
         this.setState({ submiting: false });
         return;
       }
@@ -64,12 +64,12 @@ export default class EditAttnd extends Component {
 
       // 未填写个人信息
       if (res.code === 3003) {
-        Taro.showModal({
+        wx.showModal({
           title: '个人信息',
           content: '请完善个人信息',
           confirmText: '前往',
           confirmColor: '#78a4fa',
-          success: res => res.confirm && Taro.navigateTo({ url: '/pages/EditUserInfo/index' })
+          success: res => res.confirm && wx.navigateTo({ url: '/pages/EditUserInfo/index' })
         });
         this.setState({ submiting: false });
         return;
@@ -77,7 +77,7 @@ export default class EditAttnd extends Component {
 
       const passWd = res.data.passWd;
       Taro.adToast({ text: '发起成功', status: 'success' });
-      setTimeout(() => Taro.redirectTo({ url: `/pages/ShowPassWd/index?passWd=${passWd}` }), 1500);
+      setTimeout(() => wx.redirectTo({ url: `/pages/ShowPassWd/index?passWd=${passWd}` }), 1500);
     } catch (e) {
       adLog.warn('EditAttnd-error', e);
       if (typeof e === 'object' && e.errCode === 5001) {

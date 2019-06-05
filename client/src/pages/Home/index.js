@@ -27,11 +27,11 @@ export default class Index extends Component {
     }
   }
 
-  onFindAttndClick = () => Taro.navigateTo({ url: '/pages/FindAttnd/index' });
+  onFindAttndClick = () => wx.navigateTo({ url: '/pages/FindAttnd/index' });
 
-  onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
+  onEditAttndClick = () => wx.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  // onTest = () => Taro.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
+  // onTest = () => wx.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
 
   render() {
     const { windowHeight } = this.state;

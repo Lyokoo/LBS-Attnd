@@ -19,7 +19,7 @@ export const signin = async ({ passWd, location }) => {
     const payload = { passWd, location, signinerSystemInfo };
     adLog.log('signin-params', payload);
 
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'signin',
       data: { passWd, location, signinerSystemInfo }
     });
@@ -38,7 +38,7 @@ export const signin = async ({ passWd, location }) => {
 export const getSigninInfo = async ({ passWd }) => {
   adLog.log('getSigninInfo-params', { passWd });
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getSigninInfo',
       data: { passWd }
     });
@@ -58,7 +58,7 @@ export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
   const payload = { offset, offsetId };
   adLog.log('getSigninListBySigninerOpenId-params', payload);
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getSigninListBySigninerOpenId',
       data: { offset, offsetId }
     });
@@ -77,7 +77,7 @@ export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
 export const getSigninerList = async ({ passWd }) => {
   adLog.log('getSigninerList-params', { passWd });
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getSigninerList',
       data: { passWd }
     });

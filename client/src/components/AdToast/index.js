@@ -35,7 +35,7 @@ export default class AdToast extends Component {
       // success 换成微信的原生 toast
       if (status === 'success') {
         this.setState({ isOpened: false });
-        Taro.showToast({
+        wx.showToast({
           title: text,
           icon: 'success',
           duration,
@@ -45,7 +45,7 @@ export default class AdToast extends Component {
         return;
       }
       this.setState({ isOpened: true, text, status, duration, hasMark }, () => {
-        Taro.hideToast();
+        wx.hideToast();
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.setState({ isOpened: false });

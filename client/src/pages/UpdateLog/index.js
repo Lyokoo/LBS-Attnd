@@ -11,7 +11,7 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
-        version: '当前版本 v1.1.1',
+        version: '考勤 Attnd v1.1.1',
         points: [
           '[todo] 部分机型定位偏差较大'
         ]

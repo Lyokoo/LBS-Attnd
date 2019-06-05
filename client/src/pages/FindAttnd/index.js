@@ -42,23 +42,23 @@ export default class FindAttnd extends Component {
     this.setState({ confirmLoading: true });
     // 查询考勤是否存在
     try {
-      Taro.showLoading({ title: '请稍后', mask: true });
+      wx.showLoading({ title: '请稍后', mask: true });
       const res = await getAttndByPassWd({ passWd });
 
       // 考勤不存在
       if (res.code === 3001) {
         this.setState({ confirmLoading: false });
-        Taro.hideLoading();
+        wx.hideLoading();
         Taro.adToast({ text: '抱歉，考勤不存在，请输入正确的口令', duration: 2500 });
         return;
       }
 
       this.setState({ confirmLoading: false });
-      Taro.hideLoading();
-      Taro.redirectTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
+      wx.hideLoading();
+      wx.redirectTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
     } catch (e) {
       this.setState({ confirmLoading: false });
-      Taro.hideLoading();
+      wx.hideLoading();
       Taro.adToast({ text: '抱歉，查找考勤出现了问题' });
     }
   }

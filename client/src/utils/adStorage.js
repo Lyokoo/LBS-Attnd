@@ -10,7 +10,7 @@ const ttl = 1000 * 24 * 3600 * 30;
 
 export const remove = (key) => {
   try {
-    Taro.removeStorageSync(key);
+    wx.removeStorageSync(key);
   } catch (e) {
     console.log(e);
   }
@@ -18,7 +18,7 @@ export const remove = (key) => {
 
 export const get = (key) => {
   try {
-    const { data, updateTime } = Taro.getStorageSync(key);
+    const { data, updateTime } = wx.getStorageSync(key);
     if (!data) return null;
     if (+new Date() - updateTime > ttl) {
       remove(key);
@@ -32,7 +32,7 @@ export const get = (key) => {
 
 export const set = (key, data) => {
   try {
-    Taro.setStorageSync(key, {
+    wx.setStorageSync(key, {
       data,
       updateTime: +new Date()
     });

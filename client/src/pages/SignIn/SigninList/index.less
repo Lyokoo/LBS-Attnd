@@ -11,7 +11,7 @@ page {
     &--bar {
       margin-bottom: 30px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
     }
     &--count {
       .cm-text();
@@ -27,11 +27,12 @@ page {
       .cm-text();
       font-size: 14PX;
       color: @dark-blue;
+      margin-right: 20px;
       &:active {
         background: @active;
       }
-      &:first-child {
-        margin-right: 20px;
+      &:last-child {
+        margin-right: 0;
       }
     }
     &--item {

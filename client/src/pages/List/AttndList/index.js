@@ -27,7 +27,7 @@ export default class AttndList extends Component {
     console.log('loadmore');
   }
 
-  onAttndClick = (passWd) => passWd && Taro.navigateTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
+  onAttndClick = (passWd) => passWd && wx.navigateTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
 
   render() {
     const { data, height, hasMore } = this.props;

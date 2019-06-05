@@ -101,13 +101,13 @@ export default class Index extends Component {
     const { getInfoLoading, passWd } = this.state;
     if (getInfoLoading) return;
     this.setState({ getInfoLoading: true });
-    Taro.showLoading({ title: '获取信息', mask: true });
+    wx.showLoading({ title: '获取信息', mask: true });
     try {
       const [attndResult, signinResult] = await Promise.all([
         getAttndByPassWd({ passWd }),
         getSigninInfo({ passWd })
       ]);
-      Taro.hideLoading();
+      wx.hideLoading();
       this.setState({
         attndInfo: attndResult.data || {},
         signinInfo: signinResult.data || {},
@@ -117,7 +117,7 @@ export default class Index extends Component {
         this.computeBtnStatus();
       });
     } catch (e) {
-      Taro.hideLoading();
+      wx.hideLoading();
       this.setState({ getInfoLoading: false });
       Taro.adToast({ text: '获取信息出现问题' });
       adLog.warn('getInfo-error', e);
@@ -129,10 +129,10 @@ export default class Index extends Component {
     const { passWd, getListLoading } = this.state;
     if (getListLoading) return;
     this.setState({ getListLoading: true });
-    Taro.showLoading({ title: '获取列表', mask: true });
+    wx.showLoading({ title: '获取列表', mask: true });
     try {
       const { data: listData } = await getSigninerList({ passWd });
-      Taro.hideLoading();
+      wx.hideLoading();
       // 根据学号对签到列表排序
       if (Array.isArray(listData)) {
         listData.sort((a, b) => {
@@ -150,7 +150,7 @@ export default class Index extends Component {
         data: { listData }
       });
     } catch (e) {
-      Taro.hideLoading();
+      wx.hideLoading();
       this.setState({ getListLoading: false });
       Taro.adToast({ text: '获取列表出现问题' });
       adLog.warn('getSigninerList-error', e);
@@ -196,46 +196,46 @@ export default class Index extends Component {
     const { passWd, getInfoLoading, signinLoading } = this.state;
     if (getInfoLoading || signinLoading) return;
     this.setState({ signinLoading: true });
-    Taro.showLoading({ title: '请稍后', mask: true });
+    wx.showLoading({ title: '请稍后', mask: true });
     try {
       // 获取签到这当前位置
       const location = await getLocation();
       if (!location) {
         this.setState({ signinLoading: false });
-        Taro.hideLoading();
-        Taro.navigateTo({ url: '/pages/EditAuth/index' });
+        wx.hideLoading();
+        wx.navigateTo({ url: '/pages/EditAuth/index' });
         return;
       }
       const res = await signin({ passWd, location });
       switch (res.code) {
         case 2000: // 成功
           this.setState({ signinLoading: false });
-          Taro.hideLoading();
+          wx.hideLoading();
           Taro.adToast({ text: '签到成功', status: 'success' }, () => {
             this.onRefresh();
           });
           break;
         case 3002: // 已签到
           this.setState({ signinLoading: false });
-          Taro.hideLoading();
+          wx.hideLoading();
           Taro.adToast({ text: '已签到', status: 'success' }, () => {
             this.onRefresh();
           });
           break;
         case 3003: // 个人信息不完整
           this.setState({ signinLoading: false });
-          Taro.hideLoading();
-          Taro.showModal({
+          wx.hideLoading();
+          wx.showModal({
             title: '个人信息',
             content: '请完善个人信息',
             confirmText: '前往',
             confirmColor: '#78a4fa',
-            success: res => res.confirm && Taro.navigateTo({ url: '/pages/EditUserInfo/index' })
+            success: res => res.confirm && wx.navigateTo({ url: '/pages/EditUserInfo/index' })
           });
           break;
         case 3004: // 签到人数超过限制
           this.setState({ signinLoading: false });
-          Taro.hideLoading();
+          wx.hideLoading();
           Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 }, () => {
             this.onRefresh();
           });
@@ -245,7 +245,7 @@ export default class Index extends Component {
       }
     } catch (e) {
       this.setState({ signinLoading: false });
-      Taro.hideLoading();
+      wx.hideLoading();
       adLog.warn('Signin-error', e);
       if (typeof e === 'object' && e.errCode === 5001) {
         Taro.adToast({ text: '操作频繁，请稍后再试～' }, () => {
@@ -260,7 +260,7 @@ export default class Index extends Component {
   }
 
   onFinishAttnd = () => {
-    Taro.showModal({
+    wx.showModal({
       title: '结束考勤',
       content: '即将结束考勤，考勤结束之后的签到会被记为迟到',
       confirmText: '现在结束',
@@ -275,17 +275,17 @@ export default class Index extends Component {
     const { passWd, getInfoLoading, finishAtLoading } = this.state;
     if (getInfoLoading || finishAtLoading) return;
     this.setState({ finishAtLoading: true });
-    Taro.showLoading({ title: '请稍后', mask: true });
+    wx.showLoading({ title: '请稍后', mask: true });
     try {
       await updateAttndStatus({ passWd, attndStatus: AttndStatus.OFF });
       this.setState({ finishAtLoading: false });
-      Taro.hideLoading();
+      wx.hideLoading();
       Taro.adToast({ text: '完成考勤', status: 'success' }, () => {
         this.onRefresh();
       });
     } catch (e) {
       this.setState({ finishAtLoading: false });
-      Taro.hideLoading();
+      wx.hideLoading();
       Taro.adToast({ text: '抱歉，结束考勤时遇到了问题' }, () => {
         this.onRefresh();
       });
@@ -296,7 +296,7 @@ export default class Index extends Component {
   onAttndInfoClick = () => {
     const { passWd } = this.state;
     if (!passWd) return;
-    Taro.setClipboardData({
+    wx.setClipboardData({
       data: passWd,
       success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
     });
@@ -308,7 +308,7 @@ export default class Index extends Component {
       // 考勤者位置
       const hostLoc = { longitude: this.state.attndInfo.gcj02Location.lng, latitude: this.state.attndInfo.gcj02Location.lat };
 
-      Taro.showLoading({ title: '获取位置', mask: true });
+      wx.showLoading({ title: '获取位置', mask: true });
       // 签到者位置
       const { lng, lat } = await getLocation('gcj02');
       const signinerLoc = { longitude: lng, latitude: lat };
@@ -317,21 +317,22 @@ export default class Index extends Component {
       // 验证
       if (typeof hostLoc.longitude !== 'number' || typeof hostLoc.latitude !== 'number'
         || typeof signinerLoc.longitude !== 'number' || typeof signinerLoc.latitude !== 'number') {
-          Taro.hideLoading();
+          wx.hideLoading();
           // Taro.adToast({ text: '未获取位置' });
         return;
       }
 
-      Taro.hideLoading();
-      Taro.navigateTo({
+      wx.hideLoading();
+      wx.navigateTo({
         url: `/pages/ShowLocation/index?hostLoc=${JSON.stringify(hostLoc)}&signinerLoc=${JSON.stringify(signinerLoc)}`
       });
     } catch (e) {
-      Taro.hideLoading();
+      wx.hideLoading();
       // Taro.adToast({ text: '未获取位置' });
     }
   }
 
+  // 刷新
   onRefreshClick = () => {
     const { refreshDisabled } = this.state;
     if (refreshDisabled) {
@@ -345,9 +346,9 @@ export default class Index extends Component {
     }, 6000);
   }
 
-  computeRefreshBg = () => {
-    const { refreshDisabled } = this.state;
-    return refreshDisabled ? '#B8CBEE' : '#6190e8';
+  // 删除
+  onDeleteClick = () => {
+
   }
 
   onShareAppMessage() {
@@ -359,9 +360,9 @@ export default class Index extends Component {
     }
   }
 
-  goBack = () => Taro.navigateBack();
+  goBack = () => wx.navigateBack();
 
-  goHome = () => Taro.switchTab({ url: '/pages/Home/index' });
+  goHome = () => wx.switchTab({ url: '/pages/Home/index' });
 
   render() {
     const {
@@ -411,8 +412,10 @@ export default class Index extends Component {
             <SigninList
               data={data}
               height={listHeight}
+              canDelete={attndBelonging}
               onRefreshClick={this.onRefreshClick}
               onShowLocClick={this.onShowLocClick}
+              onDeleteClick={this.onDeleteClick}
             />
           </View>
           <View className="signin__footer">
