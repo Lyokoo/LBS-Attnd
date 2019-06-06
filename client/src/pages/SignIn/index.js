@@ -346,11 +346,6 @@ export default class Index extends Component {
     }, 6000);
   }
 
-  // 删除
-  onDeleteClick = () => {
-
-  }
-
   onShareAppMessage() {
     const { passWd } = this.state;
     return {
@@ -415,7 +410,6 @@ export default class Index extends Component {
               canDelete={attndBelonging}
               onRefreshClick={this.onRefreshClick}
               onShowLocClick={this.onShowLocClick}
-              onDeleteClick={this.onDeleteClick}
             />
           </View>
           <View className="signin__footer">
