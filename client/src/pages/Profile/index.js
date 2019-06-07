@@ -87,11 +87,11 @@ export default class Profile extends Component {
         </View>
         <View className="profile__group">
           <ProfileItem title="赞赏一下" onClick={this.onRewardClick} />
-          <ProfileItem title="推荐给朋友" openType="share" />
+          {/* <ProfileItem title="推荐给朋友" openType="share" /> */}
         </View>
-        <View className="profile__group">
+        {/* <View className="profile__group">
           <ProfileItem title="更新日志" onClick={this.onUpdateLogClick} />
-        </View>
+        </View> */}
       </View>
     )
   }

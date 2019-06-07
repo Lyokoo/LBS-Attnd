@@ -50,6 +50,8 @@ export default class About extends Component {
     });
   }
 
+  checkUpdateLog = () => wx.navigateTo({ url: '/pages/UpdateLog/index' });
+
   render() {
     const { t1, t2, t3, t4, t5, aps1, aps2, aps3, github, aps5 } = this.state;
     return (
@@ -69,6 +71,7 @@ export default class About extends Component {
         <View>
           {aps3.map(p => <View key={p} className="about__paragraph">{p}</View>)}
           <View className="about__paragraph">仓库地址: <Text onClick={() => this.onCopy(github)} className="about__link">{github}</Text></View>
+          <View className="about__paragraph"><Text onClick={() => this.checkUpdateLog()} className="about__link">查看更新日志</Text></View>
         </View>
         {/*联系 Contact*/}
         <View className="about__title">{t5}</View>

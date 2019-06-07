@@ -283,9 +283,10 @@ export default class Index extends Component {
       await deleteAttnd({ passWd });
       wx.hideLoading();
       this.setState({ deleteLoading: false });
-      Taro.adToast({ text: '删除成功', status: 'success' }, () => {
-        wx.navigateBack();
-      });
+      Taro.adToast({ text: '删除成功', status: 'success' });
+      setTimeout(() => {
+        this.goBack();
+      }, 1500);
     } catch (e) {
       adLog.warn('deleteAttnd-error', e);
       wx.hideLoading();

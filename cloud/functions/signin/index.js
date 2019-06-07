@@ -6,6 +6,9 @@ cloud.init({
 
 // 计算两个经纬度坐标之间的距离
 const getDistance = (lng1, lat1, lng2, lat2) => {
+  if (lng1 === lng2 && lat1 === lat2) {
+    return 0;
+  }
   let radLat1 = lat1 * Math.PI / 180.0;
   let radLat2 = lat2 * Math.PI / 180.0;
   let a = radLat1 - radLat2;
