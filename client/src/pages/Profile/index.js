@@ -49,11 +49,11 @@ export default class Profile extends Component {
     this.setState({ pulling: false });
   }
 
-  onUserInfoClick = () => Taro.navigateTo({ url: '/pages/EditUserInfo/index' });
+  onUserInfoClick = () => wx.navigateTo({ url: '/pages/EditUserInfo/index' });
 
-  onAboutClick = () => Taro.navigateTo({ url: '/pages/About/index' });
+  onAboutClick = () => wx.navigateTo({ url: '/pages/About/index' });
 
-  onUpdateLogClick = () => Taro.navigateTo({ url: '/pages/UpdateLog/index' });
+  onUpdateLogClick = () => wx.navigateTo({ url: '/pages/UpdateLog/index' });
 
   onRewardClick = () => {
     wx.navigateToMiniProgram({

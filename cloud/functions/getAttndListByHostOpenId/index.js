@@ -1,13 +1,13 @@
 const cloud = require('wx-server-sdk');
 cloud.init({
-  env: 'envlzp-110d2c'
+  env: 'envlzp-110d2c',
+  // env: 'devlzp-8cqxl',
 });
 
 exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
   const attndCollection = db.collection('attnd');
-  const userCollection = db.collection('user');
   const { openId } = event.userInfo;
   const { offset, offsetId, pageSize = 10 } = event;
   console.log('event', event);
@@ -18,14 +18,20 @@ exports.main = async (event) => {
 
   try {
     let query = attndCollection.where({
-      hostOpenId: _.eq(openId)
+      hostOpenId: _.eq(openId),
+      active: _.eq(true)
+    }).field({
+      signinerList: false
     });
 
     // offset 不为零时需要用 createTime 去计算偏移
     if (offsetId && offset !== 0) {
       query = attndCollection.where({
         hostOpenId: _.eq(openId),
+        active: _.eq(true),
         createTime: _.lte(new Date(offsetId))
+      }).field({
+        signinerList: false
       });
     }
 
@@ -33,20 +39,6 @@ exports.main = async (event) => {
     let { data } = await query.orderBy('createTime', 'desc').skip(offset).limit(pageSize).get();
 
     console.log(data);
-
-    // 拿 hostOpenId 查用户姓名
-    // const res = await userCollection.where({
-    //   openId: _.eq(openId)
-    // }).get();
-    // if (Array.isArray(res.data) && res.data.length > 0) {
-    //   const hostName = res.data[0].name;
-    //   data = data.map(item => {
-    //     return {
-    //       ...item,
-    //       hostName
-    //     }
-    //   });
-    // }
 
     let hasMore = true;
 

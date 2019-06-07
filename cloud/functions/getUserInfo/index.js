@@ -1,6 +1,7 @@
 const cloud = require('wx-server-sdk');
 cloud.init({
-  env: 'envlzp-110d2c'
+  env: 'envlzp-110d2c',
+  // env: 'devlzp-8cqxl',
 });
 
 exports.main = async (event) => {
@@ -13,10 +14,7 @@ exports.main = async (event) => {
 
   try {
     // res = { data: [], errMsg }
-    const { data } = await userCollection.field({
-      name: true,
-      stuId: true
-    }).where({
+    const { data } = await userCollection.where({
       openId: _.eq(openId)
     }).get();
     console.log(data);

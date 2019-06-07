@@ -65,8 +65,9 @@ class App extends Component {
 
   componentDidMount() {
     if (process.env.TARO_ENV === 'weapp') {
-      Taro.cloud.init({
+      wx.cloud.init({
         env: 'envlzp-110d2c',
+        // env: 'devlzp-8cqxl',
         traceUser: true
       });
     }
@@ -74,10 +75,10 @@ class App extends Component {
     this.checkUpdate();
 
     // 弹窗询问用户是否同意授权小程序使用地理位置
-    Taro.getSetting({
+    wx.getSetting({
       success: res => {
         if (!res.authSetting['scope.userLocation']) {
-          Taro.authorize({ scope: 'scope.userLocation' });
+          wx.authorize({ scope: 'scope.userLocation' });
         }
       }
     });

@@ -1,6 +1,7 @@
 const cloud = require('wx-server-sdk');
 cloud.init({
-  env: 'envlzp-110d2c'
+  env: 'envlzp-110d2c',
+  // env: 'devlzp-8cqxl',
 });
 
 exports.main = async (event) => {
@@ -50,8 +51,7 @@ exports.main = async (event) => {
     }
 
     // 更新 attnd 表的个人信息
-    // res = { data: [], errMsg }
-    const attndRes = await attndCollection.where({
+    const { stats: { updated: attndUpdated } } = await attndCollection.where({
       hostOpenId: _.eq(openId)
     }).update({
       data: {
@@ -59,20 +59,23 @@ exports.main = async (event) => {
         updateTime: new Date()
       }
     });
-    console.log('attndRes', attndRes);
 
-    // 更新 signin 表的个人信息
-    // res = { data: [], errMsg }
-    const signinRes = await signinCollection.where({
-      signinerOpenId: _.eq(openId)
+    // 更新 signinerList 中的个人信息
+    const signinerOpenId = `signinerList.${openId}.signinerOpenId`;
+    const updateKey = `signinerList.${openId}`;
+    const { stats: { updated: signinUpdated } } = await attndCollection.where({
+      [signinerOpenId]: _.eq(openId)
     }).update({
       data: {
-        signinerName: name,
-        signinerStuId: stuId,
-        updateTime: new Date()
+        [updateKey]: {
+          signinerName: name,
+          signinerStuId: stuId,
+          updateTime: new Date()
+        }
       }
     });
-    console.log('signinRes', signinRes);
+
+    console.log({ attndUpdated, signinUpdated });
 
     return { code: 2000 };
   } catch (e) {

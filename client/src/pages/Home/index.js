@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Button } from '@tarojs/components';
 import './index.less';
-import { getAddress } from '../../services/location';
+import imgLocation from '../../assets/images/location.png';
 
 export default class Index extends Component {
 
@@ -18,6 +18,14 @@ export default class Index extends Component {
     this.computeHeight();
   }
 
+  onShareAppMessage() {
+    return {
+      title: '快来参加考勤吧！',
+      path: '/pages/Home/index',
+      imageUrl: imgLocation
+    }
+  }
+
   computeHeight = () => {
     try {
       const { windowHeight } = wx.getSystemInfoSync();
@@ -27,11 +35,16 @@ export default class Index extends Component {
     }
   }
 
-  onFindAttndClick = () => Taro.navigateTo({ url: '/pages/FindAttnd/index' });
+  onFindAttndClick = () => wx.navigateTo({ url: '/pages/FindAttnd/index' });
 
-  onEditAttndClick = () => Taro.navigateTo({ url: '/pages/EditAttnd/index' });
+  onEditAttndClick = () => wx.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  // onTest = () => Taro.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
+  onTest = () => {
+    // wx.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
+    // wx.cloud.callFunction({
+    //   name: 'combineAttndSignin0606'
+    // });
+  }
 
   render() {
     const { windowHeight } = this.state;

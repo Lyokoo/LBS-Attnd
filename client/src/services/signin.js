@@ -19,7 +19,7 @@ export const signin = async ({ passWd, location }) => {
     const payload = { passWd, location, signinerSystemInfo };
     adLog.log('signin-params', payload);
 
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'signin',
       data: { passWd, location, signinerSystemInfo }
     });
@@ -34,31 +34,12 @@ export const signin = async ({ passWd, location }) => {
   }
 }
 
-// 获取单个签到信息
-export const getSigninInfo = async ({ passWd }) => {
-  adLog.log('getSigninInfo-params', { passWd });
-  try {
-    const { result } = await Taro.cloud.callFunction({
-      name: 'getSigninInfo',
-      data: { passWd }
-    });
-    if (result.code !== 2000 && result.code !== 3001) {
-      throw result;
-    }
-    adLog.log('getSigninInfo-result', result);
-    return result;
-  } catch (e) {
-    adLog.warn('getSigninInfo-error', e);
-    throw e;
-  }
-}
-
 // 获取我参与的签到列表
 export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
   const payload = { offset, offsetId };
   adLog.log('getSigninListBySigninerOpenId-params', payload);
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getSigninListBySigninerOpenId',
       data: { offset, offsetId }
     });
@@ -69,25 +50,6 @@ export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
     return result;
   } catch (e) {
     adLog.warn('getSigninListBySigninerOpenId-error', e);
-    throw e;
-  }
-}
-
-// 获取签到人员列表
-export const getSigninerList = async ({ passWd }) => {
-  adLog.log('getSigninerList-params', { passWd });
-  try {
-    const { result } = await Taro.cloud.callFunction({
-      name: 'getSigninerList',
-      data: { passWd }
-    });
-    if (result.code !== 2000) {
-      throw result;
-    }
-    adLog.log('getSigninerList-result', result);
-    return result;
-  } catch (e) {
-    adLog.warn('getSigninerList-error', e);
     throw e;
   }
 }

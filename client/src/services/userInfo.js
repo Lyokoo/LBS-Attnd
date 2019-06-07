@@ -6,7 +6,7 @@ export const updateUserInfo = async ({ name, stuId }) => {
   const payload = { name, stuId };
   adLog.log('updateUserInfo-params', payload);
   try {
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'updateUserInfo',
       data: { ...payload }
     });
@@ -41,7 +41,7 @@ export const getUserInfo = async (isFromStorage = false) => {
   // 从数据库获取
   try {
     // result: { code: 2000, data: { name: 'Lyokoo', stuId: '123' } }
-    const { result } = await Taro.cloud.callFunction({
+    const { result } = await wx.cloud.callFunction({
       name: 'getUserInfo'
     });
     if (result.code !== 2000 && result.code !== 3001) {

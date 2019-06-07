@@ -1,5 +1,8 @@
 const cloud = require('wx-server-sdk');
-cloud.init();
+cloud.init({
+  env: 'envlzp-110d2c',
+  // env: 'devlzp-8cqxl',
+});
 
 // 生成签到口令
 const buildPassWd = () => {
@@ -89,6 +92,8 @@ exports.main = async (event) => {
       passWd,
       hostOpenId: openId,
       attndStatus: 1, // 考勤状态 0-->已结束，1-->进行中
+      active: true, // 活跃状态
+      signinerList: {},
       createTime: new Date(),
       updateTime: new Date()
     }

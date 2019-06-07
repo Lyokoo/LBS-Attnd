@@ -5,7 +5,7 @@ var QQMapWX = require('../utils/qqmap-wx-jssdk.js');
 export const getLocation = async (type = 'wgs84') => {
   try {
     return await new Promise((resolve, reject) => {
-      Taro.getLocation({
+      wx.getLocation({
         type,
         success: res => {
           const location = {
@@ -33,7 +33,7 @@ export const getAddress = async () => {
       const qqmapsdk = new QQMapWX({
         key: 'N3XBZ-KHDKS-PHJOL-6M7W7-LHOAQ-JAB7L'
       });
-      Taro.getLocation({
+      wx.getLocation({
         type: 'gcj02',
         success: res1 => {
           const { latitude, longitude } = res1;

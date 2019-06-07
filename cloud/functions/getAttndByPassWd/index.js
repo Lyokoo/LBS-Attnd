@@ -1,6 +1,7 @@
 const cloud = require('wx-server-sdk');
 cloud.init({
-  env: 'envlzp-110d2c'
+  env: 'envlzp-110d2c',
+  // env: 'devlzp-8cqxl',
 });
 
 exports.main = async (event) => {
@@ -9,7 +10,7 @@ exports.main = async (event) => {
   const attndCollection = db.collection('attnd');
   const userCollection = db.collection('user');
   const { openId } = event.userInfo;
-  const { passWd } = event;
+  const { passWd, needSigninerList = false } = event;
   console.log('event', event);
 
   if (typeof passWd !== 'string' || !passWd) {
@@ -18,24 +19,27 @@ exports.main = async (event) => {
 
   try {
     // res = { data: [], errMsg }
-    const { data } = await attndCollection.where({
-      passWd: _.eq(passWd)
-    }).get();
+    let query = null;
+    if (needSigninerList) {
+      query = attndCollection.where({
+        passWd: _.eq(passWd)
+      });
+    } else {
+      query = attndCollection.where({
+        passWd: _.eq(passWd)
+      }).field({
+        signinerList: false
+      });
+    }
+    const { data } = await query.get();
     console.log('data', data);
     if (Array.isArray(data) && data.length > 0) {
       const hostOpenId = data[0].hostOpenId;
-      // // 拿 hostOpenId 查用户姓名
-      // const res = await userCollection.where({
-      //   openId: _.eq(hostOpenId)
-      // }).get();
-      // let hostName = '';
-      // if (Array.isArray(res.data) && res.data.length > 0) {
-      //   hostName = res.data[0].name;
-      // }
       return {
         code: 2000,
         data: {
           belonging: hostOpenId === openId,
+          openId,
           ...data[0]
         }
       };
