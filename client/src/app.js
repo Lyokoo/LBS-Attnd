@@ -67,6 +67,7 @@ class App extends Component {
     if (process.env.TARO_ENV === 'weapp') {
       wx.cloud.init({
         env: 'envlzp-110d2c',
+        // env: 'devlzp-8cqxl',
         traceUser: true
       });
     }

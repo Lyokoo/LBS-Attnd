@@ -56,12 +56,12 @@ export const getAttndListByHostOpenId = async ({ offset, offsetId }) => {
 }
 
 // 根据口令获取单个考勤，根据 belonging 字段判断是否为自己发布的考勤
-export const getAttndByPassWd = async ({ passWd }) => {
-  adLog.log('getAttndByPassWd-params', { passWd });
+export const getAttndByPassWd = async ({ passWd, needSigninerList = false}) => {
+  adLog.log('getAttndByPassWd-params', { passWd, needSigninerList });
   try {
     const { result } = await wx.cloud.callFunction({
       name: 'getAttndByPassWd',
-      data: { passWd }
+      data: { passWd, needSigninerList }
     });
     if (result.code !== 2000 && result.code !== 3001) throw result;
     adLog.log('getAttndByPassWd-result', result);
@@ -85,6 +85,22 @@ export const updateAttndStatus = async ({ passWd, attndStatus }) => {
     return result;
   } catch (e) {
     adLog.warn('updateAttndStatus-error', e);
+    throw e;
+  }
+}
+
+// 删除考勤
+export const deleteAttnd = async ({ passWd }) => {
+  adLog.log('deleteAttnd-params', { passWd });
+  try {
+    const { result } = await wx.cloud.callFunction({
+      name: 'deleteAttnd',
+      data: { passWd }
+    });
+    if (result.code !== 2000) throw result;
+    adLog.log('deleteAttnd-result', result);
+  } catch (e) {
+    adLog.warn('deleteAttnd-error', e);
     throw e;
   }
 }

@@ -26,7 +26,8 @@ export default class AttndList extends Component {
     canDelete: false,
     onLoadMore: () => { },
     onRefreshClick: () => { },
-    onShowLocClick: () => { }
+    onShowLocClick: () => { },
+    onDeleteClick: () => { }
   }
 
   onLoadMore = () => {
@@ -54,13 +55,13 @@ export default class AttndList extends Component {
                 <View className="signin-list__content--link" onClick={this.props.onRefreshClick}>刷新</View>
               </View>
             </View>
-            {data.listData.length === 0 ? 
+            {data.listData.length === 0 ?
               <View className="signin-list__hint">暂时还没有人签到 :) </View>
               : data.listData.map(item => (
                 <View className="signin-list__content--item" key={item}>
                   <SigninInfo item={item} />
                 </View>
-            ))}
+              ))}
           </View>
           {/* <LoadMore hasMore={data.hasMore}/> */}
         </ScrollView>

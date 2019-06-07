@@ -3,8 +3,8 @@ import { View, Image } from '@tarojs/components';
 import { AtButton, AtIcon } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
-import { getAttndByPassWd, updateAttndStatus } from '../../services/attnd';
-import { getSigninInfo, signin, getSigninerList } from '../../services/signin';
+import { getAttndByPassWd, updateAttndStatus, deleteAttnd } from '../../services/attnd';
+import { signin } from '../../services/signin';
 import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
@@ -49,7 +49,8 @@ export default class Index extends Component {
     getListLoading: false,
     signinLoading: false,
     finishAtLoading: false,
-    refreshDisabled: false
+    refreshDisabled: false,
+    deleteLoading: false
   }
 
   componentWillMount() {
@@ -62,9 +63,8 @@ export default class Index extends Component {
     this.onRefresh();
   }
 
-  async onRefresh() {
-    await this.getInfo();
-    await this.getSigninerList();
+  onRefresh() {
+    this.getInfo();
   }
 
   computeHeight = async () => {
@@ -103,17 +103,27 @@ export default class Index extends Component {
     this.setState({ getInfoLoading: true });
     wx.showLoading({ title: '获取信息', mask: true });
     try {
-      const [attndResult, signinResult] = await Promise.all([
-        getAttndByPassWd({ passWd }),
-        getSigninInfo({ passWd })
-      ]);
+      const { data: attndData } = await getAttndByPassWd({ passWd, needSigninerList: true });
+      const { openId, signinerList = {} } = attndData || {};
+      const signinInfo = signinerList[openId] || {};
+      const listData = Object.values(signinerList).sort((a, b) => {
+        if (a.signinerStuId < b.signinerStuId) {
+          return -1;
+        }
+        if (a.signinerStuId > b.signinerStuId) {
+          return 1;
+        }
+        return 0;
+      });
       wx.hideLoading();
       this.setState({
-        attndInfo: attndResult.data || {},
-        signinInfo: signinResult.data || {},
-        attndBelonging: attndResult.data.belonging || false,
+        attndInfo: attndData,
+        signinInfo,
+        data: { listData },
+        attndBelonging: attndData.belonging || false,
         getInfoLoading: false
       }, () => {
+        this.removeAttndHint();
         this.computeBtnStatus();
       });
     } catch (e) {
@@ -121,39 +131,6 @@ export default class Index extends Component {
       this.setState({ getInfoLoading: false });
       Taro.adToast({ text: '获取信息出现问题' });
       adLog.warn('getInfo-error', e);
-    }
-  }
-
-  // 获取签到人员列表
-  getSigninerList = async () => {
-    const { passWd, getListLoading } = this.state;
-    if (getListLoading) return;
-    this.setState({ getListLoading: true });
-    wx.showLoading({ title: '获取列表', mask: true });
-    try {
-      const { data: listData } = await getSigninerList({ passWd });
-      wx.hideLoading();
-      // 根据学号对签到列表排序
-      if (Array.isArray(listData)) {
-        listData.sort((a, b) => {
-          if (a.stuId < b.stuId) {
-            return -1;
-          }
-          if (a.stuId > b.stuId) {
-            return 1;
-          }
-          return 0;
-        });
-      }
-      this.setState({
-        getListLoading: false,
-        data: { listData }
-      });
-    } catch (e) {
-      wx.hideLoading();
-      this.setState({ getListLoading: false });
-      Taro.adToast({ text: '获取列表出现问题' });
-      adLog.warn('getSigninerList-error', e);
     }
   }
 
@@ -207,24 +184,20 @@ export default class Index extends Component {
         return;
       }
       const res = await signin({ passWd, location });
+      this.setState({ signinLoading: false });
+      wx.hideLoading();
       switch (res.code) {
         case 2000: // 成功
-          this.setState({ signinLoading: false });
-          wx.hideLoading();
           Taro.adToast({ text: '签到成功', status: 'success' }, () => {
             this.onRefresh();
           });
           break;
         case 3002: // 已签到
-          this.setState({ signinLoading: false });
-          wx.hideLoading();
           Taro.adToast({ text: '已签到', status: 'success' }, () => {
             this.onRefresh();
           });
           break;
         case 3003: // 个人信息不完整
-          this.setState({ signinLoading: false });
-          wx.hideLoading();
           wx.showModal({
             title: '个人信息',
             content: '请完善个人信息',
@@ -234,8 +207,6 @@ export default class Index extends Component {
           });
           break;
         case 3004: // 签到人数超过限制
-          this.setState({ signinLoading: false });
-          wx.hideLoading();
           Taro.adToast({ text: '抱歉，签到人数超过限制，最多为 100 人', duration: 2500 }, () => {
             this.onRefresh();
           });
@@ -290,6 +261,52 @@ export default class Index extends Component {
         this.onRefresh();
       });
     }
+  }
+
+  onDeleteClick = () => {
+    wx.showModal({
+      title: '删除考勤',
+      content: '删除考勤后，考勤将无法签到且不再显示在记录列表中，确认删除？',
+      confirmText: '确认',
+      confirmColor: '#78a4fa',
+      success: res => res.confirm && this.removeAttnd()
+    });
+  }
+
+  // 删除考勤
+  removeAttnd = async () => {
+    try {
+      const { deleteLoading, passWd } = this.state;
+      if (deleteLoading) return;
+      this.setState({ deleteLoading: true });
+      wx.showLoading({ title: '请稍后', mask: true });
+      await deleteAttnd({ passWd });
+      wx.hideLoading();
+      this.setState({ deleteLoading: false });
+      Taro.adToast({ text: '删除成功', status: 'success' }, () => {
+        wx.navigateBack();
+      });
+    } catch (e) {
+      adLog.warn('deleteAttnd-error', e);
+      wx.hideLoading();
+      this.setState({ deleteLoading: false });
+    }
+  }
+
+  // 已删除提示
+  removeAttndHint = () => {
+    const { attndInfo } = this.state;
+    if (attndInfo.active) {
+      return;
+    }
+    wx.showModal({
+      title: '提示',
+      content: '考勤已删除',
+      confirmText: '知道了',
+      confirmColor: '#78a4fa',
+      showCancel: false,
+      success: res => res.confirm && wx.navigateBack()
+    });
   }
 
   // 拷贝口令
@@ -410,6 +427,7 @@ export default class Index extends Component {
               canDelete={attndBelonging}
               onRefreshClick={this.onRefreshClick}
               onShowLocClick={this.onShowLocClick}
+              onDeleteClick={this.onDeleteClick}
             />
           </View>
           <View className="signin__footer">
