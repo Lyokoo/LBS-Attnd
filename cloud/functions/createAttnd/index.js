@@ -61,6 +61,14 @@ exports.main = async (event) => {
       return { code: 3003 };
     }
 
+    // 文字内容合法性检测
+    const { errCode } = await cloud.openapi.security.msgSecCheck({
+      content: attndName
+    });
+    if (errCode === 87014) {
+      throw new Error('内容含有违法违规内容');
+    }
+
     // 计算签到口令
     let passWd = buildPassWd();
 

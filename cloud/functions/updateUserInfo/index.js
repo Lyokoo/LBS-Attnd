@@ -9,7 +9,6 @@ exports.main = async (event) => {
   const _ = db.command;
   const userCollection = db.collection('user');
   const attndCollection = db.collection('attnd');
-  const signinCollection = db.collection('signin');
   const { name, stuId } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
@@ -18,6 +17,18 @@ exports.main = async (event) => {
   }
 
   try {
+    // 文字内容合法性检测
+    const p1 = await cloud.openapi.security.msgSecCheck({
+      content: name
+    });
+    const p2 = await cloud.openapi.security.msgSecCheck({
+      content: stuId
+    }); 
+    const [{ errCode: p1Code }, { errCode: p2Code }] = await Promise.all([p1, p2]);
+    if (p1Code === 87014 || p2Code === 87014) {
+      throw new Error('内容含有违法违规内容');
+    }
+
     // res = { data: [], errMsg }
     let { data } = await userCollection.where({
       openId: _.eq(openId)

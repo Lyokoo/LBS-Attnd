@@ -56,7 +56,7 @@ export default class AttndList extends Component {
               </View>
             </View>
             {data.listData.length === 0 ?
-              <View className="signin-list__hint">暂时还没有人签到 :) </View>
+              <View className="signin-list__hint">暂时还没有人签到，可点击页面右上角菜单转发到群聊邀请签到...</View>
               : data.listData.map(item => (
                 <View className="signin-list__content--item" key={item}>
                   <SigninInfo item={item} />

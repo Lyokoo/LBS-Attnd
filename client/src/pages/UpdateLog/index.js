@@ -11,13 +11,14 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
-        version: 'v1.7.3 @2019.06.07',
+        version: 'v1.8.3 @2019.06.08',
         points: [
           '[feat] 新增删除考勤功能',
+          '[feat] 新增文本内容合法性检测',
           '[feat] 主页菜单新增转发分享功能',
           '[fix] 修复页面返回时隐藏小程序的问题',
           '[improve] 接口调整优化',
-          '[improve] “签到页”与“我的”布局小调整'
+          '[improve] “签到页”与“我的”布局调整'
         ]
       },
       {
