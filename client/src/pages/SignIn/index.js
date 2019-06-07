@@ -44,14 +44,14 @@ export default class Index extends Component {
     attndInfo: {},
     signinInfo: {},
     btnStatus: {},
-    attndBelonging: false,
-    getInfoLoading: false,
-    getListLoading: false,
-    signinLoading: false,
-    finishAtLoading: false,
     refreshDisabled: false,
-    deleteLoading: false
+    attndBelonging: false
   }
+
+  getInfoLoading = false;
+  signinLoading = false;
+  finishAtLoading = false;
+  deleteLoading = false;
 
   componentWillMount() {
     const { passWd } = this.$router.params;
@@ -98,9 +98,9 @@ export default class Index extends Component {
 
   // 获取考勤信息和签到信息
   getInfo = async () => {
-    const { getInfoLoading, passWd } = this.state;
-    if (getInfoLoading) return;
-    this.setState({ getInfoLoading: true });
+    const { passWd } = this.state;
+    if (this.getInfoLoading) return;
+    this.getInfoLoading = true;
     wx.showLoading({ title: '获取信息', mask: true });
     try {
       const { data: attndData } = await getAttndByPassWd({ passWd, needSigninerList: true });
@@ -116,19 +116,19 @@ export default class Index extends Component {
         return 0;
       });
       wx.hideLoading();
+      this.getInfoLoading = false;
       this.setState({
         attndInfo: attndData,
         signinInfo,
         data: { listData },
-        attndBelonging: attndData.belonging || false,
-        getInfoLoading: false
+        attndBelonging: attndData.belonging || false
       }, () => {
         this.removeAttndHint();
         this.computeBtnStatus();
       });
     } catch (e) {
       wx.hideLoading();
-      this.setState({ getInfoLoading: false });
+      this.getInfoLoading = false;
       Taro.adToast({ text: '获取信息出现问题' });
       adLog.warn('getInfo-error', e);
     }
@@ -170,21 +170,21 @@ export default class Index extends Component {
   }
 
   onSignin = async () => {
-    const { passWd, getInfoLoading, signinLoading } = this.state;
-    if (getInfoLoading || signinLoading) return;
-    this.setState({ signinLoading: true });
+    const { passWd } = this.state;
+    if (this.getInfoLoading || this.signinLoading) return;
+    this.signinLoading = true;
     wx.showLoading({ title: '请稍后', mask: true });
     try {
       // 获取签到这当前位置
       const location = await getLocation();
       if (!location) {
-        this.setState({ signinLoading: false });
+        this.signinLoading = false;
         wx.hideLoading();
         wx.navigateTo({ url: '/pages/EditAuth/index' });
         return;
       }
       const res = await signin({ passWd, location });
-      this.setState({ signinLoading: false });
+      this.signinLoading = false;
       wx.hideLoading();
       switch (res.code) {
         case 2000: // 成功
@@ -215,7 +215,7 @@ export default class Index extends Component {
           break;
       }
     } catch (e) {
-      this.setState({ signinLoading: false });
+      this.signinLoading = false;
       wx.hideLoading();
       adLog.warn('Signin-error', e);
       if (typeof e === 'object' && e.errCode === 5001) {
@@ -243,19 +243,19 @@ export default class Index extends Component {
 
   // 结束考勤
   finishAttnd = async () => {
-    const { passWd, getInfoLoading, finishAtLoading } = this.state;
-    if (getInfoLoading || finishAtLoading) return;
-    this.setState({ finishAtLoading: true });
+    const { passWd } = this.state;
+    if (this.getInfoLoading || this.finishAtLoading) return;
+    this.finishAtLoading = true;
     wx.showLoading({ title: '请稍后', mask: true });
     try {
       await updateAttndStatus({ passWd, attndStatus: AttndStatus.OFF });
-      this.setState({ finishAtLoading: false });
+      this.finishAtLoading = false;
       wx.hideLoading();
       Taro.adToast({ text: '完成考勤', status: 'success' }, () => {
         this.onRefresh();
       });
     } catch (e) {
-      this.setState({ finishAtLoading: false });
+      this.finishAtLoading = false;
       wx.hideLoading();
       Taro.adToast({ text: '抱歉，结束考勤时遇到了问题' }, () => {
         this.onRefresh();
@@ -276,13 +276,13 @@ export default class Index extends Component {
   // 删除考勤
   removeAttnd = async () => {
     try {
-      const { deleteLoading, passWd } = this.state;
-      if (deleteLoading) return;
-      this.setState({ deleteLoading: true });
+      const { passWd } = this.state;
+      if (this.deleteLoading) return;
+      this.deleteLoading = true;
       wx.showLoading({ title: '请稍后', mask: true });
       await deleteAttnd({ passWd });
       wx.hideLoading();
-      this.setState({ deleteLoading: false });
+      this.deleteLoading = false;
       Taro.adToast({ text: '删除成功', status: 'success' });
       setTimeout(() => {
         this.goBack();
@@ -290,7 +290,7 @@ export default class Index extends Component {
     } catch (e) {
       adLog.warn('deleteAttnd-error', e);
       wx.hideLoading();
-      this.setState({ deleteLoading: false });
+      this.deleteLoading = false;
     }
   }
 
@@ -379,7 +379,7 @@ export default class Index extends Component {
 
   render() {
     const {
-      windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging, getListLoading
+      windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging
     } = this.state;
     return (
       <View className="signin" style={{ height: `${windowHeight}px` }}>

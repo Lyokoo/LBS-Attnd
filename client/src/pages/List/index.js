@@ -23,13 +23,14 @@ export default class List extends Component {
     attndData: [],
     attndHasMore: true,
     attndOffsetId: null,
-    attndLoading: false,
 
     signinData: [],
     signinHasMore: true,
     signinOffsetId: null,
-    signinLoading: false
   }
+
+  attndLoading = false;
+  signinLoading = false;
 
   tabList = [
     { title: '我参与的' },
@@ -67,13 +68,13 @@ export default class List extends Component {
   }
 
   getAttndList = async (offset = 0) => {
-    const { attndOffsetId, attndLoading, attndData } = this.state;
+    const { attndOffsetId, attndData } = this.state;
     // 请求第 1 页时激活 loadMore 节点
     if (offset === 0) {
       this.setState({ attndHasMore: true });
     }
-    if (attndLoading) return;
-    this.setState({ attndLoading: true });
+    if (this.attndLoading) return;
+    this.attndLoading = true;
 
     try {
       const {
@@ -96,17 +97,17 @@ export default class List extends Component {
     } catch (e) {
       adLog.log('getAttndList-error', e);
     }
-    this.setState({ attndLoading: false });
+    this.attndLoading = false;
   }
 
   getSigninList = async (offset = 0) => {
-    const { signinOffsetId, signinLoading, signinData } = this.state;
+    const { signinOffsetId, signinData } = this.state;
     // 请求第 1 页时激活 loadMore 节点
     if (offset === 0) {
       this.setState({ signinHasMore: true });
     }
-    if (signinLoading) return;
-    this.setState({ signinLoading: true });
+    if (this.signinLoading) return;
+    this.signinLoading = true;
 
     try {
       const {
@@ -129,7 +130,7 @@ export default class List extends Component {
     } catch (e) {
       adLog.log('getSigninList-error', e);
     }
-    this.setState({ signinLoading: false });
+    this.signinLoading = false;
   }
 
   onAttndLoadMore = async () => {

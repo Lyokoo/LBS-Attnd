@@ -13,9 +13,10 @@ export default class FindAttnd extends Component {
 
   state = {
     passWd: '',
-    confirmLoading: false,
     isPassWdErr: false
   }
+
+  confirmLoading = false;
 
   onInputChange = (value) => {
     this.setState({
@@ -34,12 +35,12 @@ export default class FindAttnd extends Component {
   }
 
   onConfirm = async () => {
-    const { passWd, confirmLoading } = this.state;
-    if (confirmLoading) return;
+    const { passWd } = this.state;
+    if (this.confirmLoading) return;
     if (!this.checkFormData(passWd)) {
       return;
     }
-    this.setState({ confirmLoading: true });
+    this.confirmLoading = true;
     // 查询考勤是否存在
     try {
       wx.showLoading({ title: '请稍后', mask: true });
@@ -47,17 +48,17 @@ export default class FindAttnd extends Component {
 
       // 考勤不存在
       if (res.code === 3001) {
-        this.setState({ confirmLoading: false });
+        this.confirmLoading = false;
         wx.hideLoading();
         Taro.adToast({ text: '抱歉，考勤不存在，请输入正确的口令', duration: 2500 });
         return;
       }
 
-      this.setState({ confirmLoading: false });
+      this.confirmLoading = false;
       wx.hideLoading();
       wx.redirectTo({ url: `/pages/SignIn/index?passWd=${passWd}` });
     } catch (e) {
-      this.setState({ confirmLoading: false });
+      this.confirmLoading = false;
       wx.hideLoading();
       Taro.adToast({ text: '抱歉，查找考勤出现了问题' });
     }
