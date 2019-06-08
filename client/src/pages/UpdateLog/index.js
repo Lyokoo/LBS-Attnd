@@ -11,6 +11,12 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
+        version: 'v1.8.4 @2019.06',
+        points: [
+          '[improve] 卡片去除边框阴影使整体UI明亮'
+        ]
+      },
+      {
         version: 'v1.8.3 @2019.06.08',
         points: [
           '[feat] 新增删除考勤功能',
