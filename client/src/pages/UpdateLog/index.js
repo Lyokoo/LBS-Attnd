@@ -11,6 +11,13 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
+        version: 'v2.0.0 @2019.06.13',
+        points: [
+          '[feat] 新增创建班级功能',
+          '[improve] 隐藏签到页距离显示'
+        ]
+      },
+      {
         version: 'v1.10.0 @2019.06.10',
         points: [
           '[feat] 新增考勤者手动更改签到者状态的功能',
