@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
-import { AtButton, AtIcon } from 'taro-ui';
+import { AtButton, AtNoticebar } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus, deleteAttnd } from '../../services/attnd';
@@ -23,29 +23,50 @@ export default class Index extends Component {
     navigationStyle: 'custom'
   }
 
-  state = {
-    windowHeight: 0,
-    listHeight: 0,
-    navBarHeight: 0,
-    statusBarHeight: 0,
-    capsuleWidth: 0,
-    capsuleHeight: 0,
-    capsulePadding: 0,
-    data: {
-      listData: [
-        // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-        // { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-        // { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-        // { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
-      ],
-      hasMore: true
-    },
-    passWd: '',
-    attndInfo: {},
-    signinInfo: {},
-    btnStatus: {},
-    refreshDisabled: false,
-    attndBelonging: false
+  constructor () {
+    try {
+      var {
+        width: capsuleWidth,
+        height: capsuleHeight,
+        top: capsuleTop
+      } = wx.getMenuButtonBoundingClientRect();
+      var { windowWidth, windowHeight, statusBarHeight } = Taro.getSystemInfoSync();
+      var capsulePadding = capsuleTop - statusBarHeight;
+      var navBarHeight = capsuleHeight + 2 * capsulePadding;
+      var rpx = windowWidth / 750;
+      var headerHeight = 258 * rpx; // PX
+      var footerHeight = 100 * rpx; // PX
+      var gap = (20 * 4) * rpx; // PX
+      var listHeight = windowHeight - headerHeight - footerHeight - gap - navBarHeight - statusBarHeight;
+    } catch (e) {
+      console.log(e);
+    }
+    this.state = {
+      windowHeight: windowHeight || 0,
+      windowWidth: windowWidth || 0,
+      listHeight: listHeight || 0,
+      navBarHeight: navBarHeight || 0,
+      statusBarHeight: statusBarHeight || 0,
+      capsuleWidth: capsuleWidth || 0,
+      capsuleHeight: capsuleHeight || 0,
+      capsulePadding: capsulePadding || 0,
+      data: {
+        listData: [
+          // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
+          // { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
+          // { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
+          // { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
+        ],
+        hasMore: true
+      },
+      passWd: '',
+      attndInfo: {},
+      signinInfo: {},
+      btnStatus: {},
+      notice: '',
+      refreshDisabled: false,
+      attndBelonging: false
+    }
   }
 
   getInfoLoading = false;
@@ -60,12 +81,13 @@ export default class Index extends Component {
   }
 
   async componentDidMount() {
-    this.computeHeight();
+    // this.computeHeight();
     this.onRefresh();
   }
 
   onRefresh() {
     this.getInfo();
+    this.getNotice();
   }
 
   computeHeight = async () => {
@@ -85,6 +107,7 @@ export default class Index extends Component {
       const listHeight = windowHeight - headerHeight - footerHeight - gap - navBarHeight - statusBarHeight;
       this.setState({
         windowHeight,
+        windowWidth,
         listHeight,
         navBarHeight,
         statusBarHeight,
@@ -405,10 +428,30 @@ export default class Index extends Component {
 
   goHome = () => wx.switchTab({ url: '/pages/Home/index' });
 
+  getNotice = async () => {
+    try {
+      const { result } = await wx.cloud.callFunction({
+        name: 'getNotice',
+        data: { type: 'signin' }
+      });
+      const content = result.data.content;
+      adLog.log('getNotice-result', content);
+      if (content) {
+        this.setState({ notice: content });
+      } else {
+        this.setState({ notice: '' });
+      }
+    } catch (e) {
+      adLog.log('getNotice-error', e);
+      this.setState({ notice: '' });
+    }
+  }
+
   render() {
     const {
-      windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging
+      windowWidth, windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging, notice,
     } = this.state;
+    const computeListHeight = notice ? listHeight - (60 * windowWidth / 750) : listHeight;
     return (
       <View className="signin" style={{ height: `${windowHeight}px` }}>
         <View className="signin__statusbar" style={{ height: `${statusBarHeight}px` }}></View>
@@ -445,14 +488,17 @@ export default class Index extends Component {
           </View>
           <View className="signin__nav--title">考勤详情</View>
         </View>
+        {notice && <View className="signin__notice">
+          <AtNoticebar single marquee speed={50}>{notice}</AtNoticebar>
+        </View>}
         <View className="signin__body">
           <View className="signin__header" onClick={this.onAttndInfoClick}>
             <AttndInfo item={attndInfo} />
           </View>
-          <View className="signin__content" style={{ height: `${listHeight}px` }}>
+          <View className="signin__content" style={{ height: `${computeListHeight}px` }}>
             <SigninList
               data={data}
-              height={listHeight}
+              height={computeListHeight}
               attndBelonging={attndBelonging}
               onRefreshClick={this.onRefreshClick}
               onShowLocClick={this.onShowLocClick}

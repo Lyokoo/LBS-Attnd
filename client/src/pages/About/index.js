@@ -16,11 +16,13 @@ export default class About extends Component {
   state = {
     t1: '考勤 Attnd',
     aps1: [
-      '考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤的效率'
+      '考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤效率',
+      '@2019广州大学计算机学院毕业设计作品',
+      'by纸纸纸盆（字节跳动前端开发工程师）'
     ],
     t3: '开发 Development',
     aps3: [
-      '考勤 Attnd 尝鲜微信小程序云开发，使用 Taro + Taro UI 快速迭代。本项目只用于技术学习和交流，欢迎提 issue'
+      '技术栈：Taro + Taro UI + 云开发'
     ],
     t4: '贡献者 Contributors',
     github: 'https://github.com/Lyokoo/LBS-Attnd',
@@ -58,9 +60,9 @@ export default class About extends Component {
         {/* 开发 Development */}
         <View className="about__title">{t3}</View>
         <View>
+          <View className="about__paragraph"><Text onClick={() => this.onCopy(github)} className="about__link">{github}</Text></View>
           {aps3.map(p => <View key={p} className="about__paragraph">{p}</View>)}
-          <View className="about__paragraph">仓库地址: <Text onClick={() => this.onCopy(github)} className="about__link">{github}</Text></View>
-          <View className="about__paragraph"><Text onClick={() => this.checkUpdateLog()} className="about__link">查看更新日志</Text></View>
+          <View className="about__paragraph">更新日志：<Text onClick={() => this.checkUpdateLog()} className="about__link">查看更新日志</Text></View>
         </View>
         {/*联系 Contact*/}
         <View className="about__title">{t5}</View>

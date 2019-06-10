@@ -33,7 +33,7 @@ exports.main = async (event) => {
   const attndCollection = db.collection('attnd');
   const { passWd, location: signinerLocation, signinerSystemInfo, tmpLocation } = event;
   const { openId: signinerOpenId } = event.userInfo;
-  const validDistance = 200;
+  const validDistance = 1000;
   console.log('event', event);
 
   if (typeof passWd !== 'string' || !passWd

@@ -39,11 +39,14 @@ export default class Index extends Component {
 
   onEditAttndClick = () => wx.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  onTest = () => {
-    // wx.navigateTo({ url: '/pages/EditAuth/index?passWd=ht2ADJ' });
-    // wx.cloud.callFunction({
-    //   name: 'combineAttndSignin0606'
+  onTest = async () => {
+    // const { result } = await wx.cloud.callFunction({
+    //   name: 'getNotice',
+    //   data: {
+    //     type: 'signin'
+    //   }
     // });
+    // console.log(result);
   }
 
   render() {

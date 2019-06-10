@@ -44,13 +44,19 @@ export default class SigninInfo extends Component {
   componentDidMount() { }
 
   geiDistance = (d = 0) => {
+    // switch (true) {
+    //   case d < 0: return '*';
+    //   case d >= Number.MAX_SAFE_INTEGER: return '**';
+    //   case d < 1: return '< 1m';
+    //   case d <= 200: return `${Math.floor(d)}m`;
+    //   case d > 200 && d < 1000: return '> 200m';
+    //   case d > 1000: default: return '> 1km';
+    // }
     switch (true) {
       case d < 0: return '*';
       case d >= Number.MAX_SAFE_INTEGER: return '**';
-      case d < 1: return '< 1m';
-      case d <= 200: return `${Math.floor(d)}m`;
-      case d > 200 && d < 1000: return '> 200m';
-      case d > 1000: default: return '> 1km';
+      case d <= 1000: return '<200m';
+      case d > 1000: default: return '>200m';
     }
   }
 
