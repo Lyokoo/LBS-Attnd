@@ -10,11 +10,12 @@ export default class AttndList extends Component {
   static propTypes = {
     height: PropTypes.number,
     data: PropTypes.object,
-    canDelete: PropTypes.bool,
+    attndBelonging: PropTypes.bool,
     onLoadMore: PropTypes.func,
     onRefreshClick: PropTypes.func,
     onShowLocClick: PropTypes.func,
-    onDeleteClick: PropTypes.func
+    onDeleteClick: PropTypes.func,
+    onUpdateStatus: PropTypes.func
   }
 
   static defaultProps = {
@@ -23,11 +24,12 @@ export default class AttndList extends Component {
       listData: [],
       hasMore: true
     },
-    canDelete: false,
+    attndBelonging: false,
     onLoadMore: () => { },
     onRefreshClick: () => { },
     onShowLocClick: () => { },
-    onDeleteClick: () => { }
+    onDeleteClick: () => { },
+    onUpdateStatus: () => { }
   }
 
   onLoadMore = () => {
@@ -35,7 +37,7 @@ export default class AttndList extends Component {
   }
 
   render() {
-    const { data, height, canDelete } = this.props;
+    const { data, height, attndBelonging } = this.props;
     const count = data.listData.length > 999 ? '999+' : data.listData.length;
     return (
       <View className="signin-list">
@@ -50,7 +52,7 @@ export default class AttndList extends Component {
             <View className="signin-list__content--bar">
               <View className="signin-list__content--count">当前人数: {count}</View>
               <View className="signin-list__content--opt">
-                {canDelete && <View className="signin-list__content--link" onClick={this.props.onDeleteClick}>删除考勤</View>}
+                {attndBelonging && <View className="signin-list__content--link" onClick={this.props.onDeleteClick}>删除考勤</View>}
                 <View className="signin-list__content--link" onClick={this.props.onShowLocClick}>查看位置</View>
                 <View className="signin-list__content--link" onClick={this.props.onRefreshClick}>刷新</View>
               </View>
@@ -59,7 +61,11 @@ export default class AttndList extends Component {
               <View className="signin-list__hint">暂时还没有人签到，可点击页面右上角菜单转发到群聊邀请签到...</View>
               : data.listData.map(item => (
                 <View className="signin-list__content--item" key={item}>
-                  <SigninInfo item={item} />
+                  <SigninInfo
+                    item={item}
+                    attndBelonging={attndBelonging}
+                    onUpdateStatus={this.props.onUpdateStatus}
+                  />
                 </View>
               ))}
           </View>

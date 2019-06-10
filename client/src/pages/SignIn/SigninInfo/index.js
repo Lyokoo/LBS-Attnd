@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import { AtIcon } from 'taro-ui';
+import { AtIcon, AtActionSheet, AtActionSheetItem } from 'taro-ui';
 import { SigninerStatus } from '../../../utils/consts';
 import './index.less';
 
@@ -26,11 +26,19 @@ const signinStatusConfig = {
 export default class SigninInfo extends Component {
 
   static propTypes = {
-    item: PropTypes.object
+    item: PropTypes.object,
+    attndBelonging: PropTypes.bool,
+    onUpdateStatus: PropTypes.func
   }
 
   static defaultProps = {
-    item: {}
+    item: {},
+    attndBelonging: false,
+    onUpdateStatus: () => { }
+  }
+
+  state = {
+    isOpened: false
   }
 
   componentDidMount() { }
@@ -46,7 +54,17 @@ export default class SigninInfo extends Component {
     }
   }
 
+  onStatusClick = () => this.setState({ isOpened: true });
+
+  onActionClick = (...args) => {
+    this.setState({ isOpened: false });
+    const { signinerOpenId } = this.props.item;
+    this.props.onUpdateStatus(signinerOpenId, ...args);
+  }
+
   render() {
+    const { isOpened } = this.state;
+    const { attndBelonging } = this.props;
     const { signinerName = '?', signinerStuId = '', distance, signinerStatus } = this.props.item;
     const status = signinStatusConfig[signinerStatus] || {};
     return (
@@ -58,10 +76,16 @@ export default class SigninInfo extends Component {
             <View className="signin-info__info--desc">距离：{this.geiDistance(distance)}</View>
           </View>
         </View>
-        <View className="signin-info__status">
+        <View className="signin-info__status" onClick={this.onStatusClick}>
           <AtIcon value={status.icon} size={16} color={status.color} />
           <Text className="signin-info__status--desc" style={{ color: status.color }}>{status.text}</Text>
+          {attndBelonging && <View className="signin-info__status--action"></View>}
         </View>
+        <AtActionSheet isOpened={isOpened} cancelText='取消' title={`修改“${signinerName}”的签到状态`}>
+          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.ARRIVED)}>已到</AtActionSheetItem>
+          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.LATE)}>迟到</AtActionSheetItem>
+          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.OUT_OF_DIST)}>超出距离</AtActionSheetItem>        
+        </AtActionSheet>
       </View>
     )
   }

@@ -4,7 +4,7 @@ import { AtButton, AtIcon } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus, deleteAttnd } from '../../services/attnd';
-import { signin } from '../../services/signin';
+import { signin, updateSigninerStatus } from '../../services/signin';
 import { getLocation } from '../../services/location';
 import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
@@ -52,6 +52,7 @@ export default class Index extends Component {
   signinLoading = false;
   finishAtLoading = false;
   deleteLoading = false;
+  updateSnLoading = false;
 
   componentWillMount() {
     const { passWd } = this.$router.params;
@@ -176,7 +177,6 @@ export default class Index extends Component {
     wx.showLoading({ title: '请稍后', mask: true });
     try {
       // 获取签到这当前位置
-      const [location1, location2] = await Promise.all([getLocation(), getLocation()]);
       const location = await getLocation();
       if (!location) {
         this.signinLoading = false;
@@ -186,8 +186,7 @@ export default class Index extends Component {
       }
       const res = await signin({
         passWd,
-        location,
-        tmpLocation: [location1, location2]
+        location
       });
       this.signinLoading = false;
       wx.hideLoading();
@@ -296,6 +295,9 @@ export default class Index extends Component {
       adLog.warn('deleteAttnd-error', e);
       wx.hideLoading();
       this.deleteLoading = false;
+      Taro.adToast({ text: '操作失败' }, () => {
+        this.onRefresh();
+      });
     }
   }
 
@@ -369,6 +371,27 @@ export default class Index extends Component {
     }, 6000);
   }
 
+  // 更新签到状态
+  onUpdateSigninerStatus = async (signinerOpenId, signinerStatus) => {
+    try {
+      const { passWd } = this.state;
+      if (this.updateSnLoading) return;
+      this.updateSnLoading = true;
+      wx.showLoading({ title: '修改中', mask: true });
+      await updateSigninerStatus({ passWd, signinerOpenId, signinerStatus });
+      this.updateSnLoading = false;
+      wx.hideLoading();
+      this.onRefresh();
+    } catch (e) {
+      adLog.log('onUpdateSigninerStatus', e);
+      this.updateSnLoading = false;
+      wx.hideLoading();
+      Taro.adToast({ text: '操作失败' }, () => {
+        this.onRefresh();
+      });
+    }
+  }
+
   onShareAppMessage() {
     const { passWd } = this.state;
     return {
@@ -430,10 +453,11 @@ export default class Index extends Component {
             <SigninList
               data={data}
               height={listHeight}
-              canDelete={attndBelonging}
+              attndBelonging={attndBelonging}
               onRefreshClick={this.onRefreshClick}
               onShowLocClick={this.onShowLocClick}
               onDeleteClick={this.onDeleteClick}
+              onUpdateStatus={this.onUpdateSigninerStatus}
             />
           </View>
           <View className="signin__footer">

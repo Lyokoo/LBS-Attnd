@@ -11,8 +11,9 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
-        version: 'v1.8.4 @2019.06',
+        version: 'v1.9.4 @2019.06',
         points: [
+          '[feat] 新增考勤者手动更改签到者状态的功能',
           '[improve] 卡片去除边框阴影使整体UI明亮'
         ]
       },

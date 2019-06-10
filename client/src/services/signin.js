@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
 
 // 签到
-export const signin = async ({ passWd, location, tmpLocation }) => {
+export const signin = async ({ passWd, location }) => {
   try {
     // 获取 systemInfo
     const res = wx.getSystemInfoSync();
@@ -16,12 +16,12 @@ export const signin = async ({ passWd, location, tmpLocation }) => {
     };
 
     // 打印参数
-    const payload = { passWd, location, signinerSystemInfo, tmpLocation };
+    const payload = { passWd, location, signinerSystemInfo };
     adLog.log('signin-params', payload);
 
     const { result } = await wx.cloud.callFunction({
       name: 'signin',
-      data: { passWd, location, signinerSystemInfo, tmpLocation }
+      data: { passWd, location, signinerSystemInfo }
     });
     if (![2000, 3002, 3003, 3004].includes(result.code)) {
       throw result;
@@ -50,6 +50,26 @@ export const getSigninListBySigninerOpenId = async ({ offset, offsetId }) => {
     return result;
   } catch (e) {
     adLog.warn('getSigninListBySigninerOpenId-error', e);
+    throw e;
+  }
+}
+
+// 更新签到状态
+export const updateSigninerStatus = async ({ passWd, signinerOpenId, signinerStatus }) => {
+  const payload = { passWd, signinerOpenId, signinerStatus };
+  adLog.log('updateSigninerStatus-params', payload);
+  try {
+    const { result } = await wx.cloud.callFunction({
+      name: 'updateSigninerStatus',
+      data: { passWd, signinerOpenId, signinerStatus }
+    });
+    if (result.code !== 2000) {
+      throw result;
+    }
+    adLog.log('updateSigninerStatus-result', result);
+    return result;
+  } catch (e) {
+    adLog.warn('updateSigninerStatus-error', e);
     throw e;
   }
 }

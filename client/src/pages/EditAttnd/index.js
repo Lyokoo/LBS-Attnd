@@ -45,7 +45,6 @@ export default class EditAttnd extends Component {
 
     try {
       // 获取地理位置
-      const [location1, location2] = await Promise.all([getLocation(), getLocation()]);
       const location = await getLocation();
 
       // 未授权获取位置
@@ -65,8 +64,7 @@ export default class EditAttnd extends Component {
         attndName,
         location,
         address,
-        gcj02Location,
-        tmpLocation: [location1, location2]
+        gcj02Location
       });
 
       // 未填写个人信息
