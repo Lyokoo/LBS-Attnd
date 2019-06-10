@@ -488,9 +488,7 @@ export default class Index extends Component {
           </View>
           <View className="signin__nav--title">考勤详情</View>
         </View>
-        {notice && <View className="signin__notice">
-          <AtNoticebar single marquee speed={50}>{notice}</AtNoticebar>
-        </View>}
+        {notice &&<AtNoticebar icon="volume-plus" single marquee speed={50}>{notice}</AtNoticebar>}
         <View className="signin__body">
           <View className="signin__header" onClick={this.onAttndInfoClick}>
             <AttndInfo item={attndInfo} />
