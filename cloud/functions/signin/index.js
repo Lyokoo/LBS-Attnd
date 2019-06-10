@@ -31,7 +31,7 @@ exports.main = async (event) => {
   const _ = db.command;
   const userCollection = db.collection('user');
   const attndCollection = db.collection('attnd');
-  const { passWd, location: signinerLocation, signinerSystemInfo } = event;
+  const { passWd, location: signinerLocation, signinerSystemInfo, tmpLocation } = event;
   const { openId: signinerOpenId } = event.userInfo;
   const validDistance = 200;
   console.log('event', event);
@@ -107,8 +107,8 @@ exports.main = async (event) => {
 
     // 签到
     const reqData = signinInfo
-      ? { signinerLocation, signinerSystemInfo, signinerStatus, distance, updateTime: new Date() }
-      : { signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date() }
+      ? { signinerLocation, tmpLocation, signinerSystemInfo, signinerStatus, distance, updateTime: new Date() }
+      : { signinerOpenId, signinerLocation, tmpLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date() }
     console.log(reqData);
     const updateKey = `signinerList.${signinerOpenId}`;
     const { stats: { updated } } = await attndCollection.where({

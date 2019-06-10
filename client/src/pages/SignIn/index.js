@@ -176,6 +176,7 @@ export default class Index extends Component {
     wx.showLoading({ title: '请稍后', mask: true });
     try {
       // 获取签到这当前位置
+      const [location1, location2] = await Promise.all([getLocation(), getLocation()]);
       const location = await getLocation();
       if (!location) {
         this.signinLoading = false;
@@ -183,7 +184,11 @@ export default class Index extends Component {
         wx.navigateTo({ url: '/pages/EditAuth/index' });
         return;
       }
-      const res = await signin({ passWd, location });
+      const res = await signin({
+        passWd,
+        location,
+        tmpLocation: [location1, location2]
+      });
       this.signinLoading = false;
       wx.hideLoading();
       switch (res.code) {

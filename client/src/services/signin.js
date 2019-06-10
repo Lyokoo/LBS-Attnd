@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
 
 // 签到
-export const signin = async ({ passWd, location }) => {
+export const signin = async ({ passWd, location, tmpLocation }) => {
   try {
     // 获取 systemInfo
     const res = wx.getSystemInfoSync();
@@ -16,12 +16,12 @@ export const signin = async ({ passWd, location }) => {
     };
 
     // 打印参数
-    const payload = { passWd, location, signinerSystemInfo };
+    const payload = { passWd, location, signinerSystemInfo, tmpLocation };
     adLog.log('signin-params', payload);
 
     const { result } = await wx.cloud.callFunction({
       name: 'signin',
-      data: { passWd, location, signinerSystemInfo }
+      data: { passWd, location, signinerSystemInfo, tmpLocation }
     });
     if (![2000, 3002, 3003, 3004].includes(result.code)) {
       throw result;
