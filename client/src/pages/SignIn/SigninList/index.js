@@ -39,9 +39,13 @@ export default class AttndList extends Component {
     });
   }
 
+  onActionClose = () => {
+    this.setState({ isActionSheetOpened: false });
+  }
+
   onActionClick = (signinerStatus) => {
     const { signinerOpenId } = this.state;
-    this.setState({ isActionSheetOpened: false });
+    this.onActionClose();
     this.props.onStatusUpdate({ signinerOpenId, signinerStatus });
   }
 
@@ -81,7 +85,7 @@ export default class AttndList extends Component {
           </View>
           {/* <LoadMore hasMore={data.hasMore}/> */}
         </ScrollView>
-        <AtActionSheet isOpened={isActionSheetOpened} cancelText='取消' title={`修改“${signinerName}”的签到状态`}>
+        <AtActionSheet isOpened={isActionSheetOpened} cancelText='取消' title={`修改“${signinerName}”的签到状态`} onClose={this.onActionClose}>
           <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.ARRIVED)}>已到</AtActionSheetItem>
           <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.UN_SIGNIN)}>未到</AtActionSheetItem>
           <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.LATE)}>迟到</AtActionSheetItem>

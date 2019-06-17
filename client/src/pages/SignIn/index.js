@@ -95,7 +95,6 @@ export default class Index extends Component {
         }
         return 0;
       });
-      wx.hideLoading();
       this.getInfoLoading = false;
       this.setState({
         attndInfo: attndData,
@@ -106,6 +105,7 @@ export default class Index extends Component {
         this.removeAttndHint();
         this.computeBtnStatus();
       });
+      wx.hideLoading();
     } catch (e) {
       wx.hideLoading();
       this.getInfoLoading = false;
