@@ -18,7 +18,7 @@ export default class About extends Component {
     aps1: [
       '考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤效率',
       '@2019广州大学计算机学院毕业设计作品',
-      'by纸纸纸盆（ByteDance Vagetable FE）'
+      'by纸纸纸盆（ByteDance Noob FE）'
     ],
     t3: '开发 Development',
     aps3: [
@@ -62,7 +62,7 @@ export default class About extends Component {
         <View>
           <View className="about__paragraph"><Text onClick={() => this.onCopy(github)} className="about__link">{github}</Text></View>
           {aps3.map(p => <View key={p} className="about__paragraph">{p}</View>)}
-          <View className="about__paragraph">更新日志：<Text onClick={() => this.checkUpdateLog()} className="about__link">查看更新日志</Text></View>
+          <View className="about__paragraph"><Text onClick={() => this.checkUpdateLog()} className="about__link">查看更新日志</Text></View>
         </View>
         {/*联系 Contact*/}
         <View className="about__title">{t5}</View>
