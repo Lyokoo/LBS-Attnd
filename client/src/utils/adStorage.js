@@ -1,5 +1,3 @@
-import Taro from '@tarojs/taro';
-
 /**
  * userInfo: { name: '', stuId: '' }
  */

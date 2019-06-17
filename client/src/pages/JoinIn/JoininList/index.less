@@ -1,0 +1,53 @@
+@import '../../../assets/styles/color.less';
+@import '../../../assets/styles/common.less';
+
+page {
+  background: @bg;
+}
+
+.joinin-list {
+  &__content {
+    padding: 30px;
+    &--bar {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    &--count {
+      .cm-text();
+      font-size: 30px;
+      color: @assist-text;
+      margin-right: 30px;
+    }
+    &--opt {
+      display: flex;
+    }
+    &--link {
+      .cm-text();
+      font-size: 30px;
+      color: @dark-blue;
+      margin-right: 20px;
+      &:active {
+        background: @active;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    &--item {
+      margin-bottom: 30px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  &__hint {
+    letter-spacing: 2px;
+    margin-top: 60px;
+    font-size: 30px;
+    line-height: 48px;
+    color: @assist-text;
+    text-align: center;
+  }
+}

@@ -1,5 +1,4 @@
 import * as adLog from '../utils/adLog';
-import Taro from '@tarojs/taro';
 var QQMapWX = require('../utils/qqmap-wx-jssdk.js');
 
 export const getLocation = async (type = 'wgs84') => {

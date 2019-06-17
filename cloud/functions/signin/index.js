@@ -21,6 +21,18 @@ const getDistance = (lng1, lat1, lng2, lat2) => {
   return s * 1000;
 };
 
+const SigninerStatus = {
+  UN_SIGNIN: -1,
+  ARRIVED: 1,
+  LATE: 2,
+  OUT_OF_DIST: 0
+}
+
+const AttndStatus = {
+  ON: 1,
+  OFF: 0
+}
+
 /**
  * 1. 签到状态：已到、超出距离、迟到
  * 2. 只要考勤不是自己发布的都可签到
@@ -31,9 +43,9 @@ exports.main = async (event) => {
   const _ = db.command;
   const userCollection = db.collection('user');
   const attndCollection = db.collection('attnd');
-  const { passWd, location: signinerLocation, signinerSystemInfo, tmpLocation } = event;
+  const { passWd, location: signinerLocation, signinerSystemInfo } = event;
   const { openId: signinerOpenId } = event.userInfo;
-  const validDistance = 1000;
+  const validDistance = 500;
   console.log('event', event);
 
   if (typeof passWd !== 'string' || !passWd
@@ -56,7 +68,8 @@ exports.main = async (event) => {
     const {
       location: hostLocation,
       attndStatus,
-      signinerList
+      signinerList,
+      useGroup
     } = attndData[0];
 
     // 检查个人信息是否完善
@@ -71,15 +84,17 @@ exports.main = async (event) => {
       signinerStuId = userData[0].stuId;
       console.log('signinerName', signinerName);
       console.log('signinerStuId', signinerStuId);
+      if (!signinerName) {
+        return { code: 3003 };
+      }
     } else {
       return { code: 3003 };
     }
 
-    // 获取签到信息
-    // signinStatus: 0-->超出距离，1-->已到，2-->迟到
-    // 如果存在签到记录且超出距离的，可重复签到
+    // 已到或迟到无法再次签到
     const signinInfo = signinerList[signinerOpenId];
-    if (signinInfo && signinInfo.signinerStatus !== 0) {
+    let signinerStatus = signinInfo ? signinInfo.signinerStatus : SigninerStatus.UN_SIGNIN;
+    if (signinerStatus === SigninerStatus.ARRIVED || signinerStatus === SigninerStatus.LATE) {
       return { code: 3002 };
     }
 
@@ -88,43 +103,47 @@ exports.main = async (event) => {
     console.log('distance', distance);
 
     // 计算签到状态
-    // attndStatus: 0-->已结束，1-->进行中
-    // signinerStatus: 0-->超出距离，1-->已到，2-->迟到
-    let signinerStatus = -1;
     switch (attndStatus) {
-      case 1:
+      case AttndStatus.ON:
         if (distance >= 0 && distance <= validDistance) {
-          signinerStatus = 1;
+          signinerStatus = SigninerStatus.ARRIVED;
         } else {
-          signinerStatus = 0;
+          signinerStatus = SigninerStatus.OUT_OF_DIST;
         }
         break;
-      case 0:
+      case AttndStatus.OFF:
       default:
-        signinerStatus = 2;
+        signinerStatus = SigninerStatus.LATE;
         break;
     }
 
     // 签到
-    const reqData = signinInfo
-      ? { signinerLocation, tmpLocation, signinerSystemInfo, signinerStatus, distance, updateTime: new Date() }
-      : { signinerOpenId, signinerLocation, tmpLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date() }
-    console.log(reqData);
+    let reqData = {};
+    if (useGroup) {
+      if (!signinInfo) {
+        throw new Error('签到者不属于该小组');
+      }
+      reqData = { signinerLocation, signinerSystemInfo, signinerStatus, distance, updateTime: new Date() };
+    } else {
+      reqData = signinInfo
+        ? { signinerLocation, signinerSystemInfo, signinerStatus, distance, updateTime: new Date() }
+        : { signinerOpenId, signinerLocation, signinerSystemInfo, signinerStatus, distance, signinerName, signinerStuId, createTime: new Date(), updateTime: new Date() }
+        console.log(reqData);
+    }
     const updateKey = `signinerList.${signinerOpenId}`;
     const { stats: { updated } } = await attndCollection.where({
       passWd: _.eq(passWd),
       hostOpenId: _.neq(signinerOpenId),
-      active: true
+      active: _.eq(true),
     }).update({
       data: {
         [updateKey]: reqData
       }
     });
     if (updated !== 1) {
-      throw new Error('更新记录异常');
+      throw new Error('更新失败');
     }
     return { code: 2000 };
-
   } catch (e) {
     // {"errCode":-502001,"errMsg":"云资源数据库错误：数据库请求失败 "}
     console.log(e);

@@ -1,0 +1,41 @@
+@import '../../assets/styles/color.less';
+
+page {
+  background: @bg;
+}
+
+.group-list {
+  position: relative;
+  &__opt {
+    position: fixed;
+    z-index: 200;
+    right: 64px;
+    bottom: 64px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    background: @avatar;
+    box-shadow: 0 0 30px 0 rgba(120, 164, 250, 0.6);
+    overflow: hidden;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 36px;
+      height: 4px;
+      background: white;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 36px;
+      background: white;
+    }
+  }
+}

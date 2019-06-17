@@ -9,6 +9,7 @@ exports.main = async (event) => {
   const _ = db.command;
   const userCollection = db.collection('user');
   const attndCollection = db.collection('attnd');
+  const groupCollection = db.collection('group');
   const { name, stuId } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
@@ -18,15 +19,19 @@ exports.main = async (event) => {
 
   try {
     // 文字内容合法性检测
-    const p1 = await cloud.openapi.security.msgSecCheck({
+    const { errCode: p1Code } = await cloud.openapi.security.msgSecCheck({
       content: name
     });
-    const p2 = await cloud.openapi.security.msgSecCheck({
-      content: stuId
-    }); 
-    const [{ errCode: p1Code }, { errCode: p2Code }] = await Promise.all([p1, p2]);
-    if (p1Code === 87014 || p2Code === 87014) {
+    if (p1Code === 87014) {
       throw new Error('内容含有违法违规内容');
+    }
+    if (stuId) {
+      const { errCode: p2Code } = await cloud.openapi.security.msgSecCheck({
+        content: stuId
+      });
+      if (p2Code === 87014) {
+        throw new Error('内容含有违法违规内容');
+      }
     }
 
     // res = { data: [], errMsg }
@@ -61,8 +66,18 @@ exports.main = async (event) => {
       console.log(result);
     }
 
-    // 更新 attnd 表的个人信息
+    // 更新 attnd 表的 host 个人信息
     const { stats: { updated: attndUpdated } } = await attndCollection.where({
+      hostOpenId: _.eq(openId)
+    }).update({
+      data: {
+        hostName: name,
+        updateTime: new Date()
+      }
+    });
+
+    // 更新 group 表到 host 个人信息
+    const { stats: { updated: groupUpdated } } = await groupCollection.where({
       hostOpenId: _.eq(openId)
     }).update({
       data: {
@@ -86,7 +101,22 @@ exports.main = async (event) => {
       }
     });
 
-    console.log({ attndUpdated, signinUpdated });
+    // 更新 members 中到个人信息
+    const signinerOpenId2 = `members.${openId}.signinerOpenId`;
+    const updateKey2 = `members.${openId}`;
+    const { stats: { updated: joininUpdated } } = await groupCollection.where({
+      [signinerOpenId2]: _.eq(openId)
+    }).update({
+      data: {
+        [updateKey2]: {
+          signinerName: name,
+          signinerStuId: stuId,
+          updateTime: new Date()
+        }
+      }
+    });
+
+    console.log({ attndUpdated, signinUpdated, groupUpdated, joininUpdated });
 
     return { code: 2000 };
   } catch (e) {

@@ -1,4 +1,3 @@
-import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
 
 // 签到

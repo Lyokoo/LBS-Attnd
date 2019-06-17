@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro';
+import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import ProfileItem from './ProfileItem';
 import { getUserInfo } from '../../services/userInfo';
@@ -51,6 +51,8 @@ export default class Profile extends Component {
 
   onUserInfoClick = () => wx.navigateTo({ url: '/pages/EditUserInfo/index' });
 
+  onGroupClick = () => wx.navigateTo({ url: '/pages/GroupList/index' });
+
   onAboutClick = () => wx.navigateTo({ url: '/pages/About/index' });
 
   onUpdateLogClick = () => wx.navigateTo({ url: '/pages/UpdateLog/index' });
@@ -79,6 +81,7 @@ export default class Profile extends Component {
           </View>
         </View>
         <View className="profile__group">
+          <ProfileItem title="我的小组" onClick={this.onGroupClick}/>
           <ProfileItem title="授权管理" openType="openSetting" />
         </View>
         <View className="profile__group">

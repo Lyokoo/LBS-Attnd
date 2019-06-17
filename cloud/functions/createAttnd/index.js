@@ -36,7 +36,8 @@ exports.main = async (event) => {
   const _ = db.command;
   const attndCollection = db.collection('attnd');
   const userCollection = db.collection('user');
-  const { attndName, location, gcj02Location, address, hostSystemInfo, tmpLocation } = event;
+  const groupCollection = db.collection('group');
+  const { attndName, location, gcj02Location, address, hostSystemInfo, useGroup, groupPassWd } = event;
   const { openId } = event.userInfo;
   console.log('event', event);
 
@@ -89,20 +90,34 @@ exports.main = async (event) => {
       passWd = buildPassWd();
     }
 
+    // 套用小组模版
+    let signinerList = {};
+    if (useGroup && groupPassWd) {
+      const { data: groupData } = await groupCollection.where({
+        passWd: _.eq(groupPassWd),
+        hostOpenId: _.eq(openId)
+      }).get();
+      const members = groupData[0] ? groupData[0].members : {};
+      signinerList = {
+        ...members
+      };
+    }
+
     // 创建新的考勤
     const reqData = {
       attndName,
       hostName,
       location,
       gcj02Location,
-      tmpLocation,
       address,
       hostSystemInfo,
       passWd,
       hostOpenId: openId,
       attndStatus: 1, // 考勤状态 0-->已结束，1-->进行中
       active: true, // 活跃状态
-      signinerList: {},
+      signinerList,
+      useGroup,
+      groupPassWd,
       createTime: new Date(),
       updateTime: new Date()
     }

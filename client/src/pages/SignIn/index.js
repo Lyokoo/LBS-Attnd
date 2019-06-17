@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro';
-import { View, Image } from '@tarojs/components';
-import { AtButton, AtNoticebar } from 'taro-ui';
+import { View } from '@tarojs/components';
+import { AtButton } from 'taro-ui';
 import AttndInfo from '../../components/AttndInfo';
 import SigninList from './SigninList';
 import { getAttndByPassWd, updateAttndStatus, deleteAttnd } from '../../services/attnd';
@@ -10,8 +10,9 @@ import * as adLog from '../../utils/adLog';
 import AdToast from '../../components/AdToast';
 import { AttndStatus, SigninerStatus } from '../../utils/consts';
 import imgLocation from '../../assets/images/location.png';
-import imgBack from '../../assets/images/back.png';
-import imgGoHome from '../../assets/images/go-home.png';
+import CapsuleBar from '../../components/CapsuleBar';
+import NoticeBar from '../../components/NoticeBar';
+import { formatDate } from '../../utils/func';
 import './index.less';
 
 export default class Index extends Component {
@@ -23,21 +24,14 @@ export default class Index extends Component {
     navigationStyle: 'custom'
   }
 
-  constructor () {
+  constructor() {
     try {
-      var {
-        width: capsuleWidth,
-        height: capsuleHeight,
-        top: capsuleTop
-      } = wx.getMenuButtonBoundingClientRect();
-      var { windowWidth, windowHeight, statusBarHeight } = Taro.getSystemInfoSync();
-      var capsulePadding = capsuleTop - statusBarHeight;
-      var navBarHeight = capsuleHeight + 2 * capsulePadding;
+      var { windowWidth, windowHeight } = wx.getSystemInfoSync();
       var rpx = windowWidth / 750;
       var headerHeight = 258 * rpx; // PX
       var footerHeight = 100 * rpx; // PX
       var gap = (20 * 4) * rpx; // PX
-      var listHeight = windowHeight - headerHeight - footerHeight - gap - navBarHeight - statusBarHeight;
+      var listHeight = windowHeight - headerHeight - footerHeight - gap;
     } catch (e) {
       console.log(e);
     }
@@ -45,18 +39,10 @@ export default class Index extends Component {
       windowHeight: windowHeight || 0,
       windowWidth: windowWidth || 0,
       listHeight: listHeight || 0,
-      navBarHeight: navBarHeight || 0,
-      statusBarHeight: statusBarHeight || 0,
-      capsuleWidth: capsuleWidth || 0,
-      capsuleHeight: capsuleHeight || 0,
-      capsulePadding: capsulePadding || 0,
+      capsuleBarHeight: 0,
+      noticeBarHeight: 0,
       data: {
-        listData: [
-          // { name: '李梓鹏', stuId: '1506100006', distance: 28, signinerStatus: 1 },
-          // { name: '王莹', stuId: '1501500009', distance: 20, signinerStatus: 1 },
-          // { name: '刘圳', stuId: '1506100006', distance: 2000, signinerStatus: 0 },
-          // { name: '黎梓毅', stuId: '1506100006', distance: 16, signinerStatus: 2 },
-        ],
+        listData: [],
         hasMore: true
       },
       passWd: '',
@@ -64,7 +50,6 @@ export default class Index extends Component {
       signinInfo: {},
       btnStatus: {},
       notice: '',
-      refreshDisabled: false,
       attndBelonging: false
     }
   }
@@ -74,50 +59,21 @@ export default class Index extends Component {
   finishAtLoading = false;
   deleteLoading = false;
   updateSnLoading = false;
+  refreshDisabled = false;
 
   componentWillMount() {
     const { passWd } = this.$router.params;
-    this.setState({ passWd });
+    this.setState({
+      passWd: decodeURIComponent(passWd)
+    });
   }
 
   async componentDidMount() {
-    // this.computeHeight();
     this.onRefresh();
   }
 
   onRefresh() {
     this.getInfo();
-    this.getNotice();
-  }
-
-  computeHeight = async () => {
-    try {
-      const {
-        width: capsuleWidth,
-        height: capsuleHeight,
-        top: capsuleTop
-      } = wx.getMenuButtonBoundingClientRect();
-      const { windowWidth, windowHeight, statusBarHeight } = Taro.getSystemInfoSync();
-      const capsulePadding = capsuleTop - statusBarHeight;
-      const navBarHeight = capsuleHeight + 2 * capsulePadding;
-      const rpx = windowWidth / 750;
-      const headerHeight = 258 * rpx; // PX
-      const footerHeight = 100 * rpx; // PX
-      const gap = (20 * 4) * rpx; // PX
-      const listHeight = windowHeight - headerHeight - footerHeight - gap - navBarHeight - statusBarHeight;
-      this.setState({
-        windowHeight,
-        windowWidth,
-        listHeight,
-        navBarHeight,
-        statusBarHeight,
-        capsuleHeight,
-        capsuleWidth,
-        capsulePadding
-      });
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   // 获取考勤信息和签到信息
@@ -290,7 +246,7 @@ export default class Index extends Component {
     }
   }
 
-  onDeleteClick = () => {
+  onAttndDelete = () => {
     wx.showModal({
       title: '删除考勤',
       content: '删除考勤后，考勤将无法签到且不再显示在记录列表中，确认删除？',
@@ -312,7 +268,7 @@ export default class Index extends Component {
       this.deleteLoading = false;
       Taro.adToast({ text: '删除成功', status: 'success' });
       setTimeout(() => {
-        this.goBack();
+        wx.navigateBack();
       }, 1500);
     } catch (e) {
       adLog.warn('deleteAttnd-error', e);
@@ -340,18 +296,8 @@ export default class Index extends Component {
     });
   }
 
-  // 拷贝口令
-  onAttndInfoClick = () => {
-    const { passWd } = this.state;
-    if (!passWd) return;
-    wx.setClipboardData({
-      data: passWd,
-      success: () => Taro.adToast({ text: '口令拷贝成功', status: 'success' })
-    });
-  }
-
   // 查看考勤位置和当前位置
-  onShowLocClick = async () => {
+  onShowLocation = async () => {
     try {
       // 考勤者位置
       const hostLoc = { longitude: this.state.attndInfo.gcj02Location.lng, latitude: this.state.attndInfo.gcj02Location.lat };
@@ -365,8 +311,8 @@ export default class Index extends Component {
       // 验证
       if (typeof hostLoc.longitude !== 'number' || typeof hostLoc.latitude !== 'number'
         || typeof signinerLoc.longitude !== 'number' || typeof signinerLoc.latitude !== 'number') {
-          wx.hideLoading();
-          // Taro.adToast({ text: '未获取位置' });
+        wx.hideLoading();
+        // Taro.adToast({ text: '未获取位置' });
         return;
       }
 
@@ -381,21 +327,20 @@ export default class Index extends Component {
   }
 
   // 刷新
-  onRefreshClick = () => {
-    const { refreshDisabled } = this.state;
-    if (refreshDisabled) {
+  onAttndRefresh = () => {
+    if (this.refreshDisabled) {
       Taro.adToast({ text: '操作过于频繁～' });
       return;
     }
-    this.setState({ refreshDisabled: true });
+    this.refreshDisabled = true;
     this.onRefresh();
     setTimeout(() => {
-      this.setState({ refreshDisabled: false });
+      this.refreshDisabled = false;
     }, 6000);
   }
 
   // 更新签到状态
-  onUpdateSigninerStatus = async (signinerOpenId, signinerStatus) => {
+  onSigninerStatusUpdate = async ({ signinerOpenId, signinerStatus }) => {
     try {
       const { passWd } = this.state;
       if (this.updateSnLoading) return;
@@ -406,7 +351,7 @@ export default class Index extends Component {
       wx.hideLoading();
       this.onRefresh();
     } catch (e) {
-      adLog.log('onUpdateSigninerStatus', e);
+      adLog.log('onSigninerStatusUpdate', e);
       this.updateSnLoading = false;
       wx.hideLoading();
       Taro.adToast({ text: '操作失败' }, () => {
@@ -419,89 +364,52 @@ export default class Index extends Component {
     const { passWd } = this.state;
     return {
       title: '快来参加考勤吧！',
-      path: `/pages/SignIn/index?passWd=${passWd}`,
+      path: `/pages/SignIn/index?passWd=${encodeURIComponent(passWd)}`,
       imageUrl: imgLocation
     }
   }
 
-  goBack = () => wx.navigateBack();
+  onCapsuleInit = (capsuleBarHeight) => {
+    this.setState({ capsuleBarHeight });
+  }
 
-  goHome = () => wx.switchTab({ url: '/pages/Home/index' });
-
-  getNotice = async () => {
-    try {
-      const { result } = await wx.cloud.callFunction({
-        name: 'getNotice',
-        data: { type: 'signin' }
-      });
-      const content = result.data.content;
-      adLog.log('getNotice-result', content);
-      if (content) {
-        this.setState({ notice: content });
-      } else {
-        this.setState({ notice: '' });
-      }
-    } catch (e) {
-      adLog.log('getNotice-error', e);
-      this.setState({ notice: '' });
-    }
+  onNoticeInit = (noticeBarHeight) => {
+    this.setState({ noticeBarHeight });
   }
 
   render() {
     const {
-      windowWidth, windowHeight, listHeight, navBarHeight, statusBarHeight, capsuleWidth, capsuleHeight, capsulePadding, data, attndInfo, btnStatus, attndBelonging, notice,
+      windowHeight, listHeight, capsuleBarHeight, noticeBarHeight, data, attndInfo, btnStatus, attndBelonging,
     } = this.state;
-    const computeListHeight = notice ? listHeight - (60 * windowWidth / 750) : listHeight;
+    const computeListHeight = listHeight - noticeBarHeight - capsuleBarHeight;
+
+    const infoData = {
+      title: attndInfo.attndName,
+      desc1: `口令：${attndInfo.passWd || 'loading..'}`,
+      desc2: `发起者：${attndInfo.hostName || 'loading..'}`,
+      desc3: `时间：${formatDate(attndInfo.createTime) || 'loading..'}`,
+      tag: attndInfo.attndStatus === 1 ? { active: true, text: '进行中' } : { active: false, text: '已结束' }
+    }
+
     return (
-      <View className="signin" style={{ height: `${windowHeight}px` }}>
-        <View className="signin__statusbar" style={{ height: `${statusBarHeight}px` }}></View>
-        <View className="signin__nav" style={{ height: `${navBarHeight}px` }}>
-          <View className="signin__capsule" style={{ top: `${capsulePadding}px` }}>
-            <View
-              className="signin__capsule--left"
-              style={{
-                height: `${capsuleHeight}px`,
-                width: `${capsuleWidth / 2}px`,
-                borderTopLeftRadius: `${capsuleHeight / 2}px`,
-                borderBottomLeftRadius: `${capsuleHeight / 2}px`
-              }}
-              onClick={this.goBack}
-            >
-              <View className="signin__capsule--iconleft">
-                <Image src={imgBack} style={{ width: '20px', height: '20px' }} />
-              </View>
-            </View>
-            <View
-              className="signin__capsule--right"
-              style={{
-                height: `${capsuleHeight}px`,
-                width: `${capsuleWidth / 2}px`,
-                borderTopRightRadius: `${capsuleHeight / 2}px`,
-                borderBottomRightRadius: `${capsuleHeight / 2}px`
-              }}
-              onClick={this.goHome}
-            >
-              <View className="signin__capsule--iconright">
-                <Image src={imgGoHome} style={{ width: '20px', height: '20px' }} />
-              </View>
-            </View>
-          </View>
-          <View className="signin__nav--title">考勤详情</View>
+      <View className="signin" style={{ height: `${windowHeight}px`, paddingTop: `${capsuleBarHeight}px` }}>
+        <View className="signin__capsulebar">
+          <CapsuleBar title="考勤详情" onCapsuleInit={this.onCapsuleInit} />
         </View>
-        {notice &&<AtNoticebar icon="volume-plus" single marquee speed={50}>{notice}</AtNoticebar>}
+        <NoticeBar type="signin" onNoticeInit={this.onNoticeInit} />
         <View className="signin__body">
-          <View className="signin__header" onClick={this.onAttndInfoClick}>
-            <AttndInfo item={attndInfo} />
+          <View className="signin__header">
+            <AttndInfo data={infoData} />
           </View>
           <View className="signin__content" style={{ height: `${computeListHeight}px` }}>
             <SigninList
               data={data}
               height={computeListHeight}
               attndBelonging={attndBelonging}
-              onRefreshClick={this.onRefreshClick}
-              onShowLocClick={this.onShowLocClick}
-              onDeleteClick={this.onDeleteClick}
-              onUpdateStatus={this.onUpdateSigninerStatus}
+              onAttndRefresh={this.onAttndRefresh}
+              onShowLocation={this.onShowLocation}
+              onAttndDelete={this.onAttndDelete}
+              onStatusUpdate={this.onSigninerStatusUpdate}
             />
           </View>
           <View className="signin__footer">

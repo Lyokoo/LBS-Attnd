@@ -10,6 +10,11 @@ export const AttndStatus = {
   OFF: 0
 }
 
+export const GroupStatus = {
+  ON: 1,
+  OFF: 0
+}
+
 export const AppIds = {
   GeiZan: 'wx18a2ac992306a5a4'
 }

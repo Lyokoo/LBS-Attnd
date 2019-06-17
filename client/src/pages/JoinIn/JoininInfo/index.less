@@ -1,0 +1,64 @@
+@import '../../../assets/styles/color.less';
+@import '../../../assets/styles/common.less';
+
+.joinin-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__user {
+    display: flex;
+    align-items: center;
+  }
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    color: white;
+    font-size: 32px;
+    line-height: 80px;
+    text-align: center;
+    border-radius: 40px;
+    background: @avatar;
+    box-shadow: 0 0 10px 0 rgba(120, 164, 250, 0.6);
+    overflow: hidden;
+  }
+
+  &__info {
+    width: 400px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 30px;
+
+    &--name {
+      .cm-text();
+      font-size: 28px;
+      color: @title-text;
+      margin-bottom: 12px;
+      overflow-y: hidden;
+    }
+
+    &--desc {
+      .cm-text();
+      font-size: 20px;
+      color: @assist-text;
+    }
+  }
+
+  &__status {
+    width: 130px;
+    height: 80px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    &--desc {
+      .cm-text();
+      font-size: 28px;
+      margin-left: 10px;
+      color: @dark-blue;
+    }
+  }
+}

@@ -12,21 +12,40 @@ export default class ShowPassWd extends Component {
   }
 
   state = {
-    passWd: ''
+    passWd: '',
+    type: 'attnd'
   }
 
   componentWillMount() {
-    const { passWd } = this.$router.params;
-    this.setState({ passWd });
+    // type: attnd | group
+    const { passWd, type = 'attnd' } = this.$router.params;
+    this.setState({
+      passWd: decodeURIComponent(passWd),
+      type
+    });
   }
 
-  onClickGotoSignin = () => wx.redirectTo({ url: `/pages/SignIn/index?passWd=${this.state.passWd}` });
+  onGotoDetial = () => {
+    const { passWd } = this.state;
+    if (this.state.type === 'attnd') {
+      wx.redirectTo({ url: `/pages/SignIn/index?passWd=${encodeURIComponent(passWd)}` });
+    } else {
+      wx.redirectTo({ url: `/pages/JoinIn/index?passWd=${encodeURIComponent(passWd)}` });
+    }
+  }
 
   onShareAppMessage() {
-    const { passWd } = this.state;
+    const { passWd, type } = this.state;
+    if (type === 'attnd') {
+      return {
+        title: '快来参加考勤吧！',
+        path: `/pages/SignIn/index?passWd=${encodeURIComponent(passWd)}`,
+        imageUrl: imgLocation
+      }
+    }
     return {
-      title: '快来参加考勤吧！',
-      path: `/pages/SignIn/index?passWd=${passWd}`,
+      title: '邀请你加入小组',
+      path: `/pages/JoinIn/index?passWd=${encodeURIComponent(passWd)}`,
       imageUrl: imgLocation
     }
   }
@@ -41,19 +60,23 @@ export default class ShowPassWd extends Component {
   }
 
   render() {
+    const { passWd, type } = this.state;
+    const title = type === 'attnd' ? '签到口令' : '小组加入口令';
+    const desc = `你可以线下展示口令或通过微信群聊邀请朋友${type === 'attnd' ? '签到' : '加入小组'}`;
+    const opt = `邀请朋友${type === 'attnd' ? '签到' : '加入'}`;
     return (
       <View className="show-passwd">
         <View className="show-passwd__card" onClick={this.onPassWdClick}>
-          <Text className="show-passwd__card--desc">签到口令</Text>
-          <Text className="show-passwd__card--passwd">{this.state.passWd}</Text>
+          <Text className="show-passwd__card--desc">{title}</Text>
+          <Text className="show-passwd__card--passwd">{passWd}</Text>
           <Text className="show-passwd__card--copy">点击可拷贝口令 :)</Text>
         </View>
-        <View className="show-passwd__desc">你可以线下展示口令或通过微信群聊邀请朋友签到</View>
+        <View className="show-passwd__desc">{desc}</View>
         <View className="show-passwd__opt">
-          <AtButton type="secondary" openType="share">邀请朋友签到</AtButton>
+          <AtButton type="secondary" openType="share">{opt}</AtButton>
         </View>
         <View className="show-passwd__opt">
-          <AtButton type="primary" onClick={this.onClickGotoSignin}>进入考勤详情</AtButton>
+          <AtButton type="primary" onClick={this.onGotoDetial}>进入详情</AtButton>
         </View>
         <AdToast />
       </View>

@@ -6,54 +6,17 @@ page {
 }
 
 .signin {
-  &__nav {
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    &--title {
-      line-height: 1;
-      font-size: 32px;
-      color: @title-text;
-    }
-  }
+  position: relative;
+  box-sizing: border-box;
 
-  &__capsule {
-    position: absolute;
-    left: 20px;
-    display: flex;
-    &--left, &--right {
-      box-sizing: border-box;
-      padding: 6PX 0;
-      border: 1PX solid @border;
-      &:active {
-        background: @active;
-      }
-    }
-    &--left {
-      border-right: none;
-    }
-    &--right {
-      border-left: none;
-    }
-    &--iconleft, &--iconright {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-sizing: border-box;
-      width: 100%;
-      height: 100%;
-    }
-    &--iconleft {
-      border-right: 1PX solid @border;
-    }
+  &__capsulebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
   }
-
-  &__statusbar {
-    background: white;
-  }
-
+  
   &__body {
     box-sizing: border-box;
     padding: 20px;
@@ -88,7 +51,7 @@ page {
   &__footer {
     height: 100px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     &--btn {
       width: 710px;
     }

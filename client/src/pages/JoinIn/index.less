@@ -1,0 +1,59 @@
+@import '../../assets/styles/common.less';
+@import '../../assets/styles/color.less';
+
+page {
+  background-color: @bg;
+}
+
+.joinin {
+  position: relative;
+  box-sizing: border-box;
+
+  &__capsulebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+  }
+
+  &__body {
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__content {
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 10px;
+    // box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
+    // overflow: hidden; /* 这个加了列表中的字体会迷之模糊 */
+    &--emptyhint {
+      .cm-text();
+      height: 120px;
+      line-height: 120px;
+      font-size: 28px;
+      color: @assist-text;
+      text-align: center;
+    }
+    &--emptyrefresh {
+      color: @dark-blue;
+      &:active {
+        background: @active;
+      }
+    }
+  }
+
+  &__footer {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    &--btn {
+      width: 710px;
+    }
+  }
+}

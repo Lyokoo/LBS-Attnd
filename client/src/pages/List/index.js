@@ -1,11 +1,11 @@
-import Taro, { Component } from '@tarojs/taro';
+import { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtTabs, AtTabsPane } from 'taro-ui';
-import AttndList from './AttndList';
+import AttndList from '../../components/AttndList';
 import { getAttndListByHostOpenId } from '../../services/attnd';
 import { getSigninListBySigninerOpenId } from '../../services/signin';
 import * as adLog from '../../utils/adLog';
-import { throttle } from '../../utils/func';
+import { throttle, formatDate } from '../../utils/func';
 import './index.less';
 
 export default class List extends Component {
@@ -14,19 +14,28 @@ export default class List extends Component {
     navigationBarTitleText: '记录'
   }
 
-  // 高度 state 写成数字方便计算
-  state = {
-    listHeight: 0,
-    windowHeight: 0,
-    tabIndex: 0,
+  constructor() {
+    try {
+      var { windowWidth, windowHeight } = wx.getSystemInfoSync();
+      var rpx = windowWidth / 750;
+      var headerHeight = 88 * rpx; // PX
+      var listHeight = windowHeight - headerHeight;
+    } catch (e) {
+      console.log(e);
+    }
+    this.state = {
+      listHeight: listHeight || 0,
+      windowHeight: windowHeight || 0,
+      tabIndex: 0,
 
-    attndData: [],
-    attndHasMore: true,
-    attndOffsetId: null,
+      attndData: [],
+      attndHasMore: true,
+      attndOffsetId: null,
 
-    signinData: [],
-    signinHasMore: true,
-    signinOffsetId: null,
+      signinData: [],
+      signinHasMore: true,
+      signinOffsetId: null,
+    };
   }
 
   attndLoading = false;
@@ -37,29 +46,10 @@ export default class List extends Component {
     { title: '我发起的' }
   ]
 
-  componentDidMount() {
-    this.computeHeight();
-  }
-
-  componentDidShow = throttle(async function () {
+  componentDidShow = throttle(function () {
     this.getSigninList();
     this.getAttndList();
   }, 6000);
-
-  computeHeight = () => {
-    try {
-      const { windowWidth, windowHeight } = wx.getSystemInfoSync();
-      const rpx = windowWidth / 750;
-      const headerHeight = 88 * rpx; // PX
-      const listHeight = windowHeight - headerHeight;
-      this.setState({
-        windowHeight,
-        listHeight
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   onTabToggle = (value) => {
     this.setState({
@@ -143,6 +133,35 @@ export default class List extends Component {
     this.getSigninList(offset);
   }
 
+  getComputeAttndData = (data = []) => {
+    return data.map(item => ({
+      key: item._id,
+      title: item.attndName,
+      desc1: `口令：${item.passWd || 'loading..'}`,
+      desc2: `发起者：${item.hostName || 'loading..'}`,
+      desc3: `时间：${formatDate(item.createTime) || 'loading..'}`,
+      tag: item.attndStatus===1 ? { active: true, text: '进行中' } : { active: false, text: '已结束' }
+    }));
+  }
+
+  onAttndItemClick = (index) => {
+    const { attndData } = this.state;
+    const passWd = attndData[index] ? attndData[index].passWd : '';
+    if (!passWd) {
+      return;
+    }
+    wx.navigateTo({ url: `/pages/SignIn/index?passWd=${encodeURIComponent(passWd)}` });
+  }
+
+  onSigninItemClick = (index) => {
+    const { signinData } = this.state;
+    const passWd = signinData[index] ? signinData[index].passWd : '';
+    if (!passWd) {
+      return;
+    }
+    wx.navigateTo({ url: `/pages/SignIn/index?passWd=${encodeURIComponent(passWd)}` });
+  }
+
   render() {
     const {
       listHeight,
@@ -153,6 +172,10 @@ export default class List extends Component {
       signinData,
       signinHasMore
     } = this.state;
+
+    const computeSigninData = this.getComputeAttndData(signinData);
+    const computeAttndData = this.getComputeAttndData(attndData);
+
     return (
       <View className="list">
         <AtTabs
@@ -165,17 +188,19 @@ export default class List extends Component {
           <AtTabsPane current={tabIndex} index={0} >
             <AttndList
               height={listHeight}
-              data={signinData}
+              data={computeSigninData}
               hasMore={signinHasMore}
               onLoadMore={this.onSigninLoadMore}
+              onItemClick={this.onSigninItemClick}
             />
           </AtTabsPane>
           <AtTabsPane current={tabIndex} index={1}>
             <AttndList
               height={listHeight}
-              data={attndData}
+              data={computeAttndData}
               hasMore={attndHasMore}
               onLoadMore={this.onAttndLoadMore}
+              onItemClick={this.onAttndItemClick}
             />
           </AtTabsPane>
         </AtTabs>

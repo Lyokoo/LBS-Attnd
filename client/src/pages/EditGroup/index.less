@@ -1,0 +1,29 @@
+@import '../../assets/styles/color.less';
+@import '../../assets/styles/common.less';
+
+.edit-group {
+  padding: 100px 60px 0;
+
+  &__title {
+    .cm-text();
+    font-size: 24PX;
+    color: @title-text;
+    margin-bottom: 30px;
+  }
+
+  &__desc {
+    letter-spacing: 1px;
+    line-height: 1.6;
+    font-size: 12PX;
+    color: @assist-text;
+    margin-bottom: 10px;
+    &:last-child {
+      margin-bottom: 60px;
+    }
+  }
+
+  &__input {
+    margin-bottom: 30px;
+    margin-left: -32px;
+  }
+}

@@ -11,10 +11,14 @@ export default class UpdateLog extends Component {
   state = {
     logs: [
       {
-        version: 'v2.0.0 @2019.06.13',
+        version: 'v2.0.0 @2019.06.17',
         points: [
-          '[feat] 新增创建班级功能',
-          '[improve] 隐藏签到页距离显示'
+          '[feat] 新增考勤小组功能',
+          '[fix] 修复“修改状态”的弹出菜单在iOS上的层级太低问题',
+          '[fix] 修复口令中出现“=”导致无法通过路由跳转到对应考勤的问题',
+          '[fix] 修复学号/工号为空时无法提交的问题',
+          '[improve] 隐藏签到页距离显示',
+          '[improve] 多处地方点击拷贝口令换成长按选中自由拷贝'
         ]
       },
       {

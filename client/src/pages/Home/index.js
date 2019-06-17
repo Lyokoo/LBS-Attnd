@@ -39,15 +39,9 @@ export default class Index extends Component {
 
   onEditAttndClick = () => wx.navigateTo({ url: '/pages/EditAttnd/index' });
 
-  onTest = async () => {
-    // const { result } = await wx.cloud.callFunction({
-    //   name: 'getNotice',
-    //   data: {
-    //     type: 'signin'
-    //   }
-    // });
-    // console.log(result);
-  }
+  // onTest = () => {
+  //   wx.navigateTo({ url: `/pages/GroupList/index?passWd=#4mRP3` });
+  // }
 
   render() {
     const { windowHeight } = this.state;
@@ -57,7 +51,7 @@ export default class Index extends Component {
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
           <View className="home__signin home__opt" onClick={this.onFindAttndClick}>
             <View className="home__circle">签</View>
-            <View className="home__text">我要签到</View>
+            <View className="home__text">签到/加入小组</View>
           </View>
         </View>
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>

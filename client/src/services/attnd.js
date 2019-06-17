@@ -1,8 +1,7 @@
-import Taro from '@tarojs/taro';
 import * as adLog from '../utils/adLog';
 
 // 创建考勤
-export const createAttnd = async ({ attndName, location, gcj02Location, address }) => {
+export const createAttnd = async ({ attndName, location, gcj02Location, address, useGroup, groupPassWd }) => {
   try {
     // 获取 systemInfo
     const res = wx.getSystemInfoSync();
@@ -16,12 +15,12 @@ export const createAttnd = async ({ attndName, location, gcj02Location, address 
     };
     
     // 打印参数
-    const payload = { attndName, location, gcj02Location, address, hostSystemInfo };
+    const payload = { attndName, location, gcj02Location, address, hostSystemInfo, useGroup, groupPassWd };
     adLog.log('createAttnd-params', payload);
 
     const { result } = await wx.cloud.callFunction({
       name: 'createAttnd',
-      data: { attndName, location, gcj02Location, address, hostSystemInfo }
+      data: { attndName, location, gcj02Location, address, hostSystemInfo, useGroup, groupPassWd }
     });
     if (result.code !== 2000 && result.code !== 3003) throw result;
     adLog.log('createAttnd-result', result);

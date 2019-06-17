@@ -18,11 +18,11 @@ export default class About extends Component {
     aps1: [
       '考勤 Attnd 是基于 LBS 开发的考勤和签到小程序，旨在提高课堂考勤效率',
       '@2019广州大学计算机学院毕业设计作品',
-      'by纸纸纸盆（今日头条菜鸡前端）'
+      'by纸纸纸盆（ByteDance Vagetable FE）'
     ],
     t3: '开发 Development',
     aps3: [
-      '技术栈：Taro + Taro UI + 云开发'
+      '技术栈：Taro、Taro UI、云开发'
     ],
     t4: '贡献者 Contributors',
     github: 'https://github.com/Lyokoo/LBS-Attnd',

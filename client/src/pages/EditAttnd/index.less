@@ -2,11 +2,11 @@
 @import '../../assets/styles/common.less';
 
 .edit-attnd {
-  padding: 100px 60px 0;
+  padding: 80px 60px 0;
 
   &__title {
     .cm-text();
-    font-size: 24PX;
+    font-size: 48px;
     color: @title-text;
     margin-bottom: 30px;
   }
@@ -14,7 +14,7 @@
   &__desc {
     letter-spacing: 1px;
     line-height: 1.6;
-    font-size: 12PX;
+    font-size: 24px;
     color: @assist-text;
     margin-bottom: 10px;
     &:last-child {
@@ -22,8 +22,37 @@
     }
   }
 
+  &__form {
+    margin-bottom: 60px;
+  }
+
   &__input {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     margin-left: -32px;
+  }
+
+  &__switch {
+    margin-bottom: 20px;
+    margin-left: -32px;
+  }
+
+  &__picker {
+    margin-bottom: 20px;
+    border-bottom: 1PX solid @blue-border;
+    font-size: 32px;
+    color: @title-text;
+    line-height: 1.5;
+    padding: 24px 0;
+  }
+
+  &__hint {
+    font-size: 28px;
+    color: @assist-text;
+    &--link {
+      color: @tag;
+      &:active {
+        background: @active;
+      }
+    }
   }
 }

@@ -8,7 +8,6 @@ exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
   const attndCollection = db.collection('attnd');
-  const userCollection = db.collection('user');
   const { openId } = event.userInfo;
   const { passWd, needSigninerList = false } = event;
   console.log('event', event);

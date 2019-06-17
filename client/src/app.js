@@ -18,7 +18,10 @@ class App extends Component {
       'pages/ShowPassWd/index',
       'pages/About/index',
       'pages/ShowLocation/index',
-      'pages/UpdateLog/index'
+      'pages/UpdateLog/index',
+      'pages/EditGroup/index',
+      'pages/GroupList/index',
+      'pages/JoinIn/index',
     ],
     window: {
       backgroundTextStyle: 'light',

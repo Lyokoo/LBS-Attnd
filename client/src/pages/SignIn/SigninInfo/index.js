@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
 import { Component } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import { AtIcon, AtActionSheet, AtActionSheetItem } from 'taro-ui';
+import { AtIcon } from 'taro-ui';
 import { SigninerStatus } from '../../../utils/consts';
 import './index.less';
 
@@ -20,78 +19,48 @@ const signinStatusConfig = {
     icon: 'map-pin',
     color: '#ff4949',
     text: '超距'
+  },
+  [SigninerStatus.UN_SIGNIN]: {
+    icon: 'user',
+    color: '#888888',
+    text: '未到'
   }
 }
 
 export default class SigninInfo extends Component {
 
-  static propTypes = {
-    item: PropTypes.object,
-    attndBelonging: PropTypes.bool,
-    onUpdateStatus: PropTypes.func
-  }
-
   static defaultProps = {
     item: {},
     attndBelonging: false,
-    onUpdateStatus: () => { }
+    onStatusClick: () => { }
   }
 
-  state = {
-    isOpened: false
-  }
-
-  componentDidMount() { }
-
-  geiDistance = (d = 0) => {
-    // switch (true) {
-    //   case d < 0: return '*';
-    //   case d >= Number.MAX_SAFE_INTEGER: return '**';
-    //   case d < 1: return '< 1m';
-    //   case d <= 200: return `${Math.floor(d)}m`;
-    //   case d > 200 && d < 1000: return '> 200m';
-    //   case d > 1000: default: return '> 1km';
-    // }
-    switch (true) {
-      case d < 0: return '*';
-      case d >= Number.MAX_SAFE_INTEGER: return '**';
-      case d <= 1000: return '<200m';
-      case d > 1000: default: return '>200m';
+  onStatusClick = ({ signinerOpenId, signinerName }) => {
+    const { attndBelonging } = this.props;
+    if (!attndBelonging) {
+      return;
     }
-  }
-
-  onStatusClick = () => this.setState({ isOpened: true });
-
-  onActionClick = (...args) => {
-    this.setState({ isOpened: false });
-    const { signinerOpenId } = this.props.item;
-    this.props.onUpdateStatus(signinerOpenId, ...args);
+    this.props.onStatusClick({ signinerOpenId, signinerName });
   }
 
   render() {
-    const { isOpened } = this.state;
     const { attndBelonging } = this.props;
-    const { signinerName = '?', signinerStuId = '', distance, signinerStatus } = this.props.item;
+    const { signinerName = '?', signinerStuId = '', signinerStatus = SigninerStatus.UN_SIGNIN, signinerOpenId } = this.props.item;
     const status = signinStatusConfig[signinerStatus] || {};
     return (
       <View className="signin-info">
         <View className="signin-info__user">
           <Text className="signin-info__avatar">{signinerName[0]}</Text>
           <View className="signin-info__info">
-            <View className="signin-info__info--name">{`${signinerStuId + ' '}${signinerName}`}</View>
-            <View className="signin-info__info--desc">距离：{this.geiDistance(distance)}</View>
+            <View className="signin-info__info--name">{signinerName}</View>
+            <View className="signin-info__info--desc">ID: {signinerStuId || '(空)'}</View>
           </View>
         </View>
-        <View className="signin-info__status" onClick={this.onStatusClick}>
+        <View className="signin-info__status" onClick={() => this.onStatusClick({ signinerOpenId, signinerName })}>
           <AtIcon value={status.icon} size={16} color={status.color} />
           <Text className="signin-info__status--desc" style={{ color: status.color }}>{status.text}</Text>
           {attndBelonging && <View className="signin-info__status--action"></View>}
         </View>
-        <AtActionSheet isOpened={isOpened} cancelText='取消' title={`修改“${signinerName}”的签到状态`}>
-          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.ARRIVED)}>已到</AtActionSheetItem>
-          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.LATE)}>迟到</AtActionSheetItem>
-          <AtActionSheetItem onClick={()=>this.onActionClick(SigninerStatus.OUT_OF_DIST)}>超出距离</AtActionSheetItem>        
-        </AtActionSheet>
       </View>
     )
   }

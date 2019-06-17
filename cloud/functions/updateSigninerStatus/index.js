@@ -4,6 +4,18 @@ cloud.init({
   // env: 'devlzp-8cqxl',
 });
 
+const SigninerStatus = {
+  UN_SIGNIN: -1,
+  ARRIVED: 1,
+  LATE: 2,
+  OUT_OF_DIST: 0
+}
+
+const AttndStatus = {
+  ON: 1,
+  OFF: 0
+}
+
 exports.main = async (event) => {
   const db = cloud.database();
   const _ = db.command;
@@ -12,7 +24,7 @@ exports.main = async (event) => {
   const { openId } = event.userInfo;
   console.log('event', event);
 
-  const signinerStatusMap = new Set([0, 1, 2]);
+  const signinerStatusMap = new Set(Object.values(SigninerStatus));
 
   if (typeof passWd !== 'string' || !passWd
     || typeof signinerOpenId !== 'string' || !signinerOpenId
