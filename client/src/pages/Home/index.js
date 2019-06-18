@@ -51,7 +51,7 @@ export default class Index extends Component {
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>
           <View className="home__signin home__opt" onClick={this.onFindAttndClick}>
             <View className="home__circle">签</View>
-            <View className="home__text">签到/加入小组</View>
+            <View className="home__text">签到 / 加入小组</View>
           </View>
         </View>
         <View className="home__wrapper" style={{ height: `${windowHeight / 2}px` }}>

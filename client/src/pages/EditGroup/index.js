@@ -14,9 +14,10 @@ export default class EditGroup extends Component {
 
   state = {
     groupName: '',
-    isGroupNameErr: false,
-    submiting: false
+    isGroupNameErr: false
   }
+
+  submiting = false;
 
   onInputChange = (value) => {
     this.setState({
@@ -35,15 +36,17 @@ export default class EditGroup extends Component {
   }
 
   onSubmit = async () => {
-    const { groupName, submiting } = this.state;
+    const { groupName } = this.state;
     if (!this.checkFormData(groupName)) {
       return;
     }
-    if (submiting) return;
-    this.setState({ submiting: true });
+    if (this.submiting) return;
+    this.submiting = true;
+    wx.showLoading({ title: '请稍后', mask: true });
     try {
       const res = await createGroup({ groupName });
-      this.setState({ submiting: false });
+      this.submiting = false;
+      wx.hideLoading();
 
       // 未填写个人信息
       if (res.code === 3003) {
@@ -61,7 +64,8 @@ export default class EditGroup extends Component {
       Taro.adToast({ text: '发起成功', status: 'success' });
       setTimeout(() => wx.redirectTo({ url: `/pages/ShowPassWd/index?passWd=${encodeURIComponent(passWd)}&type=group` }), 1500);
     } catch (e) {
-      this.setState({ submiting: false });
+      this.submiting = false;
+      wx.hideLoading();
       adLog.warn('EditAttnd-error', e);
       if (typeof e === 'object' && e.errCode === 5001) {
         Taro.adToast({ text: '操作频繁，请稍后再试～' });
