@@ -36,7 +36,7 @@ exports.main = async (event) => {
 
     // offset 不为零时需要用 createTime 去计算偏移
     if (offsetId && offset !== 0) {
-      query = attndCollection.where(
+      query = groupCollection.where(
         _.or([
           {
             active: _.eq(true),
