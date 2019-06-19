@@ -1,5 +1,12 @@
 ## \# 安装与运行
 
+### Taro CLI
+
+```bash
+# 使用 npm 安装 CLI
+$ npm install -g @tarojs/cli
+```
+
 ### project.config.json
 
 在根目录新建 project.config.json，拷贝下面这段代码并修改 AppId
